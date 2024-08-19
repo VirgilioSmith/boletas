@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de la Boleta</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Información de la Boleta</h1>
+        <p id="boleta-info">Cargando...</p>
+    </div>
+
+    <script>
+        // Obtener el parámetro 'id' de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const boletaId = urlParams.get('id');
+        
+        // Aquí puedes agregar la lógica para mostrar la información correspondiente
+        // Por ejemplo, podrías hacer una solicitud a un API para obtener la información
+
+        document.getElementById('boleta-info').innerText = `Número de Boleta: ${boletaId}`;
+    </script>
+</body>
+</html>
