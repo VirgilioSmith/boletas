@@ -7,10 +7,9 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
+    
       gtag('config', 'G-0S4LCL5CKW');
     </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minimalismo Financiero</title>
@@ -46,24 +45,45 @@
                         'text-shimmer': 'textShimmer 4s ease-in-out infinite alternate',
                         'attention': 'attention 2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both',
                         'modal-pop': 'modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-                        'slide-up-fade': 'slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'slide-up-fade': 'slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'blob': 'blob 7s infinite',
-                        'expand-down': 'expandDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
-                        wiggle: { '0%, 100%': { transform: 'rotate(-3deg)' }, '50%': { transform: 'rotate(3deg)' } },
-                        shimmer: { '0%': { transform: 'translateX(-100%) skewX(-15deg)' }, '50%, 100%': { transform: 'translateX(200%) skewX(-15deg)' } },
-                        textShimmer: { '0%': { backgroundPosition: '0% 50%' }, '100%': { backgroundPosition: '100% 50%' } },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%) skewX(-15deg)' },
+                            '50%, 100%': { transform: 'translateX(200%) skewX(-15deg)' }
+                        },
+                        textShimmer: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '100%': { backgroundPosition: '-200% center' }
+                        },
                         attention: {
                             '0%, 100%': { transform: 'scale(1)', filter: 'brightness(1)' },
                             '10%, 30%, 50%, 70%, 90%': { transform: 'scale(1.15) rotate(-3deg)', filter: 'brightness(1.2)' },
                             '20%, 40%, 60%, 80%': { transform: 'scale(1.15) rotate(3deg)', filter: 'brightness(1.2)' }
                         },
-                        modalPop: { '0%': { opacity: '0', transform: 'scale(0.85) translateY(30px)' }, '100%': { opacity: '1', transform: 'scale(1) translateY(0)' } },
-                        slideUpFade: { '0%': { opacity: '0', transform: 'translateY(40px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-                        blob: { '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' } },
-                        expandDown: { '0%': { opacity: '0', maxHeight: '0px', transform: 'translateY(-10px)' }, '100%': { opacity: '1', maxHeight: '500px', transform: 'translateY(0)' } }
+                        modalPop: {
+                            '0%': { opacity: '0', transform: 'scale(0.85) translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'scale(1) translateY(0)' }
+                        },
+                        slideUpFade: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
                     }
                 }
             }
@@ -73,60 +93,139 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- jsPDF y SheetJS -->
+    <!-- jsPDF para exportar a PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- SheetJS para exportar a Excel -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
     <style>
-        .fade-in-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        /* Animaciones base */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
         .fade-in-up.visible { opacity: 1; transform: translateY(0); }
-        .stagger-card { opacity: 0; transform: translateY(30px) scale(0.98); transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
-        .stagger-card.visible { opacity: 1; transform: translateY(0) scale(1); }
         
+        /* Animación Staggered para resultados */
+        .stagger-card {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .stagger-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+
+        /* Custom Scrollbar Elegant */
         .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 20px; transition: all 0.3s ease; border: 2px solid transparent; background-clip: content-box; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.6); }
 
+        /* Splash Screen Cinematográfico */
         .splash-screen { transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.8s ease-out; z-index: 9999; }
         .splash-hidden { opacity: 0; pointer-events: none; transform: translateY(-40px) scale(1.05); filter: blur(30px); }
         
-        .stars-bg { background-image: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)); background-repeat: repeat; background-size: 200px 200px; animation: stars 15s linear infinite; }
-        
-        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1); } 50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.2); } }
+        .stars-bg {
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: stars 15s linear infinite;
+        }
+        @keyframes stars { 0% { background-position: 0 0; } 100% { background-position: 0 -200px; } }
+
+        /* Glow para botones premium */
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1); }
+            50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.2); }
+            100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1); }
+        }
         .btn-glow { animation: glow 4s infinite; }
         .bar-fill { transition: width 2s cubic-bezier(0.22, 1, 0.36, 1); }
 
-        @keyframes pan-grid { 0% { background-position: 0px 0px; } 100% { background-position: 60px 60px; } }
-        .bg-grid-pattern { background-size: 30px 30px; background-image: linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px); mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%); -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%); animation: pan-grid 25s linear infinite; will-change: background-position; }
-        .dark .bg-grid-pattern { background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px); }
+        /* Pan Grid Animado Suave */
+        @keyframes pan-grid {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 60px 60px; }
+        }
+        .bg-grid-pattern {
+            background-size: 30px 30px;
+            background-image: linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%);
+            animation: pan-grid 25s linear infinite;
+            will-change: background-position;
+        }
+        .dark .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        }
 
-        .glass-edge { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 0 1px rgba(255,255,255,0.4), 0 10px 30px -10px rgba(0,0,0,0.05); }
-        .dark .glass-edge { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 0 1px rgba(255,255,255,0.05), 0 10px 30px -10px rgba(0,0,0,0.3); }
+        /* Glassmorphism Premium (Bordes de luz) */
+        .glass-edge {
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 0 1px rgba(255,255,255,0.4), 0 10px 30px -10px rgba(0,0,0,0.05);
+        }
+        .dark .glass-edge {
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 0 1px rgba(255,255,255,0.05), 0 10px 30px -10px rgba(0,0,0,0.3);
+        }
         
-        @keyframes popIn { 0% { opacity: 0; transform: scale(0.92) translateY(15px); } 70% { transform: scale(1.02); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        /* Entrada Táctil (Pop) */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.92) translateY(15px); }
+            70% { transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
         .animate-pop { animation: popIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
-        .stagger-1 { animation-delay: 100ms; } .stagger-2 { animation-delay: 200ms; } .stagger-3 { animation-delay: 300ms; } .stagger-4 { animation-delay: 400ms; }
+        /* Cascading delay items */
+        .stagger-1 { animation-delay: 100ms; }
+        .stagger-2 { animation-delay: 200ms; }
+        .stagger-3 { animation-delay: 300ms; }
+        .stagger-4 { animation-delay: 400ms; }
 
-        .is-pinging { animation: attention 2.5s ease-in-out !important; box-shadow: 0 0 40px rgba(245, 158, 11, 0.9) !important; }
-        .is-pinging > span { opacity: 1 !important; transform: translateX(0) !important; }
+        .is-pinging {
+            animation: attention 2.5s ease-in-out !important;
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.9) !important;
+        }
+        .is-pinging > span {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
         
+        /* Spotlight Mejorado */
         #tutorial-focus { box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.88), 0 0 40px rgba(245, 158, 11, 0.4) inset; }
 
-        .text-gradient-shine { background: linear-gradient(to right, #fbbf24 20%, #fffbeb 40%, #fffbeb 60%, #fbbf24 80%); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; }
+        /* Efecto texto brillante Premium */
+        .text-gradient-shine {
+            background: linear-gradient(to right, #fbbf24 20%, #fffbeb 40%, #fffbeb 60%, #fbbf24 80%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
 
-        .premium-hover { transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
-        .premium-hover:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1); }
-        .dark .premium-hover:hover { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4), 0 0 20px rgba(16, 185, 129, 0.1); }
+        /* Hover Cards Effect */
+        .premium-hover {
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .premium-hover:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
+        }
+        .dark .premium-hover:hover {
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4), 0 0 20px rgba(16, 185, 129, 0.1);
+        }
     </style>
 </head>
+
 <body class="bg-[#f8fafc] dark:bg-[#0b1120] text-slate-800 dark:text-gray-300 transition-colors duration-700 min-h-screen selection:bg-amber-500/30 relative overflow-x-hidden antialiased">
     
-    <!-- Textura de Ruido Premium -->
+    <!-- Textura de Ruido Premium (Noise Texture) -->
     <div class="fixed inset-0 opacity-[0.02] dark:opacity-[0.04] pointer-events-none mix-blend-overlay z-0" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
 
-    <!-- Ambient Background Orbs -->
+    <!-- Ambient Background Orbs (Blobs) -->
     <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[120px] animate-blob"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[140px] animate-blob" style="animation-delay: 2s;"></div>
@@ -165,14 +264,14 @@
                 <div class="absolute inset-0 w-1/4 h-full bg-white/40 blur-md transform -skew-x-12 animate-shimmer"></div>
                 <span class="relative z-10 flex items-center">
                     Entrar al Ecosistema 
-                    <i data-lucide="arrow-right" class="ml-4 w-7 h-7 group-hover:translate-x-2 transition-transform duration-300"></i>
+                    <i data-lucide="rocket" class="ml-4 w-7 h-7 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-300"></i>
                 </span>
             </button>
         </div>
     </div>
 
-    <!-- Theme Selection (Fijo Arriba) -->
-    <div class="fixed top-4 right-4 sm:top-6 sm:right-6 z-[100] bg-white/80 dark:bg-slate-800/80 backdrop-blur-2xl p-1.5 sm:p-2 rounded-full flex items-center shadow-lg dark:shadow-md border border-slate-200/80 dark:border-gray-700/50 glass-edge transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <!-- Theme Selection -->
+    <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-[100] bg-white/80 dark:bg-slate-800/80 backdrop-blur-2xl p-1.5 sm:p-2 rounded-full flex items-center shadow-lg dark:shadow-md border border-slate-200/80 dark:border-gray-700/50 glass-edge transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <button id="btn-theme-light" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold text-gray-500 hover:text-amber-500 dark:text-gray-400 active:scale-95">
             <i data-lucide="sun" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i> Claro
         </button>
@@ -181,8 +280,7 @@
         </button>
     </div>
 
-    <!-- VISTA 1: SIMULADOR PRINCIPAL -->
-    <div id="app-wrapper" class="min-h-screen p-4 sm:p-6 lg:p-8 relative z-10 block">
+    <div id="app-wrapper" class="min-h-screen p-4 sm:p-6 lg:p-8 relative z-10">
         <div class="max-w-7xl mx-auto pb-32 relative">
 
             <!-- Header -->
@@ -194,7 +292,7 @@
                     <span class="bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">Domina Tu </span><span class="text-gradient-shine drop-shadow-[0_5px_15px_rgba(245,158,11,0.2)] animate-text-shimmer">Deuda</span>
                 </h1>
                 <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed tracking-wide px-4">
-                    Visualiza tu camino hacia la libertad financiera. Estrategias de abono, análisis de costos y amortización detallada en un solo lugar.
+                    Visualiza tu camino hacia la libertad financiera. Estrategias de abono, análisis de penalidades y amortización detallada en un solo lugar.
                 </p>
             </div>
             
@@ -212,37 +310,25 @@
                             <input type="text" id="input-amount" placeholder="500,000" class="w-full pl-16 md:pl-20 pr-6 md:pr-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
                         </div>
                     </div>
-
-                    <!-- Tasa (CON ESCUDO VARIABLE) -->
+                    <!-- Tasa -->
                     <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-2 transition-all duration-300">
-                        <div class="flex justify-between items-end mb-2 sm:mb-3 ml-2">
-                            <label for="input-interest" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Tasa Anual</label>
-                            <button id="btn-toggle-variable" class="text-[10px] sm:text-xs text-rose-500 dark:text-rose-400 font-bold bg-rose-500/10 px-2.5 py-1 rounded-lg hover:bg-rose-500/20 transition-all flex items-center shadow-inner border border-rose-500/20 active:scale-95"><i data-lucide="zap" class="w-3 h-3 mr-1"></i> Añadir Tasa Variable</button>
-                        </div>
+                        <label for="input-interest" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 ml-2 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Tasa Anual</label>
                         <div class="relative flex items-center">
                             <input type="text" id="input-interest" placeholder="18" class="w-full pl-6 md:pl-8 pr-12 md:pr-14 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
                             <div class="absolute right-5 md:right-6 text-slate-400 dark:text-slate-500 font-black text-xl md:text-2xl group-focus-within/input:text-amber-500 transition-colors select-none">%</div>
                         </div>
-
-                        <!-- Panel Tasa Variable -->
-                        <div id="variable-rate-box" class="hidden animate-expand-down mt-3 p-4 bg-gradient-to-r from-rose-50 to-orange-50 dark:from-rose-900/20 dark:to-orange-900/10 border border-rose-200/80 dark:border-rose-800/40 rounded-2xl shadow-inner">
-                            <div class="flex items-center text-rose-600 dark:text-rose-400 font-black text-xs uppercase tracking-widest mb-3"><i data-lucide="shield-alert" class="w-4 h-4 mr-1.5"></i> Escudo Variable</div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-widest">Sube a (%)</label>
-                                    <input type="text" id="input-variable-rate" placeholder="20" class="w-full px-3 py-2 text-sm font-black bg-white dark:bg-slate-900/80 border border-rose-200 dark:border-rose-800/50 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none text-slate-800 dark:text-white">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-widest">A partir del mes</label>
-                                    <input type="text" id="input-variable-month" placeholder="24" class="w-full px-3 py-2 text-sm font-black bg-white dark:bg-slate-900/80 border border-rose-200 dark:border-rose-800/50 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none text-slate-800 dark:text-white">
-                                </div>
+                    </div>
+                    <!-- Plazo con Toggle Visual Meses/Años -->
+                    <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-3 transition-all duration-300 flex flex-col justify-end">
+                        <div class="flex justify-between items-end mb-2 sm:mb-3 ml-2 mr-1">
+                            <label for="input-term" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Plazo</label>
+                            
+                            <!-- Toggle Meses/Años -->
+                            <div class="flex bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-1 shadow-inner border border-black/5 dark:border-white/5">
+                                <button id="btn-term-months" class="term-type-btn active px-3 py-1 text-[10px] sm:text-xs font-black rounded-md transition-all duration-300 bg-white dark:bg-slate-600 shadow-sm text-slate-800 dark:text-slate-100">Meses</button>
+                                <button id="btn-term-years" class="term-type-btn px-3 py-1 text-[10px] sm:text-xs font-bold rounded-md transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">Años</button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Plazo -->
-                    <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-3 transition-all duration-300">
-                        <label for="input-term" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 ml-2 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Plazo (Meses)</label>
                         <input type="text" id="input-term" placeholder="Ej: 60" class="w-full px-6 md:px-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
                     </div>
                     <!-- Seguro -->
@@ -275,73 +361,59 @@
                 
                 <!-- Estrategia de Abonos -->
                 <div id="tour-strategy" class="relative z-10 mt-8 sm:mt-12 pt-8 sm:pt-10 border-t border-slate-200/80 dark:border-slate-700/60 flex flex-col gap-6">
-                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-                        <label class="flex items-center cursor-pointer group w-full xl:w-max p-3 -ml-3 rounded-2xl hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors active:scale-[0.98]">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <label class="flex items-center cursor-pointer group w-full sm:w-max p-3 -ml-3 rounded-2xl hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors active:scale-[0.98]">
                             <div class="relative flex-shrink-0">
                                 <input type="checkbox" id="toggle-fixed-abono" class="sr-only">
                                 <div id="toggle-bg" class="block w-14 h-8 rounded-full transition-colors duration-300 bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-600 shadow-inner border border-black/5 dark:border-white/5"></div>
                                 <div id="toggle-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 shadow-md"></div>
                             </div>
                             <div class="ml-4 text-slate-800 dark:text-slate-200 font-black text-lg sm:text-xl tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors select-none flex items-center">
-                                Estrategia de Abonos <i data-lucide="zap" class="w-5 h-5 ml-2 text-amber-500 hidden sm:block"></i>
+                                Activar Estrategia de Abonos <i data-lucide="zap" class="w-5 h-5 ml-2 text-amber-500 hidden sm:block"></i>
                             </div>
                         </label>
                         
-                        <!-- Selector Global de Estrategia -->
-                        <div class="bg-slate-200/80 dark:bg-slate-900 p-1.5 rounded-2xl flex flex-wrap items-center shadow-inner border border-black/5 dark:border-white/5 w-full xl:w-auto gap-1 sm:gap-0">
-                            <button id="btn-strat-term" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 flex-1 xl:flex-none tracking-wide active:scale-95">Reducir Plazo</button>
-                            <button id="btn-strat-pay" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 xl:flex-none tracking-wide active:scale-95">Reducir Cuota</button>
-                            <button id="btn-strat-target" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 xl:flex-none tracking-wide active:scale-95 relative overflow-hidden group/meta">
-                                <span class="relative z-10 flex items-center justify-center">Fijar Meta <i data-lucide="target" class="w-3.5 h-3.5 ml-1.5 opacity-70 group-hover/meta:opacity-100"></i></span>
-                            </button>
+                        <div class="bg-slate-200/80 dark:bg-slate-900 p-1.5 rounded-2xl flex items-center shadow-inner border border-black/5 dark:border-white/5 w-full md:w-auto">
+                            <button id="btn-strat-term" class="px-5 py-2.5 text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 flex-1 md:flex-none tracking-wide active:scale-95">Reducir Plazo</button>
+                            <button id="btn-strat-pay" class="px-5 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 md:flex-none tracking-wide active:scale-95">Reducir Cuota</button>
                         </div>
                     </div>
                     
-                    <div id="fixed-abono-container" class="w-full hidden bg-gradient-to-br from-amber-50/40 to-transparent dark:from-amber-900/10 dark:to-transparent p-6 sm:p-8 rounded-[2rem] border border-amber-200/80 dark:border-amber-800/30 shadow-sm transition-all duration-500 origin-top">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-                            <!-- Monto Extra / Meses Meta -->
-                            <div id="wrapper-abono-amount" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1 block">
-                                <label for="input-fixed-abono" class="block text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Monto Extra</label>
-                                <div class="relative flex items-center">
-                                    <div class="absolute left-5 text-amber-500/60 dark:text-slate-500 font-black text-lg group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors select-none">RD$</div>
-                                    <input type="text" id="input-fixed-abono" placeholder="2,500" class="w-full pl-16 pr-6 py-4 md:py-4 text-xl font-black bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-amber-700 dark:text-amber-400 placeholder-amber-200 dark:placeholder-slate-600 outline-none hover:shadow-md">
+                    <div id="fixed-abono-container" class="w-full hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 bg-gradient-to-br from-amber-50/40 to-transparent dark:from-amber-900/10 dark:to-transparent p-6 sm:p-8 rounded-[2rem] border border-amber-200/80 dark:border-amber-800/30 shadow-sm transition-all duration-500 origin-top">
+                        <!-- Abono Extra -->
+                        <div class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1">
+                            <label for="input-fixed-abono" class="block text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Monto Extra</label>
+                            <div class="relative flex items-center">
+                                <div class="absolute left-5 text-amber-500/60 dark:text-slate-500 font-black text-lg group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors select-none">RD$</div>
+                                <input type="text" id="input-fixed-abono" placeholder="2,500" class="w-full pl-16 pr-6 py-4 md:py-4 text-xl font-black bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-amber-700 dark:text-amber-400 placeholder-amber-200 dark:placeholder-slate-600 outline-none hover:shadow-md">
+                            </div>
+                        </div>
+                        
+                        <!-- Frecuencia -->
+                        <div class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1">
+                            <label for="select-abono-freq" class="block text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">¿Con qué frecuencia?</label>
+                            <div class="relative">
+                                <select id="select-abono-freq" class="w-full py-4 pl-6 pr-12 text-lg font-bold bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-slate-900 dark:text-white appearance-none cursor-pointer outline-none hover:shadow-md">
+                                    <option value="0">Único (Una sola vez)</option>
+                                    <option value="1" selected>Mensual (Todos los meses)</option>
+                                    <option value="2">Bimestral (Cada 2 meses)</option>
+                                    <option value="3">Trimestral (Cada 3 meses)</option>
+                                    <option value="6">Semestral (Cada 6 meses)</option>
+                                    <option value="12">Anual (Una vez al año)</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-amber-500">
+                                    <i data-lucide="chevron-down" class="w-5 h-5"></i>
                                 </div>
                             </div>
-                            
-                            <div id="wrapper-target-months" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1 hidden">
-                                <label for="input-target-months" class="block text-xs sm:text-sm font-black text-purple-700 dark:text-purple-400 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-purple-600 transition-colors cursor-pointer flex items-center">Terminar en (Meses) <i data-lucide="target" class="w-3.5 h-3.5 ml-1.5"></i></label>
-                                <div class="relative flex items-center">
-                                    <input type="text" id="input-target-months" placeholder="Ej: 36" class="w-full px-6 py-4 md:py-4 text-xl font-black bg-purple-50/50 dark:bg-purple-900/20 border border-purple-300/80 dark:border-purple-600/50 rounded-2xl shadow-inner focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-purple-800 dark:text-purple-300 placeholder-purple-300 dark:placeholder-purple-800/50 outline-none hover:shadow-md">
-                                </div>
-                                <div id="target-abono-result" class="absolute -bottom-7 left-2 text-[10px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wide"></div>
-                            </div>
-                            
-                            <!-- Frecuencia -->
-                            <div class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1" id="wrapper-abono-freq">
-                                <label for="select-abono-freq" class="block text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">¿Con qué frecuencia?</label>
-                                <div class="relative">
-                                    <select id="select-abono-freq" class="w-full py-4 pl-6 pr-12 text-lg font-bold bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-slate-900 dark:text-white appearance-none cursor-pointer outline-none hover:shadow-md">
-                                        <option value="0">Único (Una sola vez)</option>
-                                        <option value="1" selected>Mensual (Todos los meses)</option>
-                                        <option value="2">Bimestral (Cada 2 meses)</option>
-                                        <option value="3">Trimestral (Cada 3 meses)</option>
-                                        <option value="6">Semestral (Cada 6 meses)</option>
-                                        <option value="12">Anual (Una vez al año)</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-amber-500">
-                                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
 
-                            <!-- Cuota de Inicio -->
-                            <div id="abono-start-container" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1" title="Indica desde qué mes comenzarás a aplicar este abono extra.">
-                                <label for="input-abono-start-month" class="block text-[10px] sm:text-xs font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors flex items-center cursor-pointer">
-                                    Iniciar abonos en <i data-lucide="calendar-clock" class="w-4 h-4 ml-1.5 opacity-60"></i>
-                                </label>
-                                <div class="relative flex items-center">
-                                    <input type="month" id="input-abono-start-month" onclick="try { this.showPicker(); } catch(e) {}" class="w-full px-6 py-4 text-lg font-black bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-slate-900 dark:text-white outline-none cursor-pointer hover:shadow-md">
-                                </div>
+                        <!-- Cuota de Inicio Inteligente -->
+                        <div id="abono-start-container" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1" title="Indica desde qué mes comenzarás a aplicar este abono extra.">
+                            <label for="input-abono-start-month" class="block text-[10px] sm:text-xs font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors flex items-center cursor-pointer">
+                                Iniciar abonos en <i data-lucide="calendar-clock" class="w-4 h-4 ml-1.5 opacity-60"></i>
+                            </label>
+                            <div class="relative flex items-center">
+                                <input type="month" id="input-abono-start-month" onclick="try { this.showPicker(); } catch(e) {}" class="w-full px-6 py-4 text-lg font-black bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-slate-900 dark:text-white outline-none cursor-pointer hover:shadow-md">
                             </div>
                         </div>
                     </div>
@@ -420,7 +492,7 @@
                     </div>
                 </div>
 
-                <!-- Advanced Toggle -->
+                <!-- Advanced Toggle (Now for Penalties) -->
                 <div class="mb-12 flex justify-center stagger-card">
                     <label class="flex items-center cursor-pointer group p-4 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/50 backdrop-blur-md transition-all duration-300 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm hover:shadow-lg active:scale-95">
                         <div class="relative flex-shrink-0">
@@ -428,92 +500,59 @@
                             <div id="advanced-toggle-bg" class="block w-14 h-8 rounded-full transition-colors duration-300 bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-600 shadow-inner"></div>
                             <div id="advanced-toggle-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 shadow-md"></div>
                         </div>
-                        <div class="ml-4 text-slate-700 dark:text-slate-300 font-bold text-base sm:text-xl tracking-wide group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors select-none">Calcular Penalidad y Refinanciamiento</div>
+                        <div class="ml-4 text-slate-700 dark:text-slate-300 font-bold text-base sm:text-xl tracking-wide group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors select-none">Ver Análisis de Penalidad por Abonos</div>
                     </label>
                 </div>
 
-                <!-- Advanced Section -->
+                <!-- Advanced Section (Penalty Analysis) -->
                 <div id="advanced-container" class="hidden mb-12 sm:mb-16 space-y-8 sm:space-y-12">
-                    
-                    <!-- ANÁLISIS DE PENALIDAD -->
-                    <div id="tour-penalty-analysis" class="bg-gradient-to-br from-rose-50/90 to-orange-50/60 dark:from-rose-900/20 dark:to-orange-900/10 p-6 sm:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-rose-200/80 dark:border-rose-800/40 shadow-lg dark:shadow-md relative overflow-hidden group transition-all duration-500 hover:shadow-[0_30px_60px_rgba(225,29,72,0.15)] stagger-card">
-                        <i data-lucide="alert-octagon" class="absolute -right-5 -bottom-5 sm:-right-10 sm:-bottom-10 w-40 h-40 sm:w-64 sm:h-64 text-rose-500/10 dark:text-rose-400/5 group-hover:scale-110 transition-transform duration-1000 ease-out pointer-events-none"></i>
+                    <div id="tour-penalty-dilemma" class="bg-gradient-to-br from-rose-50/90 to-orange-50/60 dark:from-rose-900/20 dark:to-orange-900/10 p-6 sm:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-rose-200/80 dark:border-rose-800/40 shadow-lg dark:shadow-md relative overflow-hidden group transition-all duration-500 hover:shadow-[0_30px_60px_rgba(244,63,94,0.15)] stagger-card">
+                        <i data-lucide="alert-triangle" class="absolute -right-5 -bottom-5 sm:-right-10 sm:-bottom-10 w-40 h-40 sm:w-64 sm:h-64 text-rose-500/10 dark:text-rose-400/5 group-hover:scale-110 transition-transform duration-1000 ease-out pointer-events-none"></i>
                         
-                        <h3 class="text-xl sm:text-2xl font-black uppercase tracking-widest text-rose-800 dark:text-rose-300 mb-4 sm:mb-5 flex items-center relative z-10">
-                            <i data-lucide="scissors" class="w-6 h-6 sm:w-8 sm:h-8 mr-3 sm:mr-4 text-rose-500 flex-shrink-0"></i> La Trampa Oculta: Penalidad por Abono
+                        <h3 class="text-xl sm:text-3xl font-black uppercase tracking-tighter text-rose-800 dark:text-rose-300 mb-4 sm:mb-6 flex items-center relative z-10">
+                            <div class="p-3 bg-rose-200/50 dark:bg-rose-900/50 rounded-xl mr-4 shadow-inner">
+                                <i data-lucide="scale" class="w-6 h-6 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-400 flex-shrink-0"></i>
+                            </div> 
+                            El Dilema de la Penalidad
                         </h3>
-                        <p class="text-sm sm:text-base text-rose-700/90 dark:text-rose-200/70 mb-8 sm:mb-10 max-w-3xl font-medium leading-relaxed relative z-10">
-                            A los bancos no les gusta que les pagues antes porque pierden dinero. Por eso, muchos te cobran una <strong>Penalidad por Abono Extraordinario</strong>. Descubre matemáticamente si lo que vas a pagar de multa es mayor al ahorro que conseguirás.
+                        <p class="text-sm sm:text-lg text-rose-700/90 dark:text-rose-200/80 mb-8 sm:mb-10 max-w-3xl font-medium leading-relaxed relative z-10">
+                            Algunos bancos te castigan con una <strong>penalidad (comisión)</strong> por pagar tu deuda antes de tiempo. Ingresa el <strong>% de penalidad</strong> que te cobraría tu banco para descubrir si, a pesar del castigo, <strong>sigue valiendo la pena</strong> tu ataque a la deuda.
                         </p>
 
                         <div class="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-10 sm:mb-12 relative z-10 items-stretch lg:items-center">
                             <div class="w-full lg:w-1/3 relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1">
-                                <label for="input-penalty-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-rose-700 dark:text-rose-400 mb-3 group-focus-within/input:text-rose-600 transition-colors cursor-pointer">% Penalidad del Banco</label>
+                                <label for="input-penalty-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-rose-700 dark:text-rose-400 mb-3 group-focus-within/input:text-rose-600 transition-colors cursor-pointer">Penalidad Cobrada al Abono</label>
                                 <div class="relative flex items-center">
                                     <input type="text" id="input-penalty-rate" value="3" placeholder="Ej: 3" class="w-full pl-6 md:pl-8 pr-12 md:pr-14 py-4 md:py-5 text-xl md:text-2xl font-black bg-white dark:bg-slate-900/95 border border-rose-300/80 dark:border-rose-600/50 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-rose-500/30 focus:border-rose-500 focus:scale-[1.02] transition-all duration-300 text-rose-900 dark:text-white outline-none">
                                     <div class="absolute right-5 md:right-6 text-rose-400 dark:text-rose-500 font-black text-xl md:text-2xl group-focus-within/input:text-rose-600 transition-colors select-none">%</div>
                                 </div>
                             </div>
-                            <div id="penalty-recommendation" class="flex-1 p-5 sm:p-6 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-rose-100 dark:border-slate-700/60 flex items-center shadow-md h-full transition-all duration-500 hover:shadow-lg">
-                                <!-- Dinámico -->
+                            <div id="penalty-recommendation" class="flex-1 p-5 sm:p-6 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-rose-100 dark:border-slate-700/60 flex flex-col justify-center shadow-md h-full transition-all duration-500 hover:shadow-lg">
+                                <!-- Dynamic content generated by JS -->
                             </div>
                         </div>
 
                         <div class="space-y-8 sm:space-y-10 relative z-10 bg-white/60 dark:bg-slate-900/40 p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-rose-100 dark:border-rose-800/30 shadow-sm dark:shadow-none">
                             <div class="relative">
                                 <div class="flex justify-between text-xs sm:text-sm font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400 mb-3 px-2">
-                                    <span class="truncate pr-2">Lo que Ahorras en Intereses</span>
-                                    <span id="label-penalty-savings" class="flex-shrink-0 text-emerald-600 dark:text-emerald-400">RD$ 0</span>
+                                    <span class="truncate pr-2">Lo que Ahorras (Bruto)</span>
+                                    <span id="label-gross-savings" class="flex-shrink-0 text-emerald-600 dark:text-emerald-400">RD$ 0</span>
                                 </div>
                                 <div class="w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full h-10 sm:h-12 shadow-inner overflow-hidden border border-black/5 dark:border-white/5">
-                                    <div id="bar-penalty-savings" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full bar-fill relative" style="width: 0%"></div>
+                                    <div id="bar-gross-savings" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full bar-fill relative" style="width: 100%"></div>
                                 </div>
                             </div>
 
                             <div class="relative">
                                 <div class="flex justify-between text-xs sm:text-sm font-black uppercase tracking-widest text-rose-700 dark:text-rose-400 mb-3 px-2">
-                                    <span class="truncate pr-2">Multa / Penalidad a Pagar</span>
+                                    <span class="truncate pr-2">Costo de Penalidad</span>
                                     <span id="label-penalty-cost" class="flex-shrink-0 text-rose-600 dark:text-rose-400">RD$ 0</span>
                                 </div>
                                 <div class="w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full h-10 sm:h-12 shadow-inner overflow-hidden border border-black/5 dark:border-white/5">
-                                    <div id="bar-penalty-cost" class="bg-gradient-to-r from-rose-400 to-red-600 h-full rounded-full bar-fill shadow-[0_0_25px_rgba(225,29,72,0.4)] relative overflow-hidden" style="width: 0%">
+                                    <div id="bar-penalty-cost" class="bg-gradient-to-r from-rose-400 to-orange-500 h-full rounded-full bar-fill shadow-[0_0_25px_rgba(244,63,94,0.4)] relative overflow-hidden" style="width: 0%">
                                         <div class="absolute inset-0 w-[200%] h-full bg-white/20 transform -skew-x-12 animate-shimmer"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- REFINANCIAMIENTO -->
-                    <div id="tour-refinance" class="bg-gradient-to-br from-indigo-50/90 to-cyan-50/60 dark:from-indigo-900/20 dark:to-cyan-900/10 p-6 sm:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-indigo-200/80 dark:border-indigo-800/40 shadow-lg dark:shadow-md relative overflow-hidden group transition-all duration-500 hover:shadow-[0_30px_60px_rgba(99,102,241,0.15)] stagger-card">
-                        <i data-lucide="refresh-cw" class="absolute -right-5 -bottom-5 sm:-right-10 sm:-bottom-10 w-40 h-40 sm:w-64 sm:h-64 text-indigo-500/10 dark:text-indigo-400/5 group-hover:scale-110 group-hover:rotate-12 transition-all duration-1000 ease-out pointer-events-none"></i>
-                        
-                        <h3 class="text-xl sm:text-2xl font-black uppercase tracking-widest text-indigo-800 dark:text-indigo-300 mb-4 sm:mb-5 flex items-center relative z-10">
-                            <i data-lucide="building" class="w-6 h-6 sm:w-8 sm:h-8 mr-3 sm:mr-4 text-indigo-500 flex-shrink-0"></i> Evaluador de Compra de Deuda
-                        </h3>
-                        <p class="text-sm sm:text-base text-indigo-700/90 dark:text-indigo-200/70 mb-8 sm:mb-10 max-w-3xl font-medium leading-relaxed relative z-10">
-                            ¿Otro banco te ofrece una tasa menor? Cuidado, a veces los gastos legales y de cierre anulan el ahorro. Ingresa la propuesta del otro banco y <strong>descubre matemáticamente si vale la pena cambiarte o quedarte.</strong>
-                        </p>
-
-                        <div class="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-4 relative z-10 items-stretch lg:items-center">
-                            <div class="w-full lg:w-1/2 flex flex-col sm:flex-row gap-4">
-                                <div class="relative group/input flex-1 transition-all duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1">
-                                    <label for="input-ref-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400 mb-3 group-focus-within/input:text-indigo-600 transition-colors cursor-pointer">Nueva Tasa Ofertada</label>
-                                    <div class="relative flex items-center">
-                                        <input type="text" id="input-ref-rate" placeholder="Ej: 11.5" class="w-full pl-6 md:pl-8 pr-12 md:pr-14 py-4 md:py-5 text-xl md:text-2xl font-black bg-white dark:bg-slate-900/95 border border-indigo-300/80 dark:border-indigo-600/50 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-indigo-500/30 focus:border-indigo-500 focus:scale-[1.02] transition-all duration-300 text-indigo-900 dark:text-white outline-none">
-                                        <div class="absolute right-5 md:right-6 text-indigo-400 dark:text-indigo-500 font-black text-xl md:text-2xl group-focus-within/input:text-indigo-600 transition-colors select-none">%</div>
-                                    </div>
-                                </div>
-                                <div class="relative group/input flex-1 transition-all duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1">
-                                    <label for="input-ref-cost" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400 mb-3 group-focus-within/input:text-indigo-600 transition-colors cursor-pointer">Gastos de Cierre</label>
-                                    <div class="relative flex items-center">
-                                        <div class="absolute left-5 md:left-6 text-indigo-400 dark:text-indigo-500 font-black text-lg md:text-xl group-focus-within/input:text-indigo-600 transition-colors select-none">RD$</div>
-                                        <input type="text" id="input-ref-cost" placeholder="15,000" class="w-full pl-16 md:pl-20 pr-6 md:pr-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-white dark:bg-slate-900/95 border border-indigo-300/80 dark:border-indigo-600/50 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-indigo-500/30 focus:border-indigo-500 focus:scale-[1.02] transition-all duration-300 text-indigo-900 dark:text-white outline-none">
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="refinance-recommendation" class="flex-1 p-5 sm:p-6 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-indigo-100 dark:border-slate-700/60 flex items-center shadow-md h-full transition-all duration-500 hover:shadow-lg">
-                                <!-- Dinámico -->
                             </div>
                         </div>
                     </div>
@@ -570,105 +609,12 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- BOTÓN AL LABORATORIO DE ESCENARIOS -->
-                <div class="mt-16 flex justify-center fade-in-up">
-                    <button id="btn-open-lab" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-5 px-10 rounded-full shadow-[0_20px_40px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_25px_50px_rgba(255,255,255,0.15)] transition-all duration-500 hover:-translate-y-2 active:scale-95 flex items-center gap-3 uppercase tracking-widest text-sm sm:text-base border border-slate-700/50 dark:border-slate-200/50 group">
-                        <i data-lucide="flask-conical" class="w-6 h-6 text-amber-400 dark:text-amber-500 group-hover:rotate-12 transition-transform"></i>
-                        Ingresar a Labs (Experimental)
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- LABORATORIO DE ESCENARIOS (VISTA OCULTA PREMIUM) -->
-    <div id="scenarios-wrapper" class="hidden min-h-screen p-4 sm:p-6 lg:p-8 relative z-20 bg-[#f8fafc] dark:bg-[#0b1120] transition-colors duration-700 pb-32">
-        <div class="max-w-5xl mx-auto mt-8 sm:mt-12">
-            
-            <button id="btn-back-sim" class="mb-12 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white font-bold flex items-center gap-2 transition-colors group">
-                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Volver al Simulador Principal
-            </button>
-            
-            <div class="mb-16">
-                <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-purple-100/90 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/50 text-purple-800 dark:text-purple-400 text-xs font-black tracking-widest uppercase shadow-sm">
-                    <span class="flex items-center"><i data-lucide="flask-conical" class="w-3.5 h-3.5 mr-2"></i> Centro de Inteligencia</span>
-                </div>
-                <h2 class="text-4xl sm:text-6xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter mb-6 leading-tight">Explora lo que viene.</h2>
-                <p class="text-lg md:text-2xl text-slate-600 dark:text-slate-400 font-medium max-w-3xl leading-relaxed">Herramientas experimentales diseñadas con precisión matemática para darte una ventaja injusta frente al sistema bancario.</p>
-            </div>
-            
-            <!-- Módulo Funcional: Erosión por Inflación -->
-            <div class="bg-white/90 dark:bg-slate-800/60 backdrop-blur-3xl p-8 sm:p-12 rounded-[3rem] border border-slate-200/80 dark:border-slate-700/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] glass-edge mb-12 relative overflow-hidden group">
-                <div class="absolute -top-32 -right-32 w-80 h-80 bg-blue-400/10 dark:bg-blue-400/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
-                <div class="relative z-10 flex flex-col md:flex-row gap-10">
-                    <div class="md:w-1/2">
-                        <div class="bg-blue-100 dark:bg-blue-900/40 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-blue-200 dark:border-blue-800">
-                            <i data-lucide="trending-down" class="w-8 h-8 text-blue-600 dark:text-blue-400"></i>
-                        </div>
-                        <h3 class="text-3xl font-black text-slate-800 dark:text-white mb-4 tracking-tighter">El Efecto Invisible (Inflación vs Deuda)</h3>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed font-medium mb-8">Con la inflación, el dinero pierde poder adquisitivo. Paradójicamente, esto significa que una deuda a tasa fija "pesará" menos en el futuro. Calcula matemáticamente cómo la inflación evapora tu deuda sin que hagas nada.</p>
-                        
-                        <div class="space-y-6">
-                            <div class="relative group/input transition-all duration-300 ease-out focus-within:-translate-y-1">
-                                <label for="lab-inf-amount" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 group-focus-within/input:text-blue-600 transition-colors cursor-pointer">Deuda Actual</label>
-                                <div class="relative flex items-center">
-                                    <div class="absolute left-5 text-slate-400 dark:text-slate-500 font-black text-lg group-focus-within/input:text-blue-500 transition-colors select-none">RD$</div>
-                                    <input type="text" id="lab-inf-amount" placeholder="1,000,000" class="w-full pl-16 pr-6 py-4 text-xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-300 text-slate-900 dark:text-white outline-none">
-                                </div>
-                            </div>
-                            <div class="relative group/input transition-all duration-300 ease-out focus-within:-translate-y-1">
-                                <label for="lab-inf-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 group-focus-within/input:text-blue-600 transition-colors cursor-pointer">Inflación Anual Estimada</label>
-                                <div class="relative flex items-center">
-                                    <input type="text" id="lab-inf-rate" value="5" placeholder="5" class="w-full pl-6 pr-12 py-4 text-xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-300 text-slate-900 dark:text-white outline-none">
-                                    <div class="absolute right-5 text-slate-400 dark:text-slate-500 font-black text-xl group-focus-within/input:text-blue-500 transition-colors select-none">%</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md:w-1/2 flex flex-col justify-center">
-                        <div class="bg-slate-50/90 dark:bg-slate-900/60 p-6 sm:p-8 rounded-[2rem] border border-slate-200/80 dark:border-slate-700/50 shadow-inner">
-                            <h4 class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6 text-center">Valor Real de tu Deuda en el Tiempo</h4>
-                            
-                            <div class="space-y-6" id="lab-inf-results">
-                                <!-- Llenado por JS -->
-                            </div>
-                            
-                            <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700/50 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                                *Esto representa el poder adquisitivo real. Si tu salario se ajusta con la inflación, pagar RD$1 millón en 5 años "dolerá" un <span id="lab-inf-pct" class="font-bold text-blue-500">X%</span> menos que pagarlo hoy.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tarjetas de Próximos Desarrollos -->
-            <h3 class="text-2xl font-black text-slate-800 dark:text-slate-200 tracking-tighter mb-8 pl-2">En Fase de Desarrollo (Coming Soon)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="bg-white/40 dark:bg-slate-800/20 backdrop-blur-md p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-700/30 shadow-sm glass-edge relative overflow-hidden group">
-                    <div class="absolute top-6 right-6 bg-slate-200/80 dark:bg-slate-700/80 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-md">Próximamente</div>
-                    <div class="bg-purple-100/50 dark:bg-purple-900/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-purple-200/50 dark:border-purple-800/30 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
-                        <i data-lucide="snowflake" class="w-7 h-7 text-purple-600 dark:text-purple-400"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-700 dark:text-slate-300 mb-3 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Método Bola de Nieve Extremo</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-500 leading-relaxed font-medium">Consolida tarjetas, auto e hipoteca. El sistema calculará el orden matemático exacto en el que debes atacarlas para maximizar tu liquidez sin piedad.</p>
-                </div>
-
-                <div class="bg-white/40 dark:bg-slate-800/20 backdrop-blur-md p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-700/30 shadow-sm glass-edge relative overflow-hidden group">
-                    <div class="absolute top-6 right-6 bg-slate-200/80 dark:bg-slate-700/80 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-md">Próximamente</div>
-                    <div class="bg-amber-100/50 dark:bg-amber-900/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-amber-200/50 dark:border-amber-800/30 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
-                        <i data-lucide="landmark" class="w-7 h-7 text-amber-600 dark:text-amber-400"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-700 dark:text-slate-300 mb-3 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Escudo Fiscal Inmobiliario</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-500 leading-relaxed font-medium">Calculadora que toma en cuenta la deducción de impuestos sobre los intereses pagados en tu país, ajustando tu verdadero Costo de Oportunidad.</p>
-                </div>
             </div>
         </div>
     </div>
 
     <!-- BOTONES Y HERRAMIENTAS FLOTANTES -->
-    <div class="fixed bottom-6 left-6 sm:bottom-8 sm:left-8 z-[90] group cursor-default">
+    <div class="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-[90] group cursor-default">
         <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.4)] rounded-full px-6 py-3.5 flex items-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(16,185,129,0.25)] hover:-translate-y-1 hover:border-emerald-500/40 group-hover:bg-gradient-to-r group-hover:from-emerald-50 group-hover:to-teal-50 dark:group-hover:from-emerald-900/30 dark:group-hover:to-teal-900/20 glass-edge">
             <div class="relative flex items-center justify-center">
                 <i data-lucide="sparkles" class="w-4.5 h-4.5 text-emerald-500 drop-shadow-sm animate-pulse-fast"></i>
@@ -681,13 +627,10 @@
         </span>
     </div>
 
-    <!-- Floating Tutorial Button (Navegación Intuitiva) -->
-    <button id="btn-tutorial-float" class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[90] bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900 p-4 sm:p-5 rounded-full btn-glow hover:scale-110 hover:-translate-y-2 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center group shadow-2xl border border-amber-300/50" title="Guía del Ecosistema">
+    <!-- Floating Tutorial Button (Updated) -->
+    <button id="btn-tutorial-float" class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[90] bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900 p-4 sm:p-5 rounded-full btn-glow hover:scale-110 hover:-translate-y-2 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center group shadow-2xl border border-amber-300/50" title="Guía Tutorial">
         <i data-lucide="compass" class="w-8 h-8 sm:w-9 sm:h-9 drop-shadow-sm relative z-10"></i>
-        <span class="absolute right-full mr-5 whitespace-nowrap bg-slate-900 text-white text-xs sm:text-sm font-black tracking-widest uppercase py-3 px-6 rounded-2xl shadow-xl border border-slate-700 flex items-center animate-pulse-slow">
-            Guía de Uso <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
-            <div class="absolute top-1/2 -right-2 -translate-y-1/2 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-slate-900"></div>
-        </span>
+        <span class="absolute right-full mr-5 whitespace-nowrap bg-slate-900 text-white text-xs sm:text-sm font-black tracking-widest uppercase py-3 px-6 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none shadow-xl border border-slate-700 transform translate-x-2 group-hover:translate-x-0">Guía Tutorial</span>
     </button>
 
     <!-- FOCO VISUAL DEL TUTORIAL -->
@@ -752,27 +695,45 @@
     </div>
 
     <script>
-        // DOM Manipulators (Anti-Null Helpers)
-        const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
-        const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
-        const setWidth = (id, width) => { const el = document.getElementById(id); if (el) el.style.width = width; };
-
         // --- Estado de la Aplicación ---
         const state = {
-            amount: '', interest: '', term: '', insurance: '',
-            isFixedAbono: false, fixedAbonoAmount: '', abonoFreq: '1', abonoStartMonthValue: '', abonos: [],
-            penaltyRate: '3', showAdvanced: false, abonoStrategy: 'term', targetMonths: '', calculatedTargetAbono: 0,
-            isVariableRate: false, variableRate: '', variableRateMonth: '', refinanceRate: '', refinanceCosts: '',
-            tableViewSize: 1, theme: 'dark', calcResults: null, executiveText: '', activeInputIndex: null, tutorialStep: 0,
-            isTutorialActive: false, useStartDate: false, startDate: '', isLabView: false, labInfAmount: '1000000', labInfRate: '5'
+            amount: '',
+            interest: '',
+            term: '',
+            termType: 'months', // Nuevo: 'months' o 'years'
+            insurance: '',
+            isFixedAbono: false,
+            fixedAbonoAmount: '',
+            abonoFreq: '1', 
+            abonoStartMonthValue: '', 
+            abonos: [],
+            penaltyRate: '3', // Reemplazado investRate por penaltyRate
+            showAdvanced: false,
+            abonoStrategy: 'term', // 'term' o 'payment'
+            tableViewSize: 1, // 1=Mensual, 3=Trimestral, 6=Semestral, 12=Anual
+            theme: 'dark',
+            calcResults: null,
+            executiveText: '',
+            activeInputIndex: null,
+            tutorialStep: 0,
+            isTutorialActive: false,
+            useStartDate: false,
+            startDate: ''
         };
 
         // --- Utilidades ---
-        const formatCurrency = (val) => isNaN(val) || val === null ? 'RD$ 0.00' : Number(val).toLocaleString('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 });
-        const formatRatio = (val) => isNaN(val) || val === null ? 'N/A' : Number(val).toFixed(2);
-        const formatPercent = (val) => isNaN(val) || val === null ? 'N/A' : `${(Number(val) * 100).toFixed(2)}%`;
-        const formatDate = (date) => !date || isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString('es-DO', { year: 'numeric', month: 'long', day: 'numeric' });
+        const formatCurrency = (value) => {
+            if (isNaN(value) || value === null) return 'RD$ 0.00';
+            return Number(value).toLocaleString('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 });
+        };
+        const formatRatio = (value) => (isNaN(value) || value === null) ? 'N/A' : Number(value).toFixed(2);
+        const formatPercent = (value) => (isNaN(value) || value === null) ? 'N/A' : `${(Number(value) * 100).toFixed(2)}%`;
+        const formatDate = (date) => {
+            if (!date || isNaN(date.getTime())) return 'N/A';
+            return date.toLocaleDateString('es-DO', { year: 'numeric', month: 'long', day: 'numeric' });
+        };
         const parseCurrency = (val) => parseFloat(String(val).replace(/,/g, ''));
+
         const getTableMonthStr = (monthIndex) => {
             const baseDateStr = (state.useStartDate && state.startDate) ? state.startDate : new Date().toISOString().split('T')[0];
             const d = new Date(baseDateStr + 'T00:00:00');
@@ -781,86 +742,47 @@
             return `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${d.getFullYear()}`;
         };
 
+        // --- Utilidad de Animación de Números ---
         const animateValue = (elementId, start, end, duration, formatFn) => {
-            const el = document.getElementById(elementId);
-            if (!el) return;
+            const element = document.getElementById(elementId);
+            if (!element) return;
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 const ease = 1 - Math.pow(1 - progress, 4); 
-                el.innerHTML = formatFn(start + (end - start) * ease);
+                const current = start + (end - start) * ease;
+                element.innerHTML = formatFn(current);
                 if (progress < 1) window.requestAnimationFrame(step);
-                else el.innerHTML = formatFn(end);
+                else element.innerHTML = formatFn(end);
             };
             window.requestAnimationFrame(step);
         };
 
+        // --- Manejadores de Inputs ---
         function handleCurrencyInputEvent(e) {
-            let val = e.target.value;
-            if (val === '') { state[e.target.dataset.key] = ''; e.target.value = ''; updateApp(); return; }
-            let cleanVal = val.replace(/[^0-9.]/g, '');
-            const parts = cleanVal.split('.');
-            if (parts.length > 2) cleanVal = parts[0] + '.' + parts.slice(1).join('');
-            if (cleanVal === '.') cleanVal = '0.';
-            const [intP, decP] = cleanVal.split('.');
-            let display = new Intl.NumberFormat('es-DO').format(intP || 0);
-            if (decP !== undefined) display += `.${decP.substring(0, 2)}`;
-            if (val.endsWith('.') && !display.includes('.')) display += '.';
+            let value = e.target.value;
+            if (value === '') { state[e.target.dataset.key] = ''; e.target.value = ''; updateApp(); return; }
+            let cleanValue = value.replace(/[^0-9.]/g, '');
+            const parts = cleanValue.split('.');
+            if (parts.length > 2) cleanValue = parts[0] + '.' + parts.slice(1).join('');
+            if (cleanValue === '.') cleanValue = '0.';
+            const [intPart, decPart] = cleanValue.split('.');
+            let display = new Intl.NumberFormat('es-DO').format(intPart || 0);
+            if (decPart !== undefined) display += `.${decPart.substring(0, 2)}`;
+            if (value.endsWith('.') && !display.includes('.')) display += '.';
             e.target.value = display;
             state[e.target.dataset.key] = display;
             updateApp();
         }
 
         function handleNumberInputEvent(e) {
-            let val = e.target.value;
-            let sanitized = val.replace(/[^0-9.]/g, '');
+            let value = e.target.value;
+            let sanitized = value.replace(/[^0-9.]/g, '');
             if (sanitized.split('.').length > 2) sanitized = sanitized.replace(/\.(?=.*\.)/g, "");
             e.target.value = sanitized;
             state[e.target.dataset.key] = sanitized;
             updateApp();
-        }
-
-        // --- Lógica del Lab de Inflación ---
-        function calculateLabInflation() {
-            const amount = parseCurrency(state.labInfAmount) || 0;
-            const rate = parseFloat(state.labInfRate) || 0;
-            
-            if (amount <= 0 || isNaN(rate)) {
-                setHTML('lab-inf-results', '<p class="text-sm text-slate-500 text-center">Ingresa valores para simular.</p>');
-                return;
-            }
-
-            const years = [1, 3, 5];
-            let html = '';
-            
-            years.forEach(y => {
-                const realValue = amount / Math.pow(1 + (rate/100), y);
-                const barWidth = Math.max(10, (realValue / amount) * 100);
-                html += `
-                    <div class="relative">
-                        <div class="flex justify-between text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 px-2">
-                            <span>Año ${y}</span>
-                            <span class="text-blue-600 dark:text-blue-400 font-black">${formatCurrency(realValue)}</span>
-                        </div>
-                        <div class="w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full h-8 sm:h-10 shadow-inner overflow-hidden border border-black/5 dark:border-white/5">
-                            <div class="bg-gradient-to-r from-blue-400 to-cyan-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(59,130,246,0.3)]" style="width: 0%" data-target-width="${barWidth}%"></div>
-                        </div>
-                    </div>`;
-            });
-            
-            setHTML('lab-inf-results', html);
-            
-            setTimeout(() => {
-                const resEl = document.getElementById('lab-inf-results');
-                if(resEl) resEl.querySelectorAll('div[data-target-width]').forEach(el => {
-                    el.style.width = el.getAttribute('data-target-width');
-                });
-            }, 50);
-
-            const year5Value = amount / Math.pow(1 + (rate/100), 5);
-            const dropPct = ((amount - year5Value) / amount) * 100;
-            setText('lab-inf-pct', dropPct.toFixed(1) + '%');
         }
 
         const tailwindColors = {
@@ -875,56 +797,65 @@
         };
 
         function createMetricCard(title, value, iconName, colorTheme, id) {
-            const c = tailwindColors[colorTheme] || tailwindColors.emerald;
+            const colors = tailwindColors[colorTheme] || tailwindColors.emerald;
             let valStr = String(value);
-            let tClass = "text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter"; 
-            if (valStr.length > 20) tClass = "text-sm sm:text-base md:text-lg lg:text-xl tracking-tighter";
-            else if (valStr.length > 15) tClass = "text-base sm:text-lg md:text-xl lg:text-2xl tracking-tighter";
-            else if (valStr.length > 11) tClass = "text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter";
+            let textClass = "text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter"; 
+            
+            if (valStr.length > 20) textClass = "text-sm sm:text-base md:text-lg lg:text-xl tracking-tighter";
+            else if (valStr.length > 15) textClass = "text-base sm:text-lg md:text-xl lg:text-2xl tracking-tighter";
+            else if (valStr.length > 11) textClass = "text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter";
 
             return `
                 <div class="bg-white/90 dark:bg-slate-800/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.3)] border border-slate-200/80 dark:border-slate-700/60 glass-edge premium-hover h-full flex flex-col justify-between group cursor-default animate-pop">
                     <div>
                         <div class="flex items-center mb-6 sm:mb-8">
-                            <div class="mr-4 sm:mr-5 p-3 sm:p-4 rounded-2xl ${c.bg} transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-inner border ${c.border} flex-shrink-0">
-                                <i data-lucide="${iconName}" class="${c.text} w-6 h-6 sm:w-8 sm:h-8 transition-transform drop-shadow-sm"></i>
+                            <div class="mr-4 sm:mr-5 p-3 sm:p-4 rounded-2xl ${colors.bg} transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-inner border ${colors.border} flex-shrink-0">
+                                <i data-lucide="${iconName}" class="${colors.text} w-6 h-6 sm:w-8 sm:h-8 transition-transform drop-shadow-sm"></i>
                             </div>
                             <div class="flex items-center flex-1">
                                 <p class="text-[10px] sm:text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-tight">${title}</p>
                             </div>
                         </div>
                         <div class="w-full flex items-center h-10 sm:h-14 overflow-visible">
-                            <p id="${id}" class="font-black ${c.text} ${tClass} transition-all duration-300 leading-none drop-shadow-sm whitespace-nowrap">${value}</p>
+                            <p id="${id}" class="font-black ${colors.text} ${textClass} transition-all duration-300 leading-none drop-shadow-sm whitespace-nowrap">${value}</p>
                         </div>
                     </div>
                 </div>`;
         }
 
         function createSmallMetricCard(title, value, iconName, colorTheme) {
-            const c = tailwindColors[colorTheme] || tailwindColors.emerald;
+            const colors = tailwindColors[colorTheme] || tailwindColors.emerald;
             let valStr = String(value);
-            let tClass = "text-lg sm:text-xl tracking-tighter";
-            if (valStr.length > 18) tClass = "text-xs sm:text-sm tracking-tighter";
-            else if (valStr.length > 14) tClass = "text-sm sm:text-base tracking-tighter";
+            let textClass = "text-lg sm:text-xl tracking-tighter";
+            if (valStr.length > 18) textClass = "text-xs sm:text-sm tracking-tighter";
+            else if (valStr.length > 14) textClass = "text-sm sm:text-base tracking-tighter";
 
             return `
                 <div class="flex items-center p-4 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-200/60 dark:border-slate-600/40 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-white dark:hover:bg-slate-800 hover:-translate-y-1 group cursor-default">
-                    <div class="p-3 rounded-xl ${c.bg} mr-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 shadow-inner flex-shrink-0">
-                        <i data-lucide="${iconName}" class="${c.text} w-5 h-5"></i>
+                    <div class="p-3 rounded-xl ${colors.bg} mr-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 shadow-inner flex-shrink-0">
+                        <i data-lucide="${iconName}" class="${colors.text} w-5 h-5"></i>
                     </div>
                     <div class="flex-1 w-full overflow-visible">
                         <p class="text-[10px] sm:text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 opacity-80">${title}</p>
-                        <p class="font-black ${c.text} ${tClass} leading-none transition-transform origin-left group-hover:scale-105 whitespace-nowrap">${value}</p>
+                        <p class="font-black ${colors.text} ${textClass} leading-none transition-transform origin-left group-hover:scale-105 whitespace-nowrap">${value}</p>
                     </div>
                 </div>`;
         }
 
+        // --- Lógica Principal: Cálculo ---
         function calculate() {
             const amount = parseCurrency(state.amount);
             const interest = parseFloat(state.interest);
-            const term = parseFloat(state.term);
+            // Adaptar plazo según tipo (meses o años)
+            let term = parseFloat(state.term);
+            if (state.termType === 'years' && !isNaN(term)) {
+                term = term * 12;
+            }
+            
             const insurance = parseCurrency(state.insurance) || 0;
+            const parsedFixedAbono = parseCurrency(state.fixedAbonoAmount) || 0;
             const freq = parseInt(state.abonoFreq) || 1;
+            const penaltyRate = parseFloat(state.penaltyRate) || 0;
 
             if (isNaN(amount) || amount <= 0 || isNaN(interest) || interest < 0 || isNaN(term) || term <= 0) {
                 state.calcResults = null;
@@ -934,7 +865,9 @@
             let baseDate = new Date();
             if (state.useStartDate && state.startDate) {
                 const parsedDate = new Date(state.startDate + 'T00:00:00');
-                if (!isNaN(parsedDate.getTime())) baseDate = parsedDate;
+                if (!isNaN(parsedDate.getTime())) {
+                    baseDate = parsedDate;
+                }
             }
 
             let abonoStart = 1;
@@ -954,109 +887,43 @@
                 return d; 
             };
 
-            const getRateForMonth = (m) => {
-                if (state.isVariableRate && state.variableRateMonth && m >= parseInt(state.variableRateMonth)) {
-                    let vRate = parseFloat(state.variableRate);
-                    if(!isNaN(vRate) && vRate >= 0) return vRate / 100 / 12;
-                }
-                return interest / 100 / 12;
-            };
-
+            const monthlyInterest = interest / 100 / 12;
+            const totalPayments = term;
+            let monthlyPayment = monthlyInterest === 0 ? amount / totalPayments : (amount * monthlyInterest) / (1 - Math.pow(1 + monthlyInterest, -totalPayments));
+            
             let originalSchedule = [];
-            let origBalance = amount;
-            let currentOrigPayment = 0;
-            let lastOrigRate = -1;
-
-            for(let i=1; i<=term && origBalance > 0.01; i++) {
-                let currentRate = getRateForMonth(i);
-                if (currentRate !== lastOrigRate) {
-                    let remMonths = term - i + 1;
-                    currentOrigPayment = currentRate === 0 ? origBalance / remMonths : (origBalance * currentRate) / (1 - Math.pow(1 + currentRate, -remMonths));
-                    lastOrigRate = currentRate;
-                }
-                
-                let intP = origBalance * currentRate;
-                let prinP = currentOrigPayment - intP;
-                let startBal = origBalance;
-                
-                if (origBalance < prinP) {
-                    prinP = origBalance;
-                    currentOrigPayment = prinP + intP;
-                }
-                origBalance -= prinP;
-                
+            let tempBalOrig = amount;
+            for(let i=0; i<totalPayments; i++) {
+                let intP = tempBalOrig * monthlyInterest;
+                let prinP = monthlyPayment - intP;
+                let startBal = tempBalOrig;
+                tempBalOrig -= prinP;
                 originalSchedule.push({ 
-                    month: i, startBalance: startBal, principal: prinP, interest: intP,
-                    payment: currentOrigPayment, balance: Math.max(0, origBalance)
+                    month: i+1, startBalance: startBal, principal: prinP, interest: intP,
+                    payment: monthlyPayment, balance: Math.max(0, tempBalOrig)
                 });
             }
             
-            const totalOrigIns = insurance * originalSchedule.length;
+            const totalOrigIns = insurance * totalPayments;
             const totalOrigInt = originalSchedule.reduce((a, c) => a + c.interest, 0);
             const original = {
                 schedule: originalSchedule,
-                monthlyPayment: originalSchedule[0].payment, 
-                totalInterest: totalOrigInt, 
-                totalInsurance: totalOrigIns,
-                totalPaid: amount + totalOrigInt + totalOrigIns, 
-                termInMonths: originalSchedule.length,
-                payoffDate: calcDate(originalSchedule.length)
+                monthlyPayment, totalInterest: totalOrigInt, totalInsurance: totalOrigIns,
+                totalPaid: amount + totalOrigInt + totalOrigIns, termInMonths: totalPayments,
+                payoffDate: calcDate(totalPayments)
             };
-
-            let parsedFixedAbono = parseCurrency(state.fixedAbonoAmount) || 0;
-            if (state.abonoStrategy === 'target' && state.targetMonths) {
-                let target = parseInt(state.targetMonths);
-                if(target > 0 && target <= term) {
-                    let low = 0, high = amount, mid = 0;
-                    for (let k = 0; k < 50; k++) {
-                        mid = (low + high) / 2;
-                        let simBal = amount;
-                        let simMonths = 0;
-                        let simCurrentPayment = 0;
-                        let simLastRate = -1;
-                        for (let j = 1; j <= term && simBal > 0.01; j++) {
-                            simMonths++;
-                            let cRate = getRateForMonth(j);
-                            if (cRate !== simLastRate) {
-                                let remMonths = term - j + 1;
-                                simCurrentPayment = cRate === 0 ? simBal / remMonths : (simBal * cRate) / (1 - Math.pow(1 + cRate, -remMonths));
-                                simLastRate = cRate;
-                            }
-                            let intP = simBal * cRate;
-                            let prinP = simCurrentPayment - intP;
-                            let extraP = (simMonths >= abonoStart && (freq === 0 ? simMonths===abonoStart : (freq===1 || (simMonths-abonoStart)%freq===0))) ? mid : 0;
-                            if (simBal < prinP + extraP) simBal = 0;
-                            else simBal -= (prinP + extraP);
-                        }
-                        if (simMonths <= target) high = mid;
-                        else low = mid;
-                    }
-                    parsedFixedAbono = high;
-                    state.calculatedTargetAbono = high;
-                } else {
-                    parsedFixedAbono = 0;
-                }
-            }
 
             let balance = amount;
             let schedule = [];
             let totalAbonosPaid = 0;
+            let totalPenalties = 0; // Nuevo rastreador de penalidades
             let monthsPaid = 0;
-            let currentMonthlyPayment = 0;
-            let lastRate = -1;
+            let currentMonthlyPayment = monthlyPayment;
 
-            for (let i = 1; i <= term && balance > 0.01; i++) {
+            for (let i = 0; i < totalPayments && balance > 0.01; i++) {
                 monthsPaid++;
                 const startBalance = balance;
-                let currentRate = getRateForMonth(i);
-                
-                if (state.abonoStrategy === 'payment' || currentRate !== lastRate) {
-                    let remMonths = term - i + 1;
-                    currentMonthlyPayment = currentRate === 0 ? balance / remMonths : (balance * currentRate) / (1 - Math.pow(1 + currentRate, -remMonths));
-                    lastRate = currentRate;
-                }
-
-                const interestPayment = balance * currentRate;
+                const interestPayment = balance * monthlyInterest;
                 
                 let extraPayment = 0;
                 if (state.isFixedAbono) {
@@ -1068,13 +935,13 @@
                         }
                     }
                 } else {
-                    extraPayment = parseCurrency(state.abonos[i-1]) || 0;
+                    extraPayment = parseCurrency(state.abonos[i]) || 0;
                 }
 
                 let principalPayment = currentMonthlyPayment - interestPayment;
                 let actualPayment = currentMonthlyPayment;
                 
-                if (balance <= principalPayment + extraPayment) {
+                if (balance < principalPayment + extraPayment) {
                     if (balance <= principalPayment) {
                         principalPayment = balance;
                         actualPayment = principalPayment + interestPayment;
@@ -1090,11 +957,22 @@
                 
                 totalAbonosPaid += extraPayment;
                 
+                // Calcular penalidad de este mes
+                let monthlyPenalty = extraPayment > 0 ? extraPayment * (penaltyRate / 100) : 0;
+                totalPenalties += monthlyPenalty;
+                
                 schedule.push({
                     month: monthsPaid, payment: actualPayment, principal: principalPayment,
                     interest: interestPayment, extra: extraPayment, balance: Math.max(0, balance),
-                    startBalance
+                    startBalance, penalty: monthlyPenalty
                 });
+
+                if (state.abonoStrategy === 'payment' && balance > 0.01) {
+                    const remainingMonths = totalPayments - monthsPaid;
+                    if (remainingMonths > 0) {
+                        currentMonthlyPayment = monthlyInterest === 0 ? balance / remainingMonths : (balance * monthlyInterest) / (1 - Math.pow(1 + monthlyInterest, -remainingMonths));
+                    }
+                }
             }
             
             const totalAbonosInt = schedule.reduce((a, p) => a + p.interest, 0);
@@ -1107,100 +985,63 @@
                 totalAbonosPaid, payoffDate: calcDate(monthsPaid)
             };
 
-            let refinance = null;
-            if (state.refinanceRate !== '') {
-                let refRate = parseFloat(state.refinanceRate);
-                let refCosts = parseCurrency(state.refinanceCosts) || 0;
-                if (!isNaN(refRate) && refRate >= 0) {
-                    let rMonthly = refRate / 100 / 12;
-                    let rAmt = amount + refCosts;
-                    let rPmt = rMonthly === 0 ? rAmt / term : (rAmt * rMonthly) / (1 - Math.pow(1 + rMonthly, -term));
-                    let rTotalInterest = (rPmt * term) - rAmt;
-                    let rTotalPaid = rAmt + rTotalInterest + (insurance * term); 
-                    refinance = {
-                        monthlyPayment: rPmt, totalInterest: rTotalInterest,
-                        totalPaid: rTotalPaid, savings: original.totalPaid - rTotalPaid
-                    };
-                }
-            }
-
+            const grossSavings = original.totalPaid - withAbonos.totalPaid;
+            
             const kpis = {
-                totalSavings: original.totalPaid - withAbonos.totalPaid,
+                totalSavings: grossSavings,
                 interestSaved: original.totalInterest - withAbonos.totalInterest,
                 insuranceSaved: original.totalInsurance - withAbonos.totalInsurance,
-                monthsSaved: original.termInMonths - withAbonos.termInMonths
+                monthsSaved: original.termInMonths - withAbonos.termInMonths,
+                totalPenalties: totalPenalties,
+                netRealSavings: grossSavings - totalPenalties
             };
 
-            const pRate = parseFloat(state.penaltyRate) || 0;
-            const penaltyCost = withAbonos.totalAbonosPaid * (pRate / 100);
-
-            state.calcResults = { original, withAbonos, refinance, penaltyCost, inputs: { amount, interest, term, insurance }, kpis };
+            state.calcResults = { original, withAbonos, inputs: { amount, interest, term, insurance, penaltyRate }, kpis };
             generateSummaryText();
             return true;
         }
 
+        // --- Renderizado de UI ---
         function updateApp() {
             const hasData = calculate();
             const emptyState = document.getElementById('empty-state');
             const resultsContainer = document.getElementById('results-container');
 
-            if(state.isLabView) {
-                calculateLabInflation();
-                return; 
-            }
-
-            if (state.abonoStrategy === 'target') {
-                if(state.calculatedTargetAbono > 0) {
-                    setText('target-abono-result', `Abono Exacto Requerido: ${formatCurrency(state.calculatedTargetAbono)}`);
-                } else {
-                    setText('target-abono-result', '');
-                }
-            }
-
             if (hasData) {
-                if(emptyState) { emptyState.classList.add('hidden'); emptyState.classList.remove('visible'); }
-                if(resultsContainer) {
-                    resultsContainer.classList.remove('hidden');
-                    setTimeout(() => {
-                        resultsContainer.classList.add('visible');
-                        const staggerItems = resultsContainer.querySelectorAll('.stagger-card');
-                        staggerItems.forEach((item, index) => {
-                            setTimeout(() => item.classList.add('visible'), index * 100); 
-                        });
-                    }, 50);
-                }
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('visible');
+                resultsContainer.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    resultsContainer.classList.add('visible');
+                    const staggerItems = resultsContainer.querySelectorAll('.stagger-card');
+                    staggerItems.forEach((item, index) => {
+                        setTimeout(() => item.classList.add('visible'), index * 100); 
+                    });
+                }, 50);
 
                 renderMetrics();
                 renderTable();
                 if (state.showAdvanced) {
-                    renderPenaltyAnalysis(); 
-                    renderRefinanceChart();
+                    renderPenaltyAnalysis();
                 }
                 
                 const banner = document.getElementById('funny-reaction-banner');
-                if (state.calcResults && state.calcResults.kpis.totalSavings > 0 && !state.isTutorialActive) {
-                    const saved = formatCurrency(state.calcResults.kpis.totalSavings);
-                    setHTML('funny-reaction-text', `Literalmente le estás quitando <span class="text-white bg-amber-600 dark:bg-amber-500 px-3 py-1 rounded-lg shadow-sm mx-1">${saved}</span> de las manos al banco.<br/>¡Una completa salvajada!`);
-                    if(banner) {
-                        banner.classList.remove('hidden');
-                        setTimeout(() => banner.classList.add('visible'), 100);
-                    }
+                if (state.calcResults && state.calcResults.kpis.netRealSavings > 0 && !state.isTutorialActive) {
+                    const saved = formatCurrency(state.calcResults.kpis.netRealSavings);
+                    document.getElementById('funny-reaction-text').innerHTML = `Literalmente le estás quitando <span class="text-white bg-amber-600 dark:bg-amber-500 px-3 py-1 rounded-lg shadow-sm mx-1">${saved}</span> NETOS al banco.<br/>¡Una completa salvajada!`;
+                    banner.classList.remove('hidden');
+                    setTimeout(() => banner.classList.add('visible'), 100);
                 } else {
-                    if(banner) {
-                        banner.classList.add('hidden');
-                        banner.classList.remove('visible');
-                    }
+                    banner.classList.add('hidden');
+                    banner.classList.remove('visible');
                 }
             } else {
-                if(resultsContainer) {
-                    resultsContainer.classList.add('hidden');
-                    resultsContainer.classList.remove('visible');
-                }
+                resultsContainer.classList.add('hidden');
+                resultsContainer.classList.remove('visible');
                 document.querySelectorAll('.stagger-card').forEach(item => item.classList.remove('visible'));
-                if(emptyState) {
-                    emptyState.classList.remove('hidden');
-                    setTimeout(() => emptyState.classList.add('visible'), 50);
-                }
+                emptyState.classList.remove('hidden');
+                setTimeout(() => emptyState.classList.add('visible'), 50);
             }
             if(window.lucide) window.lucide.createIcons();
         }
@@ -1208,121 +1049,204 @@
         function renderMetrics() {
             const { original, withAbonos, inputs, kpis } = state.calcResults;
             
-            setHTML('key-metrics-grid-top', `
-                ${createMetricCard('Ahorro Total Neto', 'RD$ 0.00', 'piggy-bank', 'emerald', 'kpi-total-savings')}
-                ${createMetricCard('Intereses Evitados', 'RD$ 0.00', 'trending-down', 'amber', 'kpi-interest-saved')}
-                ${createMetricCard('Seguros Ahorrados', 'RD$ 0.00', 'shield', 'sky', 'kpi-insurance-saved')}
-            `);
+            // Reemplazamos Ahorro Total Neto por Ahorro Real Neto (después de penalidades si las hay)
+            document.getElementById('key-metrics-grid-top').innerHTML = `
+                ${createMetricCard('Ahorro Real Neto', formatCurrency(kpis.netRealSavings), 'piggy-bank', 'emerald', 'kpi-net-savings')}
+                ${createMetricCard('Intereses Evitados', formatCurrency(kpis.interestSaved), 'trending-down', 'amber', 'kpi-interest-saved')}
+                ${createMetricCard('Seguros Ahorrados', formatCurrency(kpis.insuranceSaved), 'shield', 'sky', 'kpi-insurance-saved')}
+            `;
             
             const finalNewPayment = withAbonos.schedule[withAbonos.schedule.length - 1].payment + inputs.insurance;
-            const originalPayment = original.schedule[0].payment + inputs.insurance;
-            const bottomCard1Title = state.abonoStrategy === 'payment' ? 'Tu Cuota Bajará Hasta' : 'Tiempo Recuperado';
-            const bottomCard1Icon = state.abonoStrategy === 'payment' ? 'arrow-down-circle' : 'clock';
-            const bottomCard1Id = state.abonoStrategy === 'payment' ? 'kpi-new-quota' : 'kpi-months-saved';
+            const originalPayment = original.monthlyPayment + inputs.insurance;
+            const bottomCard1Title = state.abonoStrategy === 'term' ? 'Tiempo Recuperado' : 'Tu Cuota Bajará Hasta';
+            const bottomCard1Icon = state.abonoStrategy === 'term' ? 'clock' : 'arrow-down-circle';
+            const bottomCard1Id = state.abonoStrategy === 'term' ? 'kpi-months-saved' : 'kpi-new-quota';
             
-            setHTML('key-metrics-grid-bottom', `
+            document.getElementById('key-metrics-grid-bottom').innerHTML = `
                 ${createMetricCard(bottomCard1Title, '0', bottomCard1Icon, 'purple', bottomCard1Id)}
                 ${createMetricCard('Tu Costo Final', 'RD$ 0.00', 'check-circle', 'indigo', 'kpi-final-cost')}
                 ${createMetricCard('Día de Libertad', formatDate(withAbonos.payoffDate), 'calendar-check', 'blue', 'kpi-payoff-date')}
-            `);
+            `;
             
             setTimeout(() => {
-                animateValue('kpi-total-savings', 0, kpis.totalSavings, 1500, formatCurrency);
+                animateValue('kpi-net-savings', 0, kpis.netRealSavings, 1500, formatCurrency);
                 animateValue('kpi-interest-saved', 0, kpis.interestSaved, 1500, formatCurrency);
                 animateValue('kpi-insurance-saved', 0, kpis.insuranceSaved, 1500, formatCurrency);
-                if (state.abonoStrategy === 'payment') {
-                    animateValue('kpi-new-quota', originalPayment, finalNewPayment, 1500, formatCurrency);
-                } else {
+                if (state.abonoStrategy === 'term') {
                     animateValue('kpi-months-saved', 0, kpis.monthsSaved, 1500, (v) => `${Math.round(v)} meses`);
+                } else {
+                    animateValue('kpi-new-quota', originalPayment, finalNewPayment, 1500, formatCurrency);
                 }
                 animateValue('kpi-final-cost', 0, withAbonos.totalPaid, 1500, formatCurrency);
             }, 50);
             
+            // --- CÁLCULO DE RETORNOS PARA LA UI ---
             const origReturn = (original.totalInterest + original.totalInsurance) / inputs.amount;
             const accelReturn = (withAbonos.totalInterest + withAbonos.totalInsurance) / inputs.amount;
             const diffReturn = origReturn - accelReturn;
 
-            setHTML('original-plan-metrics', `
+            // JERARQUÍA LÓGICA DE LECTURA
+            document.getElementById('original-plan-metrics').innerHTML = `
                 ${createSmallMetricCard('Capital Solicitado', formatCurrency(inputs.amount), 'building', 'slate')}
                 ${createSmallMetricCard('Costo Total Final', formatCurrency(original.totalPaid), 'wallet', 'rose')}
                 ${createSmallMetricCard('Intereses Cobrados', formatCurrency(original.totalInterest), 'trending-down', 'rose')}
                 ${createSmallMetricCard('Seguro Pagado', formatCurrency(original.totalInsurance), 'shield', 'sky')}
                 ${createSmallMetricCard('Retorno del Banco', formatPercent(origReturn), 'percent', 'rose')}
                 ${createSmallMetricCard('Tiempo de Pago', `${original.termInMonths} meses`, 'calendar-x', 'slate')}
-            `);
-            
-            setHTML('accelerated-plan-metrics', `
+            `;
+            document.getElementById('accelerated-plan-metrics').innerHTML = `
                 ${createSmallMetricCard('Capital Solicitado', formatCurrency(inputs.amount), 'building', 'amber')}
                 ${createSmallMetricCard('Costo Total Final', formatCurrency(withAbonos.totalPaid), 'wallet', 'amber')}
                 ${createSmallMetricCard('Intereses Cobrados', formatCurrency(withAbonos.totalInterest), 'trending-down', 'rose')}
                 ${createSmallMetricCard('Seguro Pagado', formatCurrency(withAbonos.totalInsurance), 'shield', 'sky')}
                 ${createSmallMetricCard('Retorno del Banco', formatPercent(accelReturn), 'percent', 'amber')}
                 ${createSmallMetricCard('Tiempo de Pago', `${withAbonos.termInMonths} meses`, 'calendar-check', 'amber')}
-            `);
-            
-            setHTML('difference-plan-metrics', `
+            `;
+            document.getElementById('difference-plan-metrics').innerHTML = `
                 ${createSmallMetricCard('Diferencia Capital', 'RD$ 0.00', 'minus-circle', 'slate')}
-                ${createSmallMetricCard('Ahorro Total Neto', `+ ${formatCurrency(kpis.totalSavings)}`, 'piggy-bank', 'emerald')}
+                ${createSmallMetricCard('Ahorro Bruto', `+ ${formatCurrency(kpis.totalSavings)}`, 'piggy-bank', 'emerald')}
+                ${createSmallMetricCard('Ahorro Neto Real', `+ ${formatCurrency(kpis.netRealSavings)}`, 'check', 'sky')}
                 ${createSmallMetricCard('Ahorro de Intereses', `+ ${formatCurrency(kpis.interestSaved)}`, 'arrow-down-right', 'emerald')}
-                ${createSmallMetricCard('Ahorro de Seguros', `+ ${formatCurrency(kpis.insuranceSaved)}`, 'arrow-down-right', 'emerald')}
                 ${createSmallMetricCard('Bajaste el Retorno', `- ${formatPercent(diffReturn)}`, 'percent', 'emerald')}
                 ${createSmallMetricCard('Tiempo A tu Favor', `+ ${kpis.monthsSaved} meses`, 'fast-forward', 'emerald')}
-            `);
+            `;
         }
 
         function renderPenaltyAnalysis() {
             if (!state.calcResults) return;
-            const { kpis, penaltyCost } = state.calcResults;
-            const interestSavings = kpis.interestSaved;
+            const { kpis, inputs } = state.calcResults;
+            const penaltyRate = inputs.penaltyRate;
 
-            setText('label-penalty-savings', "+ " + formatCurrency(interestSavings));
-            setText('label-penalty-cost', "- " + formatCurrency(penaltyCost));
+            const grossSavings = kpis.totalSavings;
+            const penaltyCost = kpis.totalPenalties;
+            const netSavings = kpis.netRealSavings;
 
-            const maxVal = Math.max(interestSavings, penaltyCost, 1);
-            const savingsPct = (interestSavings / maxVal) * 100;
+            document.getElementById('label-gross-savings').textContent = formatCurrency(grossSavings);
+            document.getElementById('label-penalty-cost').textContent = formatCurrency(penaltyCost);
+
+            const maxVal = Math.max(grossSavings, penaltyCost, 1);
+            const savingsPct = (grossSavings / maxVal) * 100;
             const penaltyPct = (penaltyCost / maxVal) * 100;
 
             setTimeout(() => {
-                setWidth('bar-penalty-savings', `${Math.max(5, savingsPct)}%`);
-                setWidth('bar-penalty-cost', `${Math.max(5, penaltyPct)}%`);
+                document.getElementById('bar-gross-savings').style.width = `${Math.max(5, savingsPct)}%`;
+                document.getElementById('bar-penalty-cost').style.width = `${Math.max(5, penaltyPct)}%`;
             }, 100);
 
-            const netSavings = interestSavings - penaltyCost;
-
-            if (netSavings > 0) {
-                 setHTML('penalty-recommendation', `<div class="bg-emerald-100 dark:bg-emerald-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-emerald-200 dark:border-emerald-800 flex-shrink-0"><i data-lucide="shield-check" class="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400"></i></div>
-                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-emerald-600 dark:text-emerald-400">EL ABONO ES RENTABLE</span></p>
-                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">Pagarás <strong>${formatCurrency(penaltyCost)}</strong> de multa al banco, pero los intereses que evitas (<strong>${formatCurrency(interestSavings)}</strong>) son muchísimo mayores. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Ahorro Neto Real (Restando Multa): ${formatCurrency(netSavings)}. ¡Adelante!</span></p></div>`);
-            } else if (penaltyCost > interestSavings) {
-                 setHTML('penalty-recommendation', `<div class="bg-rose-100 dark:bg-rose-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-rose-200 dark:border-rose-800 flex-shrink-0"><i data-lucide="alert-triangle" class="w-6 h-6 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-400"></i></div>
-                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-rose-600 dark:text-rose-400">NO ABONES (TRAMPA BANCARIA)</span></p>
-                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">El banco te castigará con <strong>${formatCurrency(penaltyCost)}</strong>, lo cual es MAYOR a los <strong>${formatCurrency(interestSavings)}</strong> que te ahorrarás en intereses. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Pérdida Neta: ${formatCurrency(Math.abs(netSavings))}. Mejor guarda ese dinero.</span></p></div>`);
+            const recBox = document.getElementById('penalty-recommendation');
+            if (penaltyRate > 0) {
+                if (netSavings > 0) {
+                    recBox.innerHTML = `
+                        <div class="flex items-center mb-3">
+                            <div class="bg-emerald-100 dark:bg-emerald-900/40 p-3 sm:p-4 rounded-xl mr-4 shadow-inner border border-emerald-200 dark:border-emerald-800 flex-shrink-0">
+                                <i data-lucide="shield-check" class="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Conclusión: <span class="text-emerald-600 dark:text-emerald-400">¡SIGUE VALIENDO LA PENA!</span></p>
+                        </div>
+                        <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                            <ul class="mb-3 space-y-1">
+                                <li>Ahorro Bruto: <strong class="text-emerald-600 dark:text-emerald-400">${formatCurrency(grossSavings)}</strong></li>
+                                <li>Castigo del Banco: <strong class="text-rose-500 dark:text-rose-400">- ${formatCurrency(penaltyCost)}</strong></li>
+                            </ul>
+                            <div class="bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-bold shadow-sm">
+                                Tu ganancia real: <span class="text-emerald-600 dark:text-emerald-400">${formatCurrency(netSavings)}</span> a tu favor. ¡Dale con todo!
+                            </div>
+                        </div>`;
+                } else if (grossSavings > 0) {
+                    recBox.innerHTML = `
+                        <div class="flex items-center mb-3">
+                            <div class="bg-rose-100 dark:bg-rose-900/40 p-3 sm:p-4 rounded-xl mr-4 shadow-inner border border-rose-200 dark:border-rose-800 flex-shrink-0">
+                                <i data-lucide="alert-octagon" class="w-6 h-6 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-400"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Conclusión: <span class="text-rose-600 dark:text-rose-400">PÉRDIDA FINANCIERA</span></p>
+                        </div>
+                        <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                            <ul class="mb-3 space-y-1">
+                                <li>Ahorro Bruto: <strong class="text-emerald-600 dark:text-emerald-400">${formatCurrency(grossSavings)}</strong></li>
+                                <li>Castigo del Banco: <strong class="text-rose-500 dark:text-rose-400">- ${formatCurrency(penaltyCost)}</strong></li>
+                            </ul>
+                            <div class="bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 font-bold shadow-sm">
+                                Perderías ${formatCurrency(Math.abs(netSavings))}. Es mejor NO hacer abonos bajo estas condiciones.
+                            </div>
+                        </div>`;
+                } else {
+                     recBox.innerHTML = `<div class="bg-slate-100 dark:bg-slate-700/40 p-4 sm:p-5 rounded-xl mr-4 shadow-inner border border-slate-200 dark:border-slate-600 flex-shrink-0"><i data-lucide="sleep" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400"></i></div>
+                        <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">Añade Abonos Extra</p><p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">Activa tu estrategia arriba para ver el impacto.</p></div>`;
+                }
             } else {
-                 setHTML('penalty-recommendation', `<div class="bg-slate-100 dark:bg-slate-700/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-slate-200 dark:border-slate-600 flex-shrink-0"><i data-lucide="sleep" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400"></i></div>
-                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">Añade Abonos Extra</p><p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">Activa tu estrategia para ver si la penalidad del banco se traga tu ahorro.</p></div>`);
+                recBox.innerHTML = `
+                        <div class="flex items-center mb-3">
+                            <div class="bg-sky-100 dark:bg-sky-900/40 p-3 sm:p-4 rounded-xl mr-4 shadow-inner border border-sky-200 dark:border-sky-800 flex-shrink-0">
+                                <i data-lucide="party-popper" class="w-6 h-6 sm:w-8 sm:h-8 text-sky-600 dark:text-sky-400"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Conclusión: <span class="text-sky-600 dark:text-sky-400">¡SITUACIÓN IDEAL!</span></p>
+                        </div>
+                        <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                            Al no tener penalidad por abonos, el <strong>100% de tu esfuerzo se convierte en ahorro real.</strong>
+                            <div class="mt-3 bg-white dark:bg-slate-900 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-bold shadow-sm">
+                                Tu ganancia real: <span class="text-emerald-600 dark:text-emerald-400">${formatCurrency(netSavings)}</span> a tu favor. ¡Aprovecha!
+                            </div>
+                        </div>`;
             }
+            if(window.lucide) window.lucide.createIcons();
         }
 
-        function renderRefinanceChart() {
-            if (!state.calcResults || !state.calcResults.refinance) {
-                 setHTML('refinance-recommendation', `<div class="bg-slate-100 dark:bg-slate-700/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-slate-200 dark:border-slate-600 flex-shrink-0"><i data-lucide="building" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400"></i></div>
-                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">Esperando Oferta</p><p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">Ingresa la tasa y gastos del otro banco para evaluar si vale la pena.</p></div>`);
-                 return;
+        function generateSummaryText() {
+            if(!state.calcResults) return;
+            const { original, withAbonos, inputs, kpis } = state.calcResults;
+
+            let strategyText = '';
+            if (state.abonoStrategy === 'term') {
+                strategyText = `Con los abonos extra que estás implementando, retomas el volante. Pagarás tu deuda en solo **${withAbonos.termInMonths} meses** (terminando el **${formatDate(withAbonos.payoffDate)}**), reduciendo tu costo final a **${formatCurrency(withAbonos.totalPaid)}** y pagando apenas **${formatCurrency(withAbonos.totalInterest)}** en intereses.`;
+            } else {
+                strategyText = `Con los abonos extra que estás implementando, has decidido priorizar tu liquidez mensual. Tu cuota regular irá disminuyendo progresivamente, dándote más respiro cada mes. Además, reducirás tu costo final a **${formatCurrency(withAbonos.totalPaid)}** y pagarás apenas **${formatCurrency(withAbonos.totalInterest)}** en intereses.`;
+            }
+            
+            let penaltyText = '';
+            if (inputs.penaltyRate > 0) {
+                penaltyText = `\n• **COSTO DE PENALIDAD:** Si tu banco te cobra un ${inputs.penaltyRate}%, esto equivale a **${formatCurrency(kpis.totalPenalties)}**.\n• **TU AHORRO NETO REAL:** Descontando la penalidad, tú te quedas con **${formatCurrency(kpis.netRealSavings)}** a tu favor.`;
+            } else {
+                penaltyText = `\n• **TU AHORRO NETO REAL:** Como no hay penalidad, te quedas con los **${formatCurrency(kpis.netRealSavings)}** íntegros a tu favor.`;
             }
 
-            const ref = state.calcResults.refinance;
-            if (ref.savings > 0) {
-                 setHTML('refinance-recommendation', `<div class="bg-emerald-100 dark:bg-emerald-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-emerald-200 dark:border-emerald-800 flex-shrink-0"><i data-lucide="check-circle" class="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400"></i></div>
-                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-emerald-600 dark:text-emerald-400">ES RENTABLE CAMBIAR</span></p>
-                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">Incluso sumando al capital los <strong>${formatCurrency(parseCurrency(state.refinanceCosts) || 0)}</strong> de penalidad, la nueva tasa es lo suficientemente buena como para ahorrarte <strong>${formatCurrency(ref.savings)}</strong> al final del préstamo frente a tu banco original. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Tu nueva cuota sería: ${formatCurrency(ref.monthlyPayment + parseCurrency(state.insurance))}</span></p></div>`);
-            } else {
-                 setHTML('refinance-recommendation', `<div class="bg-rose-100 dark:bg-rose-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-rose-200 dark:border-rose-800 flex-shrink-0"><i data-lucide="alert-triangle" class="w-6 h-6 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-400"></i></div>
-                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-rose-600 dark:text-rose-400">QUÉDATE DONDE ESTÁS</span></p>
-                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">El "ahorro" en la tasa se lo comen los gastos de cierre de <strong>${formatCurrency(parseCurrency(state.refinanceCosts) || 0)}</strong>. Si te cambias de banco, terminarás perdiendo <strong>${formatCurrency(Math.abs(ref.savings))}</strong> al final de la jornada. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Mejor aplica abonos a capital en tu banco actual.</span></p></div>`);
-            }
+            state.executiveText = `**Hola. Aquí tienes tu análisis financiero, directo y claro:**
+
+**LA SITUACIÓN (El Problema):**
+Tienes un préstamo de **${formatCurrency(inputs.amount)}**. Si sigues pagando de forma normal, te tomará **${original.termInMonths} meses** terminar (hasta el **${formatDate(original.payoffDate)}**). El banco te terminará sacando un total de **${formatCurrency(original.totalPaid)}**, de los cuales **${formatCurrency(original.totalInterest)}** son pura ganancia para ellos en intereses.
+
+**TU ESTRATEGIA (La Solución):**
+${strategyText}
+
+**TU VICTORIA TANGIBLE:**
+• **AHORRO BRUTO:** **${formatCurrency(kpis.totalSavings)}** en intereses y seguros evitados.${penaltyText}
+${state.abonoStrategy === 'term' 
+    ? `• **RECUPERAS:** **${kpis.monthsSaved} meses** de tu vida completamente libres de esta deuda.` 
+    : `• **LIBERAS LIQUIDEZ:** Al ir bajando tu cuota mensual, tendrás más dinero disponible en tu bolsillo mes a mes.`}
+
+Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro. **¡Continúa así, vas por excelente camino!**`;
+
+            const htmlFormat = state.executiveText.split('\n').map(line => {
+                if(!line.trim()) return '<div class="h-3"></div>';
+                let formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 dark:text-white font-black">$1</strong>');
+                if (line.trim().startsWith('•')) {
+                    return `<div class="flex items-start ml-2 sm:ml-4 my-4 bg-emerald-50/50 dark:bg-emerald-900/20 p-4 sm:p-5 rounded-[1.5rem] border border-emerald-200/60 dark:border-emerald-700/50 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="bg-emerald-100 dark:bg-emerald-800/60 p-2 rounded-full mr-4 flex-shrink-0 border border-emerald-200 dark:border-emerald-600/50">
+                                    <i data-lucide="check" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+                                </div>
+                                <p class="text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-snug mt-1">${formatted.replace('• ', '')}</p>
+                            </div>`;
+                }
+                return `<p class="mb-2 text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-relaxed">${formatted}</p>`;
+            }).join('');
+            
+            document.getElementById('summary-text-content').innerHTML = htmlFormat;
+            if(window.lucide) window.lucide.createIcons();
         }
 
         function renderTable() {
+            const tHead = document.getElementById('table-head');
+            const tBody = document.getElementById('table-body');
+            const tFoot = document.getElementById('table-foot');
             const { schedule, totalInterest, totalPaid } = state.calcResults.withAbonos;
             const ins = state.calcResults.inputs.insurance;
 
@@ -1389,13 +1313,13 @@
                     groups[groupKey].endBalance = r.balance; 
                 });
                 
-                setHTML('table-head', `<tr>
+                tHead.innerHTML = `<tr>
                     <th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">N°</th>
                     ${['Periodo', 'Saldo Inicial', 'Capital', 'Interés', 'Seguro', 'Cuota Reg. Total'].map(h => `<th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">${h}</th>`).join('')}
                     <th class="px-5 py-6 text-xs uppercase tracking-widest text-center ${extraColClassTh}">Abono Extra</th>
-                    <th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">Saldo Final</th></tr>`);
+                    <th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">Saldo Final</th></tr>`;
                 
-                setHTML('table-body', groupKeys.map((key, i) => {
+                tBody.innerHTML = groupKeys.map((key, i) => {
                     const r = groups[key];
                     let label = '';
                     if (size === 12) {
@@ -1420,16 +1344,16 @@
                         <td class="px-5 py-5 whitespace-nowrap text-sm font-black text-amber-600 dark:text-amber-400 text-right ${extraColClassTd}">${formatCurrency(r.extra)}</td>
                         <td class="px-5 py-5 whitespace-nowrap text-sm font-black text-slate-900 dark:text-white text-right">${formatCurrency(r.endBalance)}</td>
                     </tr>`;
-                }).join(''));
+                }).join('');
 
             } else {
-                setHTML('table-head', `<tr>
+                tHead.innerHTML = `<tr>
                     <th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">N°</th>
                     ${['Periodo', 'Saldo Inicial', 'Capital', 'Interés', 'Seguro', 'Cuota Reg. Total'].map(h => `<th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">${h}</th>`).join('')}
                     <th class="px-4 py-6 text-[11px] uppercase tracking-widest text-center ${extraColClassTh}">Tu Abono Extra</th>
-                    <th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">Saldo Final</th></tr>`);
+                    <th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">Saldo Final</th></tr>`;
                 
-                setHTML('table-body', schedule.map((r, i) => `
+                tBody.innerHTML = schedule.map((r, i) => `
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/60 shadow-sm dark:shadow-none transition-all duration-300 group hover:scale-[1.01] hover:-translate-y-0.5" style="animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(i * 20, 800)}ms both;">
                         <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-slate-400 dark:text-slate-500 text-center">${i + 1}</td>
                         <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200 text-center">${getTableMonthStr(r.month)}</td>
@@ -1445,14 +1369,14 @@
                                 class="abono-input w-28 sm:w-32 p-2 sm:p-2.5 text-right font-black border bg-white/90 dark:bg-slate-900/90 border-amber-300/50 dark:border-amber-600/50 rounded-xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 transition-all text-amber-700 dark:text-amber-400 placeholder-amber-200 dark:placeholder-amber-800/30 disabled:bg-transparent disabled:border-transparent disabled:text-amber-600 dark:disabled:text-amber-400 disabled:shadow-none hover:shadow-md outline-none" />
                         </td>
                         <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-slate-900 dark:text-white text-right">${formatCurrency(r.balance)}</td>
-                    </tr>`).join(''));
+                    </tr>`).join('');
             }
             
             const totPrin = schedule.reduce((a,r) => a + r.principal, 0);
             const totExt = schedule.reduce((a,r) => a + r.extra, 0);
             const totalPaymentWithIns = schedule.reduce((a,r) => a + r.payment + ins, 0);
 
-            setHTML('table-foot', `
+            tFoot.innerHTML = `
                 <tr>
                     <td colspan="3" class="px-5 py-7 text-right font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest text-xs">Totales Finales:</td>
                     <td class="px-5 py-7 text-right font-black text-emerald-600 dark:text-emerald-400 text-base">${formatCurrency(totPrin)}</td>
@@ -1461,60 +1385,12 @@
                     <td class="px-5 py-7 text-right font-black text-slate-700 dark:text-slate-300 text-base">${formatCurrency(totalPaymentWithIns)}</td>
                     <td class="px-5 py-7 text-right font-black text-amber-600 dark:text-amber-400 text-base ${extraColClassTh} bg-transparent">${formatCurrency(totExt)}</td>
                     <td class="px-5 py-7"></td>
-                </tr>`);
+                </tr>`;
 
             if (state.activeInputIndex !== null && size === 1) {
-                const elBody = document.getElementById('table-body');
-                if(elBody) {
-                    const input = elBody.querySelector(`input[data-index="${state.activeInputIndex}"]`);
-                    if (input) { input.focus(); input.selectionStart = input.value.length; }
-                }
+                const input = tBody.querySelector(`input[data-index="${state.activeInputIndex}"]`);
+                if (input) { input.focus(); input.selectionStart = input.value.length; }
             }
-        }
-
-        function generateSummaryText() {
-            if(!state.calcResults) return;
-            const { original, withAbonos, inputs, kpis } = state.calcResults;
-
-            let strategyText = '';
-            if (state.abonoStrategy === 'term' || state.abonoStrategy === 'target') {
-                strategyText = `Con los abonos extra que estás implementando, retomas el volante. Pagarás tu deuda en solo **${withAbonos.termInMonths} meses** (terminando el **${formatDate(withAbonos.payoffDate)}**), reduciendo tu costo final a **${formatCurrency(withAbonos.totalPaid)}** y pagando apenas **${formatCurrency(withAbonos.totalInterest)}** en intereses.`;
-            } else {
-                strategyText = `Con los abonos extra que estás implementando, has decidido priorizar tu liquidez mensual. Tu cuota regular irá disminuyendo progresivamente, dándote más respiro cada mes. Además, reducirás tu costo final a **${formatCurrency(withAbonos.totalPaid)}** y pagarás apenas **${formatCurrency(withAbonos.totalInterest)}** en intereses.`;
-            }
-
-            state.executiveText = `**Hola. Aquí tienes tu análisis financiero, directo y claro:**
-
-**LA SITUACIÓN (El Problema):**
-Tienes un préstamo de **${formatCurrency(inputs.amount)}**. Si sigues pagando de forma normal, te tomará **${original.termInMonths} meses** terminar (hasta el **${formatDate(original.payoffDate)}**). El banco te terminará sacando un total de **${formatCurrency(original.totalPaid)}**, de los cuales **${formatCurrency(original.totalInterest)}** son pura ganancia para ellos en intereses.
-
-**TU ESTRATEGIA (La Solución):**
-${strategyText}
-
-**TU VICTORIA (Lo que te llevas):**
-• **TE AHORRAS:** **${formatCurrency(kpis.totalSavings)}** (Puro dinero que se queda en tu cuenta, no en la del banco).
-${state.abonoStrategy === 'payment' 
-    ? `• **LIBERAS LIQUIDEZ:** Al ir bajando tu cuota mensual, tendrás más dinero disponible en tu bolsillo mes a mes.` 
-    : `• **RECUPERAS:** **${kpis.monthsSaved} meses** de tu vida completamente libres de esta deuda.`}
-
-Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro. **¡Continúa así, vas por excelente camino!**`;
-
-            const htmlFormat = state.executiveText.split('\n').map(line => {
-                if(!line.trim()) return '<div class="h-3"></div>';
-                let formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 dark:text-white font-black">$1</strong>');
-                if (line.trim().startsWith('•')) {
-                    return `<div class="flex items-start ml-2 sm:ml-4 my-4 bg-emerald-50/50 dark:bg-emerald-900/20 p-4 sm:p-5 rounded-[1.5rem] border border-emerald-200/60 dark:border-emerald-700/50 shadow-sm hover:shadow-md transition-shadow">
-                                <div class="bg-emerald-100 dark:bg-emerald-800/60 p-2 rounded-full mr-4 flex-shrink-0 border border-emerald-200 dark:border-emerald-600/50">
-                                    <i data-lucide="check" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
-                                </div>
-                                <p class="text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-snug mt-1">${formatted.replace('• ', '')}</p>
-                            </div>`;
-                }
-                return `<p class="mb-2 text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-relaxed">${formatted}</p>`;
-            }).join('');
-            
-            setHTML('summary-text-content', htmlFormat);
-            if(window.lucide) window.lucide.createIcons();
         }
 
         function exportToExcel() {
@@ -1532,13 +1408,16 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
                 ["PARÁMETROS DEL PRÉSTAMO"],
                 ["Monto Solicitado:", formatCurrency(inputs.amount)],
                 ["Tasa de Interés:", inputs.interest + "%"],
-                ["Plazo Original:", inputs.term + " meses"],
+                ["Plazo Original:", inputs.term + (state.termType === 'years' ? " años" : " meses")],
                 ["Seguro Mensual:", formatCurrency(inputs.insurance)],
+                ["Penalidad Aplicada:", inputs.penaltyRate + "%"],
                 [],
                 ["COMPARATIVO DE ESTRATEGIAS", "Plan del Banco (Normal)", "Tu Estrategia (Acelerado)", "Diferencia (Tu Ahorro Tangible)"],
-                ["Costo Total Final", formatCurrency(original.totalPaid), formatCurrency(withAbonos.totalPaid), "+ " + formatCurrency(kpis.totalSavings)],
+                ["Costo Total Final", formatCurrency(original.totalPaid), formatCurrency(withAbonos.totalPaid), "+ " + formatCurrency(kpis.totalSavings) + " (Bruto)"],
                 ["Intereses Cobrados", formatCurrency(original.totalInterest), formatCurrency(withAbonos.totalInterest), "+ " + formatCurrency(kpis.interestSaved)],
                 ["Seguro Pagado", formatCurrency(original.totalInsurance), formatCurrency(withAbonos.totalInsurance), "+ " + formatCurrency(kpis.insuranceSaved)],
+                ["Costo por Penalidad", "RD$ 0.00", formatCurrency(kpis.totalPenalties), "- " + formatCurrency(kpis.totalPenalties)],
+                ["AHORRO NETO REAL", "-", "-", "+ " + formatCurrency(kpis.netRealSavings)],
                 ["Retorno del Banco", formatPercent(origReturn), formatPercent(accelReturn), "- " + formatPercent(diffReturn)],
                 ["Tiempo Total de Pago", original.termInMonths + " meses", withAbonos.termInMonths + " meses", kpis.monthsSaved + " meses a tu favor"]
             ];
@@ -1555,13 +1434,13 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
             wsOrig['!cols'] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(wb, wsOrig, "Plan Normal");
 
-            const headersAccel = ["Cuota N°", "Periodo", "Saldo Inicial", "Abono a Capital", "Intereses Pagados", "Seguro Pagado", "Cuota Regular Total", "TU ABONO EXTRA", "Saldo Final"];
+            const headersAccel = ["Cuota N°", "Periodo", "Saldo Inicial", "Abono a Capital", "Intereses Pagados", "Seguro Pagado", "Cuota Regular Total", "TU ABONO EXTRA", "Penalidad", "Saldo Final"];
             const dataAccel = [headersAccel];
             withAbonos.schedule.forEach((r, index) => {
-                dataAccel.push([index + 1, getTableMonthStr(r.month), r.startBalance, r.principal, r.interest, inputs.insurance, r.payment + inputs.insurance, r.extra, r.balance]);
+                dataAccel.push([index + 1, getTableMonthStr(r.month), r.startBalance, r.principal, r.interest, inputs.insurance, r.payment + inputs.insurance, r.extra, r.penalty, r.balance]);
             });
             const wsAccel = XLSX.utils.aoa_to_sheet(dataAccel);
-            wsAccel['!cols'] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 18 }, { wch: 15 }];
+            wsAccel['!cols'] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 18 }, { wch: 12 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(wb, wsAccel, "Plan Acelerado");
 
             XLSX.writeFile(wb, "Estrategia_Ahorro_MinimalismoFinanciero.xlsx");
@@ -1598,7 +1477,7 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
             const origReturn = (original.totalInterest + original.totalInsurance) / inputs.amount;
             const accelReturn = (withAbonos.totalInterest + withAbonos.totalInsurance) / inputs.amount;
 
-            const textSituacion = `Tienes un préstamo de ${formatCurrency(inputs.amount)}. Si sigues pagando de forma normal, te tomará ${original.termInMonths} meses terminar (hasta el ${formatDate(original.payoffDate)}). El banco te terminará sacando un total de ${formatCurrency(original.totalPaid)}, de los cuales ${formatCurrency(original.totalInterest)} son pura ganancia para ellos en intereses.`;
+            const textSituacion = `Tienes un préstamo de ${formatCurrency(inputs.amount)}. Si sigues pagando de forma normal, te tomará ${original.termInMonths} meses terminar. El banco te terminará sacando un total de ${formatCurrency(original.totalPaid)}, de los cuales ${formatCurrency(original.totalInterest)} son pura ganancia para ellos en intereses.`;
             const linesSituacion = doc.splitTextToSize(textSituacion, 160);
             const box1Height = 42 + (linesSituacion.length * 5); 
 
@@ -1632,11 +1511,11 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
             doc.text(linesSituacion, 25, yPos + 44);
             yPos += box1Height + 8; 
 
-            const textEstrategia = (state.abonoStrategy === 'term' || state.abonoStrategy === 'target')
-                ? `Con los abonos extra que estás implementando, retomas el volante. Pagarás tu deuda en solo ${withAbonos.termInMonths} meses (terminando el ${formatDate(withAbonos.payoffDate)}), reduciendo tu costo final a ${formatCurrency(withAbonos.totalPaid)} y pagando apenas ${formatCurrency(withAbonos.totalInterest)} en intereses.`
-                : `Con los abonos extra que estás implementando, has decidido priorizar tu liquidez mensual. Tu cuota regular irá disminuyendo progresivamente, dándote más respiro cada mes. Reducirás tu costo final a ${formatCurrency(withAbonos.totalPaid)} y pagarás apenas ${formatCurrency(withAbonos.totalInterest)} en intereses.`;
+            const textEstrategia = state.abonoStrategy === 'term'
+                ? `Con abonos extra, retomas el volante. Pagarás tu deuda en solo ${withAbonos.termInMonths} meses, reduciendo tu costo final a ${formatCurrency(withAbonos.totalPaid)} y pagando apenas ${formatCurrency(withAbonos.totalInterest)} en intereses.`
+                : `Con abonos extra, priorizas tu liquidez mensual. Tu cuota regular irá disminuyendo progresivamente. Reducirás tu costo final a ${formatCurrency(withAbonos.totalPaid)} y pagarás apenas ${formatCurrency(withAbonos.totalInterest)} en intereses.`;
             const linesEstrategia = doc.splitTextToSize(textEstrategia, 160);
-            const box2Height = 42 + (linesEstrategia.length * 5); 
+            const box2Height = 48 + (linesEstrategia.length * 5); 
 
             doc.setFillColor(255, 251, 235);
             doc.setDrawColor(252, 211, 77);
@@ -1652,19 +1531,21 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
             doc.setFontSize(10);
             doc.text('Costo Total Final:', 25, yPos + 16);
             doc.text('Intereses Cobrados:', 25, yPos + 22);
-            doc.text('Retorno del Banco:', 25, yPos + 28);
-            doc.text('Tiempo a Pagar:', 25, yPos + 34);
+            doc.text('Penalidad Pagada:', 25, yPos + 28);
+            doc.text('Retorno del Banco:', 25, yPos + 34);
+            doc.text('Tiempo a Pagar:', 25, yPos + 40);
             
             doc.setFont('helvetica', 'normal');
             doc.text(`${formatCurrency(withAbonos.totalPaid)}`, 65, yPos + 16);
             doc.text(`${formatCurrency(withAbonos.totalInterest)}`, 65, yPos + 22);
-            doc.text(`${formatPercent(accelReturn)}`, 65, yPos + 28);
-            doc.text(`${withAbonos.termInMonths} meses`, 65, yPos + 34);
+            doc.text(`${formatCurrency(kpis.totalPenalties)}`, 65, yPos + 28);
+            doc.text(`${formatPercent(accelReturn)}`, 65, yPos + 34);
+            doc.text(`${withAbonos.termInMonths} meses`, 65, yPos + 40);
 
             doc.setTextColor(...textDark);
             doc.setFont('helvetica', 'italic');
             doc.setFontSize(10);
-            doc.text(linesEstrategia, 25, yPos + 44);
+            doc.text(linesEstrategia, 25, yPos + 50);
             yPos += box2Height + 8;
 
             doc.setFillColor(240, 253, 244);
@@ -1678,23 +1559,23 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
             
             doc.setTextColor(...primary);
             doc.setFontSize(11);
-            doc.text(`1. TE AHORRAS: ${formatCurrency(kpis.totalSavings)}`, 25, yPos + 20);
+            doc.text(`1. AHORRO NETO REAL: ${formatCurrency(kpis.netRealSavings)}`, 25, yPos + 20);
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(9);
-            doc.text('(Dinero directo a tu bolsillo, no al banco)', 30, yPos + 25);
+            doc.text('(Ahorro bruto menos penalidades del banco)', 30, yPos + 25);
 
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(11);
-            if (state.abonoStrategy === 'payment') {
-                doc.text(`2. LIBERAS LIQUIDEZ MENSUAL`, 105, yPos + 20);
+            if (state.abonoStrategy === 'term') {
+                doc.text(`2. RECUPERAS: ${kpis.monthsSaved} meses`, 115, yPos + 20);
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
-                doc.text('(Tu cuota disminuye, dándote respiro mensual)', 110, yPos + 25);
+                doc.text('(Meses de libertad sin esta deuda)', 120, yPos + 25);
             } else {
-                doc.text(`2. RECUPERAS: ${kpis.monthsSaved} meses de tu vida`, 105, yPos + 20);
+                doc.text(`2. LIBERAS LIQUIDEZ`, 115, yPos + 20);
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
-                doc.text('(Meses de libertad sin tener esta deuda)', 110, yPos + 25);
+                doc.text('(Tu cuota disminuye con el tiempo)', 120, yPos + 25);
             }
             yPos += 45;
 
@@ -1712,22 +1593,68 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
         }
 
         const tutorialData = [
-            { icon: 'lightbulb', title: '1. La Fórmula del Banco', text: 'Mito: "El interés se divide en partes iguales". Realidad: El banco cobra los intereses sobre el saldo pendiente. ¡Por eso al principio sientes que solo pagas interés! Aquí lo hackearemos.', targetId: 'main-title', pointerPos: 'bottom' },
-            { icon: 'edit-3', title: '2. Tus Datos', text: 'Pon los datos de tu préstamo actual. Aquí configuramos el "monstruo" que vamos a derrotar. Usa la opción "Añadir Tasa Variable" si tu banco te cambia el %. ', targetId: 'tour-inputs', pointerPos: 'top' },
-            { icon: 'zap', title: '3. Tu Estrategia', text: '¡Aquí está la gasolina! Dile al sistema cuánto vas a abonar. Juega con los botones: ¿Quieres reducir tus meses de esclavitud o quieres bajar tu cuota para tener liquidez? ¡Tú mandas!', targetId: 'tour-strategy', pointerPos: 'left' },
-            { icon: 'target', title: '4. Impacto Real', text: 'Mira cuánto dinero le quitas al banco y cómo destrozas su porcentaje de ganancia. ¡Tu victoria directa y tangente!', targetId: 'tour-metrics', pointerPos: 'top' },
-            { icon: 'alert-octagon', title: '5. La Trampa de Penalidad', text: 'Los bancos te cobran por abonar. Aquí comparamos lo que te ahorras vs lo que pagas de multa para ver si te conviene hacer ese abono.', targetId: 'tour-penalty-analysis', pointerPos: 'top' },
-            { icon: 'building', title: '6. Compra de Deuda', text: '¿Te ofrecen otra tasa? Ingresa el % nuevo y los gastos legales, y el sistema te dirá si el cambio es negocio o si perderás dinero.', targetId: 'tour-refinance', pointerPos: 'top' },
-            { icon: 'file-check-2', title: '7. Tu Plan de Batalla', text: 'Descarga un reporte ejecutivo o un Excel detallado para que lo pongas en tu nevera.', targetId: 'tour-report', pointerPos: 'top' },
-            { icon: 'list', title: '8. El Mapa Detallado', text: 'Y aquí tienes el mapa exacto. Mes a mes verás cómo cae el saldo. Toma el control absoluto de tus números.', targetId: 'tour-table', pointerPos: 'top' }
+            {
+                icon: 'lightbulb',
+                title: '1. La Fórmula del Banco (El Secreto)',
+                text: 'Mito: "El interés se divide en partes iguales". Realidad (Sistema Francés): El banco usa la fórmula matemática: [Interés del Mes = Saldo Pendiente × (Tasa Anual ÷ 12)]. Como al principio el saldo es enorme, ¡casi toda tu cuota se va a pagar interés y tu deuda real apenas baja! Aquí aprenderemos a hackear esa fórmula.',
+                targetId: 'main-title',
+                pointerPos: 'bottom'
+            },
+            {
+                icon: 'edit-3',
+                title: '2. El Inicio (Tus Datos)',
+                text: 'Mira, aquí pones los datos de tu préstamo actual. Puedes elegir si el plazo es en meses o años. Esto le dice al simulador cuál es el "monstruo" que vamos a derrotar hoy.',
+                targetId: 'tour-inputs',
+                pointerPos: 'top'
+            },
+            {
+                icon: 'zap',
+                title: '3. El Motor (Tu Estrategia)',
+                text: '¡Aquí está la gasolina! Activa esta opción para decirle al sistema cuánto dinero extra vas a inyectarle a tu deuda, desde CUÁNDO quieres iniciar y qué quieres lograr (Reducir Plazo o Reducir Cuota).',
+                targetId: 'tour-strategy',
+                pointerPos: 'left'
+            },
+            {
+                icon: 'target',
+                title: '4. Impacto Real',
+                text: '¡Ojo a esto! Aquí te muestro en vivo cuánto dinero LE QUITAS de las manos al banco y cómo impacta directamente en tu vida. ¡Tu victoria directa!',
+                targetId: 'tour-metrics',
+                pointerPos: 'top'
+            },
+            {
+                icon: 'scale',
+                title: '5. El Dilema de la Penalidad',
+                text: 'A veces el banco te cobra por pagar adelantado. Activa las opciones avanzadas para ver si a pesar de la penalidad, te sigue conviniendo realizar abonos. Veremos tu "Ahorro Neto Real".',
+                targetId: 'tour-penalty-dilemma',
+                pointerPos: 'top'
+            },
+            {
+                icon: 'file-check-2',
+                title: '6. Tu Plan de Batalla',
+                text: '¡Llévate esto a casa! Aquí descargas un reporte ejecutivo profesional (PDF o Excel) para que lo pongas en tu nevera y no pierdas el enfoque.',
+                targetId: 'tour-report',
+                pointerPos: 'top'
+            },
+            {
+                icon: 'list',
+                title: '7. El Mapa Detallado',
+                text: 'Y aquí tienes el mapa exacto. Mes a mes verás cómo cae el saldo y dónde se aplican tus abonos extra o las penalidades. Toma el control absoluto de tus números.',
+                targetId: 'tour-table',
+                pointerPos: 'top'
+            }
         ];
 
         function prepareTutorialState() {
             if (!state.calcResults) {
-                const ia = document.getElementById('input-amount'); if(ia) ia.value = "1,500,000";
-                const ii = document.getElementById('input-interest'); if(ii) ii.value = "14";
-                const it = document.getElementById('input-term'); if(it) it.value = "120";
-                const iins = document.getElementById('input-insurance'); if(iins) iins.value = "1,200";
+                document.getElementById('input-amount').value = "1,500,000";
+                document.getElementById('input-interest').value = "14";
+                document.getElementById('input-term').value = "120";
+                state.termType = 'months';
+                document.getElementById('btn-term-months').classList.add('active', 'bg-white', 'dark:bg-slate-600', 'text-slate-800', 'dark:text-slate-100');
+                document.getElementById('btn-term-months').classList.remove('text-slate-500');
+                document.getElementById('btn-term-years').classList.remove('active', 'bg-white', 'dark:bg-slate-600', 'text-slate-800', 'dark:text-slate-100');
+                document.getElementById('btn-term-years').classList.add('text-slate-500');
+                document.getElementById('input-insurance').value = "1,200";
                 state.amount = "1500000";
                 state.interest = "14";
                 state.term = "120";
@@ -1757,19 +1684,23 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
         function renderTutorialStep() {
             const data = tutorialData[state.tutorialStep];
             if(!data) return;
-            setText('tutorial-title', data.title);
-            setText('tutorial-text', data.text);
+            const titleEl = document.getElementById('tutorial-title');
+            if(titleEl) titleEl.textContent = data.title;
+            const textEl = document.getElementById('tutorial-text');
+            if(textEl) textEl.textContent = data.text;
             const iconEl = document.getElementById('tutorial-icon');
             if(iconEl) iconEl.setAttribute('data-lucide', data.icon);
             if(window.lucide) window.lucide.createIcons();
 
             const progress = ((state.tutorialStep + 1) / tutorialData.length) * 100;
-            setWidth('tutorial-progress', `${progress}%`);
+            const progressEl = document.getElementById('tutorial-progress');
+            if(progressEl) progressEl.style.width = `${progress}%`;
 
             const dotsHtml = tutorialData.map((_, i) => 
                 `<div class="w-3 h-3 rounded-full transition-all duration-300 ${i === state.tutorialStep ? 'bg-amber-500 scale-125' : 'bg-slate-300 dark:bg-slate-600'}"></div>`
             ).join('');
-            setHTML('tutorial-dots', dotsHtml);
+            const dotsContainer = document.getElementById('tutorial-dots');
+            if(dotsContainer) dotsContainer.innerHTML = dotsHtml;
 
             const btnNext = document.getElementById('btn-next-tutorial');
             if(btnNext) {
@@ -1787,6 +1718,7 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
             if(targetEl) {
                 const y = targetEl.getBoundingClientRect().top + window.scrollY - 150;
                 window.scrollTo({top: y, behavior: 'smooth'});
+                
                 setTimeout(() => { updateSpotlight(); }, 400);
             }
         }
@@ -1873,7 +1805,6 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
                 state.isFixedAbono = false;
                 state.fixedAbonoAmount = '';
                 state.showAdvanced = false;
-                state.isVariableRate = false;
                 
                 const ia = document.getElementById('input-amount'); if(ia) ia.value = '';
                 const ii = document.getElementById('input-interest'); if(ii) ii.value = '';
@@ -1895,20 +1826,16 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
                     advCont.classList.remove('visible');
                 }
 
-                const varBox = document.getElementById('variable-rate-box');
-                if(varBox) varBox.classList.add('hidden');
-
                 updateApp(); 
             }, 300);
         }
 
-        // --- Inicialización ---
+        // --- Inicialización y Event Listeners ---
         function triggerAnimations() {
             setTimeout(() => { document.querySelectorAll('.fade-in-up').forEach(el => el.classList.add('visible')); }, 50);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // El botón principal de inicio solo disuelve el splash (Cero fricción)
             document.getElementById('btn-enter-app')?.addEventListener('click', () => {
                 const splash = document.getElementById('splash-screen');
                 if (splash) {
@@ -1929,35 +1856,40 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
                     el.addEventListener('input', handleCurrencyInputEvent);
                 }
             });
-            ['input-interest', 'input-term', 'input-variable-rate', 'input-variable-month'].forEach(id => {
+            ['input-interest', 'input-term'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    let key = id.split('-')[1];
-                    if (id.includes('variable')) key = id === 'input-variable-rate' ? 'variableRate' : 'variableRateMonth';
-                    el.dataset.key = key;
+                    el.dataset.key = id.split('-')[1];
                     el.addEventListener('input', handleNumberInputEvent);
                 }
             });
 
-            document.getElementById('btn-toggle-variable')?.addEventListener('click', (e) => {
-                e.preventDefault();
-                state.isVariableRate = !state.isVariableRate;
-                const box = document.getElementById('variable-rate-box');
-                const btn = document.getElementById('btn-toggle-variable');
-                if (state.isVariableRate) {
-                    if(box) box.classList.remove('hidden');
-                    if(btn) btn.classList.add('bg-rose-500/30');
+            // Toggle Meses/Años logic
+            const btnMonths = document.getElementById('btn-term-months');
+            const btnYears = document.getElementById('btn-term-years');
+            const termInput = document.getElementById('input-term');
+
+            const setTermType = (type) => {
+                state.termType = type;
+                if (type === 'months') {
+                    btnMonths.classList.add('active', 'bg-white', 'dark:bg-slate-600', 'text-slate-800', 'dark:text-slate-100', 'shadow-sm');
+                    btnMonths.classList.remove('text-slate-500', 'dark:text-slate-400', 'hover:text-slate-800');
+                    btnYears.classList.remove('active', 'bg-white', 'dark:bg-slate-600', 'text-slate-800', 'dark:text-slate-100', 'shadow-sm');
+                    btnYears.classList.add('text-slate-500', 'dark:text-slate-400', 'hover:text-slate-800');
+                    termInput.placeholder = "Ej: 60";
                 } else {
-                    if(box) box.classList.add('hidden');
-                    if(btn) btn.classList.remove('bg-rose-500/30');
-                    state.variableRate = '';
-                    state.variableRateMonth = '';
-                    const ivr = document.getElementById('input-variable-rate'); if(ivr) ivr.value = '';
-                    const ivm = document.getElementById('input-variable-month'); if(ivm) ivm.value = '';
-                    updateApp();
+                    btnYears.classList.add('active', 'bg-white', 'dark:bg-slate-600', 'text-slate-800', 'dark:text-slate-100', 'shadow-sm');
+                    btnYears.classList.remove('text-slate-500', 'dark:text-slate-400', 'hover:text-slate-800');
+                    btnMonths.classList.remove('active', 'bg-white', 'dark:bg-slate-600', 'text-slate-800', 'dark:text-slate-100', 'shadow-sm');
+                    btnMonths.classList.add('text-slate-500', 'dark:text-slate-400', 'hover:text-slate-800');
+                    termInput.placeholder = "Ej: 5";
                 }
-            });
-            
+                updateApp();
+            };
+
+            btnMonths?.addEventListener('click', () => setTermType('months'));
+            btnYears?.addEventListener('click', () => setTermType('years'));
+
             const today = new Date();
             const todayISO = today.toISOString().split('T')[0];
             const todayMonthStr = today.toISOString().slice(0, 7); 
@@ -1998,4 +1930,169 @@ Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro.
                 updateApp();
             });
 
-            ['input-invest-rate', 'input-target-
+            // Penalty input logic
+            const penaltyInput = document.getElementById('input-penalty-rate');
+            if(penaltyInput) {
+                penaltyInput.dataset.key = 'penaltyRate';
+                penaltyInput.addEventListener('input', handleNumberInputEvent);
+            }
+
+            document.getElementById('toggle-fixed-abono')?.addEventListener('change', (e) => {
+                state.isFixedAbono = e.target.checked;
+                document.getElementById('toggle-bg')?.classList.toggle('bg-amber-500', state.isFixedAbono);
+                document.getElementById('toggle-dot')?.classList.toggle('translate-x-6', state.isFixedAbono);
+                
+                const container = document.getElementById('fixed-abono-container');
+                if(state.isFixedAbono) {
+                    container?.classList.remove('hidden');
+                    setTimeout(() => container?.classList.remove('scale-y-0', 'opacity-0'), 10);
+                } else {
+                    container?.classList.add('hidden');
+                }
+                updateApp();
+            });
+
+            const btnStratTerm = document.getElementById('btn-strat-term');
+            const btnStratPay = document.getElementById('btn-strat-pay');
+            
+            const setStrategy = (strat) => {
+                state.abonoStrategy = strat;
+                if (strat === 'term') {
+                    if (btnStratTerm) btnStratTerm.className = 'px-4 py-2 text-xs sm:text-sm font-black rounded-lg transition-all bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 flex-1 md:flex-none tracking-wide active:scale-95';
+                    if (btnStratPay) btnStratPay.className = 'px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 md:flex-none tracking-wide active:scale-95';
+                } else {
+                    if (btnStratPay) btnStratPay.className = 'px-4 py-2 text-xs sm:text-sm font-black rounded-lg transition-all bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 flex-1 md:flex-none tracking-wide active:scale-95';
+                    if (btnStratTerm) btnStratTerm.className = 'px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 md:flex-none tracking-wide active:scale-95';
+                }
+                updateApp();
+            };
+
+            btnStratTerm?.addEventListener('click', () => setStrategy('term'));
+            btnStratPay?.addEventListener('click', () => setStrategy('payment'));
+
+            const fixedInput = document.getElementById('input-fixed-abono');
+            if (fixedInput) {
+                fixedInput.dataset.key = 'fixedAbonoAmount';
+                fixedInput.addEventListener('input', handleCurrencyInputEvent);
+            }
+            
+            document.getElementById('select-abono-freq')?.addEventListener('change', (e) => {
+                state.abonoFreq = e.target.value;
+                updateApp();
+            });
+
+            document.getElementById('toggle-advanced')?.addEventListener('change', (e) => {
+                state.showAdvanced = e.target.checked;
+                document.getElementById('advanced-toggle-bg')?.classList.toggle('bg-amber-500', state.showAdvanced);
+                document.getElementById('advanced-toggle-dot')?.classList.toggle('translate-x-6', state.showAdvanced);
+                
+                const advContainer = document.getElementById('advanced-container');
+                if(state.showAdvanced) {
+                    advContainer?.classList.remove('hidden');
+                    setTimeout(() => advContainer?.classList.add('visible'), 50);
+                    updateApp(); 
+                } else {
+                    advContainer?.classList.remove('visible');
+                    setTimeout(() => advContainer?.classList.add('hidden'), 500);
+                }
+            });
+
+            const setUITheme = (newTheme) => {
+                state.theme = newTheme;
+                document.documentElement.className = state.theme;
+                const btnLight = document.getElementById('btn-theme-light');
+                const btnDark = document.getElementById('btn-theme-dark');
+                if (state.theme === 'dark') {
+                    if (btnDark) btnDark.className = 'flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm font-semibold bg-slate-700 text-amber-400 shadow-inner border border-slate-600/50 active:scale-95';
+                    if (btnLight) btnLight.className = 'flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm font-bold text-gray-500 hover:text-amber-500 dark:text-slate-400 active:scale-95';
+                } else {
+                    if (btnLight) btnLight.className = 'flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm font-semibold bg-white text-amber-500 shadow-inner border border-slate-200/50 active:scale-95';
+                    if (btnDark) btnDark.className = 'flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm font-bold text-gray-500 hover:text-amber-500 active:scale-95';
+                }
+            };
+            document.getElementById('btn-theme-light')?.addEventListener('click', () => setUITheme('light'));
+            document.getElementById('btn-theme-dark')?.addEventListener('click', () => setUITheme('dark'));
+
+            document.getElementById('table-body')?.addEventListener('input', (e) => {
+                if (e.target.matches('.abono-input') && !state.isFixedAbono) {
+                    const idx = e.target.dataset.index;
+                    state.activeInputIndex = idx;
+                    let val = e.target.value.replace(/[^0-9.]/g, '');
+                    const parts = val.split('.');
+                    if(parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+                    if(val === '.') val = '0.';
+                    const [intP, decP] = val.split('.');
+                    let display = new Intl.NumberFormat('es-DO').format(intP || 0);
+                    if(decP !== undefined) display += `.${decP.substring(0, 2)}`;
+                    if(e.target.value.endsWith('.') && !display.includes('.')) display += '.';
+                    state.abonos[idx] = display;
+                    updateApp();
+                }
+            });
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    state.tableViewSize = parseInt(e.target.dataset.view);
+                    state.activeInputIndex = null;
+                    document.querySelectorAll('.view-btn').forEach(b => {
+                        b.className = 'view-btn px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 tracking-wide flex-1 sm:flex-none active:scale-95';
+                    });
+                    e.target.className = 'view-btn active px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 tracking-wide flex-1 sm:flex-none active:scale-95';
+                    updateApp();
+                });
+            });
+
+            const modal = document.getElementById('summary-modal');
+            const modalContent = document.getElementById('summary-modal-content');
+            document.getElementById('btn-show-summary')?.addEventListener('click', () => {
+                if (modal) modal.classList.remove('hidden');
+                setTimeout(() => { 
+                    if (modal) modal.classList.remove('opacity-0'); 
+                    if (modalContent) modalContent.classList.remove('scale-95'); 
+                }, 10);
+            });
+            document.getElementById('btn-close-summary')?.addEventListener('click', () => {
+                if (modal) modal.classList.add('opacity-0'); 
+                if (modalContent) modalContent.classList.add('scale-95');
+                setTimeout(() => { if (modal) modal.classList.add('hidden'); }, 300);
+            });
+
+            document.getElementById('btn-export-pdf')?.addEventListener('click', exportToPdf);
+            document.getElementById('btn-export-excel')?.addEventListener('click', exportToExcel);
+
+            document.getElementById('btn-tutorial-float')?.addEventListener('click', openTutorial);
+            document.getElementById('btn-close-tutorial')?.addEventListener('click', closeTutorial);
+            document.getElementById('btn-next-tutorial')?.addEventListener('click', () => {
+                if (state.tutorialStep < tutorialData.length - 1) {
+                    state.tutorialStep++;
+                    renderTutorialStep();
+                } else {
+                    closeTutorial();
+                }
+            });
+
+            // Llamar la atención al tutorial al iniciar (después de 4 segundos)
+            setTimeout(() => {
+                if(!state.isTutorialActive) {
+                    const floatBtn = document.getElementById('btn-tutorial-float');
+                    if (floatBtn) {
+                        floatBtn.classList.add('is-pinging');
+                        setTimeout(() => floatBtn.classList.remove('is-pinging'), 2500);
+                    }
+                }
+            }, 4000);
+
+            // Llamar la atención esporádicamente (cada 30 segundos, menos invasivo)
+            setInterval(() => {
+                if(!state.isTutorialActive) {
+                    const floatBtn = document.getElementById('btn-tutorial-float');
+                    if (floatBtn) {
+                        floatBtn.classList.add('is-pinging');
+                        setTimeout(() => floatBtn.classList.remove('is-pinging'), 2500);
+                    }
+                }
+            }, 30000); 
+        });
+    </script>
+</body>
+</html>
