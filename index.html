@@ -1,29 +1,2227 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información de la Boleta</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minimalismo Financiero</title>
+
+    <!-- Google tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=TU_ID_DE_ANALYTICS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'TU_ID_DE_ANALYTICS');
+    </script>
+
+    <!-- Tipografía expresiva y moderna (Outfit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        amber: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' },
+                        emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
+                        slate: { 850: '#151e2e', 900: '#0f172a' }
+                    },
+                    animation: {
+                        'float': 'float 6s cubic-bezier(0.25, 1, 0.5, 1) infinite',
+                        'float-delayed': 'float 6s cubic-bezier(0.25, 1, 0.5, 1) 3s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'wiggle': 'wiggle 1.5s cubic-bezier(0.25, 1, 0.5, 1) infinite',
+                        'bounce-slow': 'bounce 2.5s infinite',
+                        'shimmer': 'shimmer 2.5s ease-in-out infinite',
+                        'text-shimmer': 'textShimmer 4s ease-in-out infinite alternate',
+                        'attention': 'attention 2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both',
+                        'modal-pop': 'modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                        'slide-up-fade': 'slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'blob': 'blob 7s infinite',
+                        'expand-down': 'expandDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-15px)' } },
+                        wiggle: { '0%, 100%': { transform: 'rotate(-3deg)' }, '50%': { transform: 'rotate(3deg)' } },
+                        shimmer: { '0%': { transform: 'translateX(-100%) skewX(-15deg)' }, '50%, 100%': { transform: 'translateX(200%) skewX(-15deg)' } },
+                        textShimmer: { '0%': { backgroundPosition: '0% 50%' }, '100%': { backgroundPosition: '100% 50%' } },
+                        attention: {
+                            '0%, 100%': { transform: 'scale(1)', filter: 'brightness(1)' },
+                            '10%, 30%, 50%, 70%, 90%': { transform: 'scale(1.15) rotate(-3deg)', filter: 'brightness(1.2)' },
+                            '20%, 40%, 60%, 80%': { transform: 'scale(1.15) rotate(3deg)', filter: 'brightness(1.2)' }
+                        },
+                        modalPop: { '0%': { opacity: '0', transform: 'scale(0.85) translateY(30px)' }, '100%': { opacity: '1', transform: 'scale(1) translateY(0)' } },
+                        slideUpFade: { '0%': { opacity: '0', transform: 'translateY(40px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        blob: { '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' }, '33%': { transform: 'translate(30px, -50px) scale(1.1)' }, '66%': { transform: 'translate(-20px, 20px) scale(0.9)' } },
+                        expandDown: { '0%': { opacity: '0', maxHeight: '0px', transform: 'translateY(-10px)' }, '100%': { opacity: '1', maxHeight: '500px', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- jsPDF y SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
+        .fade-in-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+        .stagger-card { opacity: 0; transform: translateY(30px) scale(0.98); transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+        .stagger-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+        
+        .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.3); border-radius: 20px; transition: all 0.3s ease; border: 2px solid transparent; background-clip: content-box; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(156, 163, 175, 0.6); }
+
+        .splash-screen { transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1), filter 0.8s ease-out; z-index: 9999; }
+        .splash-hidden { opacity: 0; pointer-events: none; transform: translateY(-40px) scale(1.05); filter: blur(30px); }
+        
+        .stars-bg { background-image: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)); background-repeat: repeat; background-size: 200px 200px; animation: stars 15s linear infinite; }
+        
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1); } 50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.2); } }
+        .btn-glow { animation: glow 4s infinite; }
+        .bar-fill { transition: width 2s cubic-bezier(0.22, 1, 0.36, 1); }
+
+        @keyframes pan-grid { 0% { background-position: 0px 0px; } 100% { background-position: 60px 60px; } }
+        .bg-grid-pattern { background-size: 30px 30px; background-image: linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px); mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%); -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 20%, rgba(0,0,0,0) 80%); animation: pan-grid 25s linear infinite; will-change: background-position; }
+        .dark .bg-grid-pattern { background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px); }
+
+        .glass-edge { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 0 1px rgba(255,255,255,0.4), 0 10px 30px -10px rgba(0,0,0,0.05); }
+        .dark .glass-edge { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), inset 0 0 1px rgba(255,255,255,0.05), 0 10px 30px -10px rgba(0,0,0,0.3); }
+        
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.92) translateY(15px); } 70% { transform: scale(1.02); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        .animate-pop { animation: popIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+        .stagger-1 { animation-delay: 100ms; } .stagger-2 { animation-delay: 200ms; } .stagger-3 { animation-delay: 300ms; } .stagger-4 { animation-delay: 400ms; }
+
+        .is-pinging { animation: attention 2.5s ease-in-out !important; box-shadow: 0 0 40px rgba(245, 158, 11, 0.9) !important; }
+        .is-pinging > span { opacity: 1 !important; transform: translateX(0) !important; }
+        
+        #tutorial-focus { box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.88), 0 0 40px rgba(245, 158, 11, 0.4) inset; }
+
+        .text-gradient-shine { background: linear-gradient(to right, #fbbf24 20%, #fffbeb 40%, #fffbeb 60%, #fbbf24 80%); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; }
+
+        .premium-hover { transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .premium-hover:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1); }
+        .dark .premium-hover:hover { box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4), 0 0 20px rgba(16, 185, 129, 0.1); }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Información de la Boleta</h1>
-        <p id="boleta-info">Cargando...</p>
+<body class="bg-[#f8fafc] dark:bg-[#0b1120] text-slate-800 dark:text-gray-300 transition-colors duration-700 min-h-screen selection:bg-amber-500/30 relative overflow-x-hidden antialiased">
+    
+    <!-- Textura de Ruido Premium (Noise Texture) -->
+    <div class="fixed inset-0 opacity-[0.02] dark:opacity-[0.04] pointer-events-none mix-blend-overlay z-0" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+
+    <!-- Ambient Background Orbs (Blobs) -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[120px] animate-blob"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-[140px] animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute top-[40%] left-[20%] w-[30%] h-[30%] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[100px] animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Grid -->
+    <div class="fixed inset-0 bg-grid-pattern pointer-events-none z-0"></div>
+
+    <!-- Pantalla de Inicio Fija -->
+    <div id="splash-screen" class="splash-screen fixed inset-0 bg-slate-900 flex flex-col items-center justify-center overflow-hidden z-[9999]">
+        <div class="absolute inset-0 stars-bg opacity-40"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/60 via-slate-900/90 to-slate-900/90"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none"></div>
+        
+        <div class="relative flex flex-col items-center z-10 w-full max-w-4xl px-4 text-center">
+            <div class="relative w-48 h-48 mb-8 flex justify-center items-center">
+                <div class="absolute inset-0 bg-emerald-500/30 blur-[60px] rounded-full animate-pulse-slow"></div>
+                <div class="relative animate-float z-20">
+                    <i data-lucide="piggy-bank" class="w-32 h-32 text-emerald-400 drop-shadow-[0_0_30px_rgba(52,211,153,0.8)]"></i>
+                </div>
+                <i data-lucide="sparkles" class="absolute top-0 right-2 w-12 h-12 text-amber-300 animate-float-delayed z-30 drop-shadow-md"></i>
+                <i data-lucide="coins" class="absolute bottom-4 left-0 w-14 h-14 text-amber-500 animate-bounce z-30 drop-shadow-lg"></i>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[1.05] mb-6">
+                Bienvenido al <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 drop-shadow-xl bg-[length:200%_auto] animate-pulse-slow">Ahorro Estratégico</span>
+            </h1>
+            
+            <p class="text-gray-300 text-lg md:text-2xl font-medium max-w-2xl mx-auto mb-14 opacity-90 tracking-wide leading-relaxed">
+                Descubre cómo ganarle al banco, recuperar tu tiempo y quedarte con tu dinero usando Minimalismo Financiero.
+            </p>
+
+            <button id="btn-enter-app" class="relative overflow-hidden bg-gradient-to-r from-amber-500 to-amber-400 text-slate-900 font-black py-4 px-10 md:py-5 md:px-12 rounded-[2rem] hover:scale-[1.03] active:scale-95 transition-all duration-300 shadow-[0_0_40px_rgba(245,158,11,0.5)] hover:shadow-[0_0_60px_rgba(245,158,11,0.8)] flex items-center text-xl md:text-2xl uppercase tracking-wider group border border-amber-300/50">
+                <div class="absolute inset-0 w-1/4 h-full bg-white/40 blur-md transform -skew-x-12 animate-shimmer"></div>
+                <span class="relative z-10 flex items-center">
+                    Entrar al Ecosistema 
+                    <i data-lucide="arrow-right" class="ml-4 w-7 h-7 group-hover:translate-x-2 transition-transform duration-300"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Theme Selection -->
+    <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-[100] bg-white/80 dark:bg-slate-800/80 backdrop-blur-2xl p-1.5 sm:p-2 rounded-full flex items-center shadow-lg dark:shadow-md border border-slate-200/80 dark:border-gray-700/50 glass-edge transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <button id="btn-theme-light" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold text-gray-500 hover:text-amber-500 dark:text-gray-400 active:scale-95">
+            <i data-lucide="sun" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i> Claro
+        </button>
+        <button id="btn-theme-dark" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold bg-slate-700 text-amber-400 shadow-inner border border-slate-600/50 active:scale-95">
+            <i data-lucide="moon" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i> Oscuro
+        </button>
+    </div>
+
+    <!-- VISTA 1: SIMULADOR PRINCIPAL -->
+    <div id="app-wrapper" class="min-h-screen p-4 sm:p-6 lg:p-8 relative z-10 block">
+        <div class="max-w-7xl mx-auto pb-32 relative">
+
+            <!-- Header -->
+            <div class="fade-in-up text-center mb-12 sm:mb-16 mt-20 sm:mt-16 relative z-10">
+                <div class="inline-block mb-5 px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-white/90 dark:bg-emerald-900/40 border border-emerald-200 dark:border-emerald-700/50 text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm font-black tracking-widest uppercase shadow-sm backdrop-blur-xl glass-edge transition-transform duration-300 hover:scale-105 cursor-default">
+                    <span class="flex items-center"><i data-lucide="activity" class="w-4 h-4 mr-2 text-emerald-500 animate-pulse-fast"></i> Minimalismo Financiero</span>
+                </div>
+                <h1 id="main-title" class="text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] font-black tracking-tighter text-transparent drop-shadow-sm mb-4 sm:mb-6 leading-[1.05]">
+                    <span class="bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">Domina Tu </span><span class="text-gradient-shine drop-shadow-[0_5px_15px_rgba(245,158,11,0.2)] animate-text-shimmer">Deuda</span>
+                </h1>
+                <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed tracking-wide px-4">
+                    Visualiza tu camino hacia la libertad financiera. Estrategias de abono, análisis de costos y amortización detallada en un solo lugar.
+                </p>
+            </div>
+            
+            <!-- Inputs Section -->
+            <div id="tour-inputs" class="fade-in-up bg-white/95 dark:bg-slate-800/90 backdrop-blur-3xl p-6 sm:p-10 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-slate-200/80 dark:border-slate-700/60 glass-edge mb-12 relative overflow-hidden group" style="transition-delay: 150ms;">
+                <div class="absolute -top-32 -right-32 w-80 h-80 bg-amber-400/10 dark:bg-amber-400/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+                <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-400/10 dark:bg-emerald-400/15 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+                
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+                    <!-- Monto -->
+                    <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-1 transition-all duration-300">
+                        <label for="input-amount" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 ml-2 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Monto del Préstamo</label>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-5 md:left-6 text-slate-400 dark:text-slate-500 font-black text-lg md:text-xl group-focus-within/input:text-amber-500 transition-colors select-none">RD$</div>
+                            <input type="text" id="input-amount" placeholder="500,000" class="w-full pl-16 md:pl-20 pr-6 md:pr-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Tasa (CON ESCUDO VARIABLE) -->
+                    <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-2 transition-all duration-300">
+                        <div class="flex justify-between items-end mb-2 sm:mb-3 ml-2">
+                            <label for="input-interest" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Tasa Anual</label>
+                            <button id="btn-toggle-variable" class="text-[10px] sm:text-xs text-rose-500 dark:text-rose-400 font-bold bg-rose-500/10 px-2.5 py-1 rounded-lg hover:bg-rose-500/20 transition-all flex items-center shadow-inner border border-rose-500/20 active:scale-95"><i data-lucide="zap" class="w-3 h-3 mr-1"></i> Añadir Tasa Variable</button>
+                        </div>
+                        <div class="relative flex items-center">
+                            <input type="text" id="input-interest" placeholder="18" class="w-full pl-6 md:pl-8 pr-12 md:pr-14 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
+                            <div class="absolute right-5 md:right-6 text-slate-400 dark:text-slate-500 font-black text-xl md:text-2xl group-focus-within/input:text-amber-500 transition-colors select-none">%</div>
+                        </div>
+
+                        <!-- Panel Tasa Variable -->
+                        <div id="variable-rate-box" class="hidden animate-expand-down mt-3 p-4 bg-gradient-to-r from-rose-50 to-orange-50 dark:from-rose-900/20 dark:to-orange-900/10 border border-rose-200/80 dark:border-rose-800/40 rounded-2xl shadow-inner">
+                            <div class="flex items-center text-rose-600 dark:text-rose-400 font-black text-xs uppercase tracking-widest mb-3"><i data-lucide="shield-alert" class="w-4 h-4 mr-1.5"></i> Escudo Variable</div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-widest">Sube a (%)</label>
+                                    <input type="text" id="input-variable-rate" placeholder="20" class="w-full px-3 py-2 text-sm font-black bg-white dark:bg-slate-900/80 border border-rose-200 dark:border-rose-800/50 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none text-slate-800 dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-widest">A partir del mes</label>
+                                    <input type="text" id="input-variable-month" placeholder="24" class="w-full px-3 py-2 text-sm font-black bg-white dark:bg-slate-900/80 border border-rose-200 dark:border-rose-800/50 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none text-slate-800 dark:text-white">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plazo -->
+                    <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-3 transition-all duration-300">
+                        <label for="input-term" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 ml-2 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Plazo (Meses)</label>
+                        <input type="text" id="input-term" placeholder="Ej: 60" class="w-full px-6 md:px-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
+                    </div>
+                    <!-- Seguro -->
+                    <div class="relative group/input opacity-0 animate-[slideUpFade_0.6s_cubic-bezier(0.22,1,0.36,1)_forwards] stagger-4 transition-all duration-300">
+                        <label for="input-insurance" class="block text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 ml-2 group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Seguro (Mensual)</label>
+                        <div class="relative flex items-center">
+                            <div class="absolute left-5 md:left-6 text-slate-400 dark:text-slate-500 font-black text-lg md:text-xl group-focus-within/input:text-amber-500 transition-colors select-none">RD$</div>
+                            <input type="text" id="input-insurance" placeholder="800" class="w-full pl-16 md:pl-20 pr-6 md:pr-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out text-slate-900 dark:text-white placeholder-slate-300 dark:placeholder-slate-600 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuración Opcional: Fecha -->
+                <div class="mt-8 pt-8 border-t border-slate-200/50 dark:border-slate-700/50 relative z-10 flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                        <label class="flex items-center cursor-pointer group w-full sm:w-max p-3 -ml-3 rounded-2xl hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors active:scale-[0.98]">
+                            <div class="relative flex-shrink-0">
+                                <input type="checkbox" id="toggle-start-date" class="sr-only">
+                                <div id="toggle-date-bg" class="block w-12 h-7 rounded-full transition-colors duration-300 bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-600 shadow-inner"></div>
+                                <div id="toggle-date-dot" class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-transform duration-300 shadow-sm"></div>
+                            </div>
+                            <div class="ml-3 text-slate-600 dark:text-slate-300 font-bold text-sm sm:text-base tracking-tight group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors flex items-center select-none"><i data-lucide="calendar" class="w-4.5 h-4.5 mr-2 opacity-80"></i> Definir Fecha de Inicio del Préstamo</div>
+                        </label>
+
+                        <div id="start-date-container" class="hidden relative group/input w-full sm:w-auto transition-all duration-300 fade-in-up visible">
+                            <input type="date" id="input-start-date" onclick="try { this.showPicker(); } catch(e) {}" class="w-full sm:w-auto px-5 py-3.5 text-sm md:text-base font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-2xl shadow-inner focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-slate-800 dark:text-white outline-none cursor-pointer hover:shadow-md focus:scale-[1.02] focus:-translate-y-1">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Estrategia de Abonos -->
+                <div id="tour-strategy" class="relative z-10 mt-8 sm:mt-12 pt-8 sm:pt-10 border-t border-slate-200/80 dark:border-slate-700/60 flex flex-col gap-6">
+                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                        <label class="flex items-center cursor-pointer group w-full xl:w-max p-3 -ml-3 rounded-2xl hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors active:scale-[0.98]">
+                            <div class="relative flex-shrink-0">
+                                <input type="checkbox" id="toggle-fixed-abono" class="sr-only">
+                                <div id="toggle-bg" class="block w-14 h-8 rounded-full transition-colors duration-300 bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-600 shadow-inner border border-black/5 dark:border-white/5"></div>
+                                <div id="toggle-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 shadow-md"></div>
+                            </div>
+                            <div class="ml-4 text-slate-800 dark:text-slate-200 font-black text-lg sm:text-xl tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors select-none flex items-center">
+                                Estrategia de Abonos <i data-lucide="zap" class="w-5 h-5 ml-2 text-amber-500 hidden sm:block"></i>
+                            </div>
+                        </label>
+                        
+                        <!-- Selector Global de Estrategia -->
+                        <div class="bg-slate-200/80 dark:bg-slate-900 p-1.5 rounded-2xl flex flex-wrap items-center shadow-inner border border-black/5 dark:border-white/5 w-full xl:w-auto gap-1 sm:gap-0">
+                            <button id="btn-strat-term" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 flex-1 xl:flex-none tracking-wide active:scale-95">Reducir Plazo</button>
+                            <button id="btn-strat-pay" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 xl:flex-none tracking-wide active:scale-95">Reducir Cuota</button>
+                            <button id="btn-strat-target" class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 xl:flex-none tracking-wide active:scale-95 relative overflow-hidden group/meta">
+                                <span class="relative z-10 flex items-center justify-center">Fijar Meta <i data-lucide="target" class="w-3.5 h-3.5 ml-1.5 opacity-70 group-hover/meta:opacity-100"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="fixed-abono-container" class="w-full hidden bg-gradient-to-br from-amber-50/40 to-transparent dark:from-amber-900/10 dark:to-transparent p-6 sm:p-8 rounded-[2rem] border border-amber-200/80 dark:border-amber-800/30 shadow-sm transition-all duration-500 origin-top">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                            <!-- Monto Extra / Meses Meta -->
+                            <div id="wrapper-abono-amount" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1 block">
+                                <label for="input-fixed-abono" class="block text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">Monto Extra</label>
+                                <div class="relative flex items-center">
+                                    <div class="absolute left-5 text-amber-500/60 dark:text-slate-500 font-black text-lg group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors select-none">RD$</div>
+                                    <input type="text" id="input-fixed-abono" placeholder="2,500" class="w-full pl-16 pr-6 py-4 md:py-4 text-xl font-black bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-amber-700 dark:text-amber-400 placeholder-amber-200 dark:placeholder-slate-600 outline-none hover:shadow-md">
+                                </div>
+                            </div>
+                            
+                            <div id="wrapper-target-months" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1 hidden">
+                                <label for="input-target-months" class="block text-xs sm:text-sm font-black text-purple-700 dark:text-purple-400 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-purple-600 transition-colors cursor-pointer flex items-center">Terminar en (Meses) <i data-lucide="target" class="w-3.5 h-3.5 ml-1.5"></i></label>
+                                <div class="relative flex items-center">
+                                    <input type="text" id="input-target-months" placeholder="Ej: 36" class="w-full px-6 py-4 md:py-4 text-xl font-black bg-purple-50/50 dark:bg-purple-900/20 border border-purple-300/80 dark:border-purple-600/50 rounded-2xl shadow-inner focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-purple-800 dark:text-purple-300 placeholder-purple-300 dark:placeholder-purple-800/50 outline-none hover:shadow-md">
+                                </div>
+                                <div id="target-abono-result" class="absolute -bottom-7 left-2 text-[10px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 tracking-wide"></div>
+                            </div>
+                            
+                            <!-- Frecuencia -->
+                            <div class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1" id="wrapper-abono-freq">
+                                <label for="select-abono-freq" class="block text-xs sm:text-sm font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors cursor-pointer">¿Con qué frecuencia?</label>
+                                <div class="relative">
+                                    <select id="select-abono-freq" class="w-full py-4 pl-6 pr-12 text-lg font-bold bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-slate-900 dark:text-white appearance-none cursor-pointer outline-none hover:shadow-md">
+                                        <option value="0">Único (Una sola vez)</option>
+                                        <option value="1" selected>Mensual (Todos los meses)</option>
+                                        <option value="2">Bimestral (Cada 2 meses)</option>
+                                        <option value="3">Trimestral (Cada 3 meses)</option>
+                                        <option value="6">Semestral (Cada 6 meses)</option>
+                                        <option value="12">Anual (Una vez al año)</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-5 text-amber-500">
+                                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cuota de Inicio -->
+                            <div id="abono-start-container" class="relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1" title="Indica desde qué mes comenzarás a aplicar este abono extra.">
+                                <label for="input-abono-start-month" class="block text-[10px] sm:text-xs font-black text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 ml-2 uppercase tracking-widest group-focus-within/input:text-amber-600 dark:group-focus-within/input:text-amber-400 transition-colors flex items-center cursor-pointer">
+                                    Iniciar abonos en <i data-lucide="calendar-clock" class="w-4 h-4 ml-1.5 opacity-60"></i>
+                                </label>
+                                <div class="relative flex items-center">
+                                    <input type="month" id="input-abono-start-month" onclick="try { this.showPicker(); } catch(e) {}" class="w-full px-6 py-4 text-lg font-black bg-white dark:bg-slate-900/95 border border-amber-300/80 dark:border-amber-600/40 rounded-2xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 focus:scale-[1.02] focus:-translate-y-1 transition-all duration-300 text-slate-900 dark:text-white outline-none cursor-pointer hover:shadow-md">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="fade-in-up text-center bg-white/60 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/30 text-slate-500 dark:text-slate-400 p-16 rounded-[3rem] shadow-xl backdrop-blur-2xl glass-edge mt-8 transition-all duration-500" style="transition-delay: 300ms;">
+                <div class="w-24 h-24 mx-auto mb-6 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center shadow-inner border border-slate-200 dark:border-slate-700 relative">
+                    <i data-lucide="leaf" class="w-12 h-12 text-emerald-400/80 relative z-10"></i>
+                    <div class="absolute inset-0 bg-emerald-400/20 rounded-full blur-2xl animate-pulse-slow"></div>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-slate-700 dark:text-slate-200 mb-3">Ecosistema en Reposo</h2>
+                <p class="text-lg font-medium max-w-md mx-auto mb-8">Ingresa los datos de tu préstamo arriba para despertar la calculadora y descubrir tu verdadero potencial de ahorro.</p>
+                <i data-lucide="arrow-up" class="w-8 h-8 text-amber-500 animate-bounce mx-auto opacity-80"></i>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-container" class="hidden mt-8">
+                
+                <!-- REACCIÓN GRACIOSA -->
+                <div id="funny-reaction-banner" class="hidden mb-10 sm:mb-12 bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500 dark:from-amber-700/90 dark:via-amber-600/90 dark:to-yellow-600/90 p-6 sm:p-10 rounded-[2.5rem] shadow-[0_15px_40px_rgba(245,158,11,0.35)] border-[3px] border-amber-200/80 dark:border-amber-500/80 transform transition-transform duration-500 hover:scale-[1.01] hover:shadow-[0_25px_50px_rgba(245,158,11,0.45)] relative overflow-hidden glass-edge stagger-card">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4yKSIvPjwvc3ZnPg==')] opacity-50 mix-blend-overlay"></div>
+                    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div class="absolute text-4xl sm:text-5xl animate-float opacity-30 drop-shadow-md" style="left: 10%; top: 20%; animation-delay: 0s;">💸</div>
+                        <div class="absolute text-5xl sm:text-6xl animate-float opacity-20 drop-shadow-md" style="left: 85%; top: 30%; animation-delay: 1s;">🤑</div>
+                        <div class="absolute text-3xl sm:text-4xl animate-float opacity-30 drop-shadow-md" style="left: 50%; top: 5%; animation-delay: 2s;">🔥</div>
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col sm:flex-row items-center sm:justify-between text-center sm:text-left">
+                        <div class="flex flex-col sm:flex-row items-center">
+                            <div class="text-6xl sm:text-8xl mb-4 sm:mb-0 sm:mr-8 animate-bounce-slow drop-shadow-[0_10px_15px_rgba(0,0,0,0.2)]">🤯</div>
+                            <div>
+                                <h3 class="text-xl sm:text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter uppercase drop-shadow-sm">¡Concho, qué barbaridad!</h3>
+                                <p id="funny-reaction-text" class="text-amber-950 dark:text-amber-50 font-bold text-base sm:text-xl leading-snug drop-shadow-sm tracking-wide"></p>
+                            </div>
+                        </div>
+                        <i data-lucide="flame" class="w-14 h-14 sm:w-20 sm:h-20 text-orange-600 dark:text-orange-400 hidden lg:block animate-wiggle drop-shadow-lg opacity-90 z-10"></i>
+                    </div>
+                </div>
+
+                <!-- Impact Wrapper -->
+                <div id="tour-metrics">
+                    <div class="flex items-center justify-center mb-8 sm:mb-10 gap-4 sm:gap-5 stagger-card">
+                        <div class="h-[2px] bg-slate-200 dark:bg-slate-700 flex-1 max-w-[50px] sm:max-w-[100px] rounded-full"></div>
+                        <h2 class="text-3xl sm:text-5xl font-black text-slate-800 dark:text-slate-100 text-center tracking-tighter drop-shadow-sm">Tu Impacto Tangible</h2>
+                        <div class="h-[2px] bg-slate-200 dark:bg-slate-700 flex-1 max-w-[50px] sm:max-w-[100px] rounded-full"></div>
+                    </div>
+                    
+                    <div id="key-metrics-grid-top" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8 stagger-card"></div>
+                    <div id="key-metrics-grid-bottom" class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16 stagger-card"></div>
+                    
+                    <!-- Cost Analysis -->
+                    <div class="bg-white/90 dark:bg-slate-800/40 backdrop-blur-3xl p-8 sm:p-12 rounded-[3rem] md:rounded-[3.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.4)] border border-slate-200/80 dark:border-slate-700/60 glass-edge mb-12 sm:mb-16 transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] group stagger-card">
+                        <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[3rem] pointer-events-none"></div>
+                        <h2 class="text-3xl sm:text-4xl font-black text-slate-800 dark:text-slate-100 mb-10 text-center tracking-tighter relative z-10">Análisis de Costos Comparativo</h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 relative z-10">
+                            <!-- Plan Original -->
+                            <div class="bg-slate-50/90 dark:bg-slate-900/50 p-6 sm:p-8 rounded-[2.5rem] border border-slate-200/80 dark:border-slate-700/80 transition-transform duration-500 hover:-translate-y-2 shadow-inner">
+                                <h3 class="text-xs sm:text-sm font-black tracking-widest uppercase text-center mb-6 sm:mb-8 text-slate-500 dark:text-slate-400">Plan Original</h3>
+                                <div id="original-plan-metrics" class="space-y-4"></div>
+                            </div>
+                            <!-- Plan Acelerado -->
+                            <div class="bg-gradient-to-b from-amber-50/90 to-orange-50/70 dark:from-amber-900/20 dark:to-orange-900/10 p-6 sm:p-8 rounded-[2.5rem] border border-amber-200/80 dark:border-amber-800/40 relative shadow-inner transition-transform duration-500 hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(245,158,11,0.15)]">
+                                <div class="absolute -top-4 -right-2 bg-gradient-to-r from-amber-500 to-orange-400 text-white text-[10px] sm:text-xs font-black px-5 py-2 rounded-full shadow-lg transform rotate-3 shadow-amber-500/40 border border-white/30 tracking-widest uppercase">¡TU ATAQUE!</div>
+                                <h3 class="text-xs sm:text-sm font-black tracking-widest uppercase text-center mb-6 sm:mb-8 text-amber-600 dark:text-amber-400">Plan Acelerado</h3>
+                                <div id="accelerated-plan-metrics" class="space-y-4"></div>
+                            </div>
+                            <!-- Diferencia Neta -->
+                            <div class="bg-gradient-to-b from-emerald-50/90 to-teal-50/70 dark:from-emerald-900/20 dark:to-teal-900/10 p-6 sm:p-8 rounded-[2.5rem] border border-emerald-200/80 dark:border-emerald-800/40 relative shadow-inner transition-transform duration-500 hover:-translate-y-2 hover:shadow-[0_15px_30px_rgba(16,185,129,0.15)]">
+                                <div class="absolute -top-4 -right-2 bg-gradient-to-r from-emerald-500 to-teal-400 text-white text-[10px] sm:text-xs font-black px-5 py-2 rounded-full shadow-lg transform rotate-6 shadow-emerald-500/40 border border-white/30 tracking-widest uppercase">¡TU GANANCIA!</div>
+                                <h3 class="text-xs sm:text-sm font-black tracking-widest uppercase text-center mb-6 sm:mb-8 text-emerald-600 dark:text-emerald-400">Diferencia Neta</h3>
+                                <div id="difference-plan-metrics" class="space-y-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Toggle -->
+                <div class="mb-12 flex justify-center stagger-card">
+                    <label class="flex items-center cursor-pointer group p-4 rounded-2xl hover:bg-white/80 dark:hover:bg-slate-800/50 backdrop-blur-md transition-all duration-300 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 shadow-sm hover:shadow-lg active:scale-95">
+                        <div class="relative flex-shrink-0">
+                            <input type="checkbox" id="toggle-advanced" class="sr-only">
+                            <div id="advanced-toggle-bg" class="block w-14 h-8 rounded-full transition-colors duration-300 bg-slate-300 dark:bg-slate-700 group-hover:bg-slate-400 dark:group-hover:bg-slate-600 shadow-inner"></div>
+                            <div id="advanced-toggle-dot" class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 shadow-md"></div>
+                        </div>
+                        <div class="ml-4 text-slate-700 dark:text-slate-300 font-bold text-base sm:text-xl tracking-wide group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors select-none">Mostrar Centro de Inteligencia Premium</div>
+                    </label>
+                </div>
+
+                <!-- Advanced Section -->
+                <div id="advanced-container" class="hidden mb-12 sm:mb-16 space-y-8 sm:space-y-12">
+                    
+                    <!-- ANÁLISIS DE PENALIDAD -->
+                    <div id="tour-penalty-analysis" class="bg-gradient-to-br from-rose-50/90 to-orange-50/60 dark:from-rose-900/20 dark:to-orange-900/10 p-6 sm:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-rose-200/80 dark:border-rose-800/40 shadow-lg dark:shadow-md relative overflow-hidden group transition-all duration-500 hover:shadow-[0_30px_60px_rgba(225,29,72,0.15)] stagger-card">
+                        <i data-lucide="alert-octagon" class="absolute -right-5 -bottom-5 sm:-right-10 sm:-bottom-10 w-40 h-40 sm:w-64 sm:h-64 text-rose-500/10 dark:text-rose-400/5 group-hover:scale-110 transition-transform duration-1000 ease-out pointer-events-none"></i>
+                        
+                        <h3 class="text-xl sm:text-2xl font-black uppercase tracking-widest text-rose-800 dark:text-rose-300 mb-4 sm:mb-5 flex items-center relative z-10">
+                            <i data-lucide="scissors" class="w-6 h-6 sm:w-8 sm:h-8 mr-3 sm:mr-4 text-rose-500 flex-shrink-0"></i> La Trampa Oculta: Penalidad por Abono
+                        </h3>
+                        <p class="text-sm sm:text-base text-rose-700/90 dark:text-rose-200/70 mb-8 sm:mb-10 max-w-3xl font-medium leading-relaxed relative z-10">
+                            A los bancos no les gusta que les pagues antes porque pierden dinero. Por eso, muchos te cobran una <strong>Penalidad por Abono Extraordinario</strong>. Descubre matemáticamente si lo que vas a pagar de multa es mayor al ahorro que conseguirás.
+                        </p>
+
+                        <div class="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-10 sm:mb-12 relative z-10 items-stretch lg:items-center">
+                            <div class="w-full lg:w-1/3 relative group/input transition-transform hover:-translate-y-1 focus-within:-translate-y-1">
+                                <label for="input-penalty-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-rose-700 dark:text-rose-400 mb-3 group-focus-within/input:text-rose-600 transition-colors cursor-pointer">% Penalidad del Banco</label>
+                                <div class="relative flex items-center">
+                                    <input type="text" id="input-penalty-rate" value="3" placeholder="Ej: 3" class="w-full pl-6 md:pl-8 pr-12 md:pr-14 py-4 md:py-5 text-xl md:text-2xl font-black bg-white dark:bg-slate-900/95 border border-rose-300/80 dark:border-rose-600/50 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-rose-500/30 focus:border-rose-500 focus:scale-[1.02] transition-all duration-300 text-rose-900 dark:text-white outline-none">
+                                    <div class="absolute right-5 md:right-6 text-rose-400 dark:text-rose-500 font-black text-xl md:text-2xl group-focus-within/input:text-rose-600 transition-colors select-none">%</div>
+                                </div>
+                            </div>
+                            <div id="penalty-recommendation" class="flex-1 p-5 sm:p-6 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-rose-100 dark:border-slate-700/60 flex items-center shadow-md h-full transition-all duration-500 hover:shadow-lg">
+                                <!-- Dinámico -->
+                            </div>
+                        </div>
+
+                        <div class="space-y-8 sm:space-y-10 relative z-10 bg-white/60 dark:bg-slate-900/40 p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-rose-100 dark:border-rose-800/30 shadow-sm dark:shadow-none">
+                            <div class="relative">
+                                <div class="flex justify-between text-xs sm:text-sm font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400 mb-3 px-2">
+                                    <span class="truncate pr-2">Lo que Ahorras en Intereses</span>
+                                    <span id="label-penalty-savings" class="flex-shrink-0 text-emerald-600 dark:text-emerald-400">RD$ 0</span>
+                                </div>
+                                <div class="w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full h-10 sm:h-12 shadow-inner overflow-hidden border border-black/5 dark:border-white/5">
+                                    <div id="bar-penalty-savings" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full bar-fill relative" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <div class="flex justify-between text-xs sm:text-sm font-black uppercase tracking-widest text-rose-700 dark:text-rose-400 mb-3 px-2">
+                                    <span class="truncate pr-2">Multa / Penalidad a Pagar</span>
+                                    <span id="label-penalty-cost" class="flex-shrink-0 text-rose-600 dark:text-rose-400">RD$ 0</span>
+                                </div>
+                                <div class="w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full h-10 sm:h-12 shadow-inner overflow-hidden border border-black/5 dark:border-white/5">
+                                    <div id="bar-penalty-cost" class="bg-gradient-to-r from-rose-400 to-red-600 h-full rounded-full bar-fill shadow-[0_0_25px_rgba(225,29,72,0.4)] relative overflow-hidden" style="width: 0%">
+                                        <div class="absolute inset-0 w-[200%] h-full bg-white/20 transform -skew-x-12 animate-shimmer"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- REFINANCIAMIENTO -->
+                    <div id="tour-refinance" class="bg-gradient-to-br from-indigo-50/90 to-cyan-50/60 dark:from-indigo-900/20 dark:to-cyan-900/10 p-6 sm:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-indigo-200/80 dark:border-indigo-800/40 shadow-lg dark:shadow-md relative overflow-hidden group transition-all duration-500 hover:shadow-[0_30px_60px_rgba(99,102,241,0.15)] stagger-card">
+                        <i data-lucide="refresh-cw" class="absolute -right-5 -bottom-5 sm:-right-10 sm:-bottom-10 w-40 h-40 sm:w-64 sm:h-64 text-indigo-500/10 dark:text-indigo-400/5 group-hover:scale-110 group-hover:rotate-12 transition-all duration-1000 ease-out pointer-events-none"></i>
+                        
+                        <h3 class="text-xl sm:text-2xl font-black uppercase tracking-widest text-indigo-800 dark:text-indigo-300 mb-4 sm:mb-5 flex items-center relative z-10">
+                            <i data-lucide="building" class="w-6 h-6 sm:w-8 sm:h-8 mr-3 sm:mr-4 text-indigo-500 flex-shrink-0"></i> Evaluador de Compra de Deuda
+                        </h3>
+                        <p class="text-sm sm:text-base text-indigo-700/90 dark:text-indigo-200/70 mb-8 sm:mb-10 max-w-3xl font-medium leading-relaxed relative z-10">
+                            ¿Otro banco te ofrece una tasa menor? Cuidado, a veces los gastos legales y de cierre anulan el ahorro. Ingresa la propuesta del otro banco y <strong>descubre matemáticamente si vale la pena cambiarte o quedarte.</strong>
+                        </p>
+
+                        <div class="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-4 relative z-10 items-stretch lg:items-center">
+                            <div class="w-full lg:w-1/2 flex flex-col sm:flex-row gap-4">
+                                <div class="relative group/input flex-1 transition-all duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1">
+                                    <label for="input-ref-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400 mb-3 group-focus-within/input:text-indigo-600 transition-colors cursor-pointer">Nueva Tasa Ofertada</label>
+                                    <div class="relative flex items-center">
+                                        <input type="text" id="input-ref-rate" placeholder="Ej: 11.5" class="w-full pl-6 md:pl-8 pr-12 md:pr-14 py-4 md:py-5 text-xl md:text-2xl font-black bg-white dark:bg-slate-900/95 border border-indigo-300/80 dark:border-indigo-600/50 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-indigo-500/30 focus:border-indigo-500 focus:scale-[1.02] transition-all duration-300 text-indigo-900 dark:text-white outline-none">
+                                        <div class="absolute right-5 md:right-6 text-indigo-400 dark:text-indigo-500 font-black text-xl md:text-2xl group-focus-within/input:text-indigo-600 transition-colors select-none">%</div>
+                                    </div>
+                                </div>
+                                <div class="relative group/input flex-1 transition-all duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1">
+                                    <label for="input-ref-cost" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400 mb-3 group-focus-within/input:text-indigo-600 transition-colors cursor-pointer">Gastos de Cierre</label>
+                                    <div class="relative flex items-center">
+                                        <div class="absolute left-5 md:left-6 text-indigo-400 dark:text-indigo-500 font-black text-lg md:text-xl group-focus-within/input:text-indigo-600 transition-colors select-none">RD$</div>
+                                        <input type="text" id="input-ref-cost" placeholder="15,000" class="w-full pl-16 md:pl-20 pr-6 md:pr-8 py-4 md:py-5 text-xl md:text-2xl font-black bg-white dark:bg-slate-900/95 border border-indigo-300/80 dark:border-indigo-600/50 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-indigo-500/30 focus:border-indigo-500 focus:scale-[1.02] transition-all duration-300 text-indigo-900 dark:text-white outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="refinance-recommendation" class="flex-1 p-5 sm:p-6 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-indigo-100 dark:border-slate-700/60 flex items-center shadow-md h-full transition-all duration-500 hover:shadow-lg">
+                                <!-- Dinámico -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Executive Summary Button -->
+                <div id="tour-report" class="stagger-card">
+                    <div class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 p-10 sm:p-14 md:p-20 rounded-[3rem] md:rounded-[4rem] shadow-[0_30px_60px_rgba(16,185,129,0.35)] mt-12 sm:mt-16 text-center relative overflow-hidden group border border-emerald-400/30 cursor-default">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xNSKSIvPjwvc3ZnPg==')] opacity-60 mix-blend-overlay transition-transform duration-1000 ease-out group-hover:scale-110"></div>
+                        <div class="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-[80px] pointer-events-none transition-colors duration-700 group-hover:bg-white/20"></div>
+                        <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-teal-300/20 rounded-full blur-[80px] pointer-events-none transition-colors duration-700 group-hover:bg-teal-300/30"></div>
+                        
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="bg-white/10 p-4 sm:p-5 rounded-full mb-6 sm:mb-8 backdrop-blur-sm border border-white/20 shadow-inner">
+                                <i data-lucide="file-check-2" class="w-10 h-10 sm:w-12 sm:h-12 text-emerald-100"></i>
+                            </div>
+                            <h2 class="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-4 sm:mb-6 tracking-tighter drop-shadow-md">Tu Reporte de Acción</h2>
+                            <p class="text-emerald-50 font-medium mb-10 sm:mb-12 text-base sm:text-xl md:text-2xl max-w-3xl mx-auto opacity-95 tracking-wide leading-relaxed px-4">Descarga el análisis completo de tu victoria y toma el control de tu futuro financiero hoy mismo.</p>
+                            
+                            <button id="btn-show-summary" class="relative overflow-hidden bg-slate-900 text-white font-black py-4 px-8 md:py-5 md:px-16 rounded-[2rem] hover:bg-black active:scale-95 transition-all inline-flex items-center shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.6)] hover:-translate-y-2 duration-300 text-lg sm:text-xl md:text-2xl border border-slate-700/50 tracking-wider uppercase group/btn">
+                                <div class="absolute inset-0 w-[150%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-shimmer"></div>
+                                <span class="relative z-10 flex items-center">
+                                    Ver Análisis y Exportar 
+                                    <i data-lucide="arrow-right" class="ml-3 sm:ml-4 w-6 h-6 sm:w-7 sm:h-7 text-emerald-400 group-hover/btn:translate-x-2 transition-transform duration-300 ease-out"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Amortization Table -->
+                <div class="stagger-card">
+                    <div id="tour-table" class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-3xl rounded-[2.5rem] md:rounded-[3.5rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)] border border-slate-200/80 dark:border-slate-700/60 mt-12 sm:mt-16 overflow-hidden glass-edge transition-all duration-500 hover:shadow-2xl">
+                        <div class="p-5 sm:p-8 md:p-10 flex flex-col lg:flex-row justify-between items-center gap-5 lg:gap-0 bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/80 dark:to-slate-800 border-b border-slate-200/80 dark:border-slate-700/50 shadow-sm relative z-20">
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-slate-800 dark:text-slate-100 tracking-tight flex items-center">
+                                <div class="p-2.5 sm:p-3 bg-emerald-100 dark:bg-emerald-900/40 rounded-xl sm:rounded-2xl mr-4 shadow-inner flex-shrink-0 border border-emerald-200 dark:border-emerald-800/50">
+                                    <i data-lucide="list-ordered" class="text-emerald-600 dark:text-emerald-400 w-6 h-6 sm:w-7 sm:h-7"></i>
+                                </div>
+                                Amortización Dinámica
+                            </h2>
+                            <div class="bg-slate-200/80 dark:bg-slate-900 p-1.5 sm:p-2 rounded-2xl flex flex-wrap items-center shadow-inner border border-black/5 dark:border-white/5 w-full lg:w-auto justify-center gap-1 sm:gap-0 sm:space-x-1">
+                                <button data-view="1" class="view-btn active px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 tracking-wide flex-1 sm:flex-none active:scale-95">Mensual</button>
+                                <button data-view="3" class="view-btn px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 tracking-wide flex-1 sm:flex-none active:scale-95">Trimestral</button>
+                                <button data-view="6" class="view-btn px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 tracking-wide flex-1 sm:flex-none active:scale-95">Semestral</button>
+                                <button data-view="12" class="view-btn px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 tracking-wide flex-1 sm:flex-none active:scale-95">Anual</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar max-h-[600px] sm:max-h-[800px] relative z-10 bg-white/70 dark:bg-slate-800/50">
+                            <table class="min-w-full relative border-collapse">
+                                <thead id="table-head" class="sticky top-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl z-20 shadow-sm border-b border-slate-200 dark:border-slate-700"></thead>
+                                <tbody id="table-body" class="divide-y divide-slate-100/80 dark:divide-slate-700/50"></tbody>
+                                <tfoot id="table-foot" class="bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-2xl font-black sticky bottom-0 z-20 shadow-[0_-15px_30px_-5px_rgba(0,0,0,0.05)] dark:shadow-[0_-15px_30px_-5px_rgba(0,0,0,0.3)] border-t border-slate-200 dark:border-slate-700"></tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- BOTÓN AL LABORATORIO DE ESCENARIOS -->
+                <div class="mt-16 flex justify-center fade-in-up">
+                    <button id="btn-open-lab" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-5 px-10 rounded-full shadow-[0_20px_40px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_25px_50px_rgba(255,255,255,0.15)] transition-all duration-500 hover:-translate-y-2 active:scale-95 flex items-center gap-3 uppercase tracking-widest text-sm sm:text-base border border-slate-700/50 dark:border-slate-200/50 group">
+                        <i data-lucide="flask-conical" class="w-6 h-6 text-amber-400 dark:text-amber-500 group-hover:rotate-12 transition-transform"></i>
+                        Ingresar a Labs (Experimental)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LABORATORIO DE ESCENARIOS (VISTA OCULTA PREMIUM) -->
+    <div id="scenarios-wrapper" class="hidden min-h-screen p-4 sm:p-6 lg:p-8 relative z-20 bg-[#f8fafc] dark:bg-[#0b1120] transition-colors duration-700 pb-32">
+        <div class="max-w-5xl mx-auto mt-8 sm:mt-12">
+            
+            <button id="btn-back-sim" class="mb-12 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white font-bold flex items-center gap-2 transition-colors group">
+                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Volver al Simulador Principal
+            </button>
+            
+            <div class="mb-16">
+                <div class="inline-block mb-4 px-4 py-1.5 rounded-full bg-purple-100/90 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/50 text-purple-800 dark:text-purple-400 text-xs font-black tracking-widest uppercase shadow-sm">
+                    <span class="flex items-center"><i data-lucide="flask-conical" class="w-3.5 h-3.5 mr-2"></i> Centro de Inteligencia</span>
+                </div>
+                <h2 class="text-4xl sm:text-6xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter mb-6 leading-tight">Explora lo que viene.</h2>
+                <p class="text-lg md:text-2xl text-slate-600 dark:text-slate-400 font-medium max-w-3xl leading-relaxed">Herramientas experimentales diseñadas con precisión matemática para darte una ventaja injusta frente al sistema bancario.</p>
+            </div>
+            
+            <!-- Módulo Funcional: Erosión por Inflación -->
+            <div class="bg-white/90 dark:bg-slate-800/60 backdrop-blur-3xl p-8 sm:p-12 rounded-[3rem] border border-slate-200/80 dark:border-slate-700/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] glass-edge mb-12 relative overflow-hidden group">
+                <div class="absolute -top-32 -right-32 w-80 h-80 bg-blue-400/10 dark:bg-blue-400/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+                <div class="relative z-10 flex flex-col md:flex-row gap-10">
+                    <div class="md:w-1/2">
+                        <div class="bg-blue-100 dark:bg-blue-900/40 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-blue-200 dark:border-blue-800">
+                            <i data-lucide="trending-down" class="w-8 h-8 text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-800 dark:text-white mb-4 tracking-tighter">El Efecto Invisible (Inflación vs Deuda)</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed font-medium mb-8">Con la inflación, el dinero pierde poder adquisitivo. Paradójicamente, esto significa que una deuda a tasa fija "pesará" menos en el futuro. Calcula matemáticamente cómo la inflación evapora tu deuda sin que hagas nada.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="relative group/input transition-all duration-300 ease-out focus-within:-translate-y-1">
+                                <label for="lab-inf-amount" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 group-focus-within/input:text-blue-600 transition-colors cursor-pointer">Deuda Actual</label>
+                                <div class="relative flex items-center">
+                                    <div class="absolute left-5 text-slate-400 dark:text-slate-500 font-black text-lg group-focus-within/input:text-blue-500 transition-colors select-none">RD$</div>
+                                    <input type="text" id="lab-inf-amount" placeholder="1,000,000" class="w-full pl-16 pr-6 py-4 text-xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-300 text-slate-900 dark:text-white outline-none">
+                                </div>
+                            </div>
+                            <div class="relative group/input transition-all duration-300 ease-out focus-within:-translate-y-1">
+                                <label for="lab-inf-rate" class="block text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 group-focus-within/input:text-blue-600 transition-colors cursor-pointer">Inflación Anual Estimada</label>
+                                <div class="relative flex items-center">
+                                    <input type="text" id="lab-inf-rate" value="5" placeholder="5" class="w-full pl-6 pr-12 py-4 text-xl font-black bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-600/80 rounded-2xl shadow-inner focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-300 text-slate-900 dark:text-white outline-none">
+                                    <div class="absolute right-5 text-slate-400 dark:text-slate-500 font-black text-xl group-focus-within/input:text-blue-500 transition-colors select-none">%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex flex-col justify-center">
+                        <div class="bg-slate-50/90 dark:bg-slate-900/60 p-6 sm:p-8 rounded-[2rem] border border-slate-200/80 dark:border-slate-700/50 shadow-inner">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-6 text-center">Valor Real de tu Deuda en el Tiempo</h4>
+                            
+                            <div class="space-y-6" id="lab-inf-results">
+                                <!-- Llenado por JS -->
+                            </div>
+                            
+                            <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700/50 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                                *Esto representa el poder adquisitivo real. Si tu salario se ajusta con la inflación, pagar RD$1 millón en 5 años "dolerá" un <span id="lab-inf-pct" class="font-bold text-blue-500">X%</span> menos que pagarlo hoy.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjetas de Próximos Desarrollos -->
+            <h3 class="text-2xl font-black text-slate-800 dark:text-slate-200 tracking-tighter mb-8 pl-2">En Fase de Desarrollo (Coming Soon)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="bg-white/40 dark:bg-slate-800/20 backdrop-blur-md p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-700/30 shadow-sm glass-edge relative overflow-hidden group">
+                    <div class="absolute top-6 right-6 bg-slate-200/80 dark:bg-slate-700/80 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-md">Próximamente</div>
+                    <div class="bg-purple-100/50 dark:bg-purple-900/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-purple-200/50 dark:border-purple-800/30 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                        <i data-lucide="snowflake" class="w-7 h-7 text-purple-600 dark:text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-700 dark:text-slate-300 mb-3 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Método Bola de Nieve Extremo</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-500 leading-relaxed font-medium">Consolida tarjetas, auto e hipoteca. El sistema calculará el orden matemático exacto en el que debes atacarlas para maximizar tu liquidez sin piedad.</p>
+                </div>
+
+                <div class="bg-white/40 dark:bg-slate-800/20 backdrop-blur-md p-8 rounded-[2.5rem] border border-slate-200/50 dark:border-slate-700/30 shadow-sm glass-edge relative overflow-hidden group">
+                    <div class="absolute top-6 right-6 bg-slate-200/80 dark:bg-slate-700/80 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-md">Próximamente</div>
+                    <div class="bg-amber-100/50 dark:bg-amber-900/20 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border border-amber-200/50 dark:border-amber-800/30 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                        <i data-lucide="landmark" class="w-7 h-7 text-amber-600 dark:text-amber-400"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-700 dark:text-slate-300 mb-3 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Escudo Fiscal Inmobiliario</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-500 leading-relaxed font-medium">Calculadora que toma en cuenta la deducción de impuestos sobre los intereses pagados en tu país, ajustando tu verdadero Costo de Oportunidad.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTONES Y HERRAMIENTAS FLOTANTES -->
+    <div class="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-[90] group cursor-default">
+        <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-700/60 shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.4)] rounded-full px-6 py-3.5 flex items-center gap-3 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(16,185,129,0.25)] hover:-translate-y-1 hover:border-emerald-500/40 group-hover:bg-gradient-to-r group-hover:from-emerald-50 group-hover:to-teal-50 dark:group-hover:from-emerald-900/30 dark:group-hover:to-teal-900/20 glass-edge">
+            <div class="relative flex items-center justify-center">
+                <i data-lucide="sparkles" class="w-4.5 h-4.5 text-emerald-500 drop-shadow-sm animate-pulse-fast"></i>
+                <div class="absolute inset-0 bg-emerald-400 blur-md opacity-30"></div>
+            </div>
+            <span class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base tracking-wide group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">Virgilio Smith</span>
+        </div>
+        <span class="absolute left-0 bottom-full mb-4 whitespace-nowrap bg-slate-900 dark:bg-white text-emerald-400 dark:text-emerald-600 text-[10px] sm:text-xs font-black tracking-widest py-2.5 px-5 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none shadow-2xl border border-slate-700/50 dark:border-slate-200 transform translate-y-3 group-hover:translate-y-0 uppercase flex items-center">
+            Soy el creador <i data-lucide="zap" class="w-3.5 h-3.5 ml-2 text-amber-400"></i>
+        </span>
+    </div>
+
+    <!-- Floating Tutorial Button -->
+    <button id="btn-tutorial-float" class="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-[90] bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900 p-4 sm:p-5 rounded-full btn-glow hover:scale-110 hover:-translate-y-2 active:scale-95 transition-all duration-300 ease-out flex items-center justify-center group shadow-2xl border border-amber-300/50" title="Guía del Ecosistema">
+        <i data-lucide="compass" class="w-8 h-8 sm:w-9 sm:h-9 drop-shadow-sm relative z-10"></i>
+        <span class="absolute right-full mr-5 whitespace-nowrap bg-slate-900 text-white text-xs sm:text-sm font-black tracking-widest uppercase py-3 px-6 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none shadow-xl border border-slate-700 transform translate-x-2 group-hover:translate-x-0">¿Cómo navegar aquí?</span>
+    </button>
+
+    <!-- FOCO VISUAL DEL TUTORIAL -->
+    <div id="tutorial-focus" class="hidden fixed z-[150] pointer-events-none transition-all duration-500 ease-out border-[3px] border-amber-400/80 rounded-[2.5rem]">
+        <div id="tutorial-hand" class="absolute text-5xl transition-all duration-500 drop-shadow-2xl animate-bounce hidden">👇</div>
+    </div>
+
+    <!-- Tutorial Control Box -->
+    <div id="tutorial-control-box" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[160] w-[95%] max-w-2xl transition-all duration-500 ease-out opacity-0 transform translate-y-8">
+        <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-3xl border border-slate-200/80 dark:border-slate-700/80 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative glass-edge">
+            <div class="absolute top-0 left-0 h-1.5 bg-slate-200 dark:bg-slate-700 w-full">
+                <div id="tutorial-progress" class="h-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-500 ease-out w-1/4"></div>
+            </div>
+
+            <div class="p-5 sm:p-8 flex flex-col sm:flex-row gap-5 sm:gap-6 items-center sm:items-start text-center sm:text-left mt-2">
+                <div id="tutorial-icon-bg" class="flex-shrink-0 p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-900/10 text-amber-500 shadow-inner border border-amber-200 dark:border-amber-800/50">
+                    <i id="tutorial-icon" data-lucide="map" class="w-8 h-8 sm:w-10 sm:h-10 drop-shadow-sm"></i>
+                </div>
+                <div class="flex-1">
+                    <h2 id="tutorial-title" class="text-xl sm:text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tighter mb-2 sm:mb-3">Paso a Paso</h2>
+                    <p id="tutorial-text" class="text-slate-600 dark:text-slate-300 font-medium text-sm sm:text-base md:text-lg leading-relaxed tracking-wide">Explicación dinámica aquí.</p>
+                </div>
+                <button id="btn-close-tutorial" class="absolute top-3 sm:top-4 right-3 sm:right-4 text-slate-400 hover:text-red-500 bg-slate-100 dark:bg-slate-700/50 p-2 sm:p-2.5 rounded-full shadow-sm transition-colors hover:bg-red-100 dark:hover:bg-red-900/30 active:scale-90">
+                    <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-5 sm:p-6 border-t border-slate-100 dark:border-slate-700/50 bg-slate-50/90 dark:bg-slate-900/80 flex justify-between items-center">
+                <div class="flex gap-2 ml-1 sm:ml-2" id="tutorial-dots"></div>
+                <button id="btn-next-tutorial" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-md hover:shadow-xl hover:-translate-y-1 active:scale-95 flex items-center text-[10px] sm:text-xs md:text-sm uppercase tracking-widest">
+                    Siguiente <i data-lucide="arrow-right" class="w-4 h-4 sm:w-5 sm:h-5 ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Resumen Ejecutivo Mejorado -->
+    <div id="summary-modal" class="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xl flex justify-center items-center z-[100] p-4 hidden opacity-0 transition-opacity duration-500">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 rounded-[3rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] max-w-2xl w-full max-h-[90vh] flex flex-col transform scale-95 transition-all duration-500 ease-out glass-edge" id="summary-modal-content">
+            <div class="p-6 md:p-8 border-b border-slate-200/80 dark:border-slate-700/50 flex justify-between items-center bg-gradient-to-r from-emerald-50 to-white dark:from-slate-900 dark:to-slate-800 rounded-t-[3rem] shadow-sm">
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-800 dark:text-white tracking-tighter flex items-center">
+                    <i data-lucide="check-circle" class="text-emerald-500 mr-3 w-8 h-8 sm:w-10 sm:h-10"></i> Tu Análisis
+                </h2>
+                <button id="btn-close-summary" class="text-slate-400 hover:text-red-500 bg-white dark:bg-slate-800 p-2.5 rounded-full shadow-sm transition-all hover:bg-red-50 border border-slate-200 dark:border-slate-700 active:scale-90">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                <div id="summary-text-content" class="text-slate-700 dark:text-slate-300 font-sans text-base leading-relaxed tracking-wide">
+                    <!-- Formatted text goes here -->
+                </div>
+            </div>
+            <div class="p-6 md:p-8 border-t border-slate-200/80 dark:border-slate-700/50 flex flex-wrap justify-end gap-4 bg-slate-50/90 dark:bg-slate-900/80 rounded-b-[3rem]">
+                <button id="btn-export-pdf" class="bg-emerald-600 dark:bg-emerald-500 text-white font-black py-3.5 px-8 rounded-2xl hover:bg-emerald-700 dark:hover:bg-emerald-400 transition-all shadow-lg hover:shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:-translate-y-1 active:scale-95 inline-flex items-center border border-emerald-500/50 tracking-widest uppercase text-sm">
+                    <i data-lucide="file-text" class="mr-2 w-5 h-5"></i> Descargar PDF
+                </button>
+                <button id="btn-export-excel" class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/50 font-black py-3.5 px-8 rounded-2xl hover:bg-emerald-200 dark:hover:bg-emerald-800/40 transition-all shadow-md hover:shadow-lg hover:-translate-y-1 active:scale-95 inline-flex items-center tracking-widest uppercase text-sm">
+                    <i data-lucide="table" class="mr-2 w-5 h-5"></i> Exportar a Excel
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Obtener el parámetro 'id' de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const boletaId = urlParams.get('id');
-        
-        // Aquí puedes agregar la lógica para mostrar la información correspondiente
-        // Por ejemplo, podrías hacer una solicitud a un API para obtener la información
+        // DOM Manipulators (Anti-Null Helpers)
+        const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+        const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+        const setWidth = (id, width) => { const el = document.getElementById(id); if (el) el.style.width = width; };
 
-        document.getElementById('boleta-info').innerText = `Número de Boleta: ${boletaId}`;
+        // --- Estado de la Aplicación ---
+        const state = {
+            amount: '', interest: '', term: '', insurance: '',
+            isFixedAbono: false, fixedAbonoAmount: '', abonoFreq: '1', abonoStartMonthValue: '', abonos: [],
+            penaltyRate: '3', showAdvanced: false, abonoStrategy: 'term', targetMonths: '', calculatedTargetAbono: 0,
+            isVariableRate: false, variableRate: '', variableRateMonth: '', refinanceRate: '', refinanceCosts: '',
+            tableViewSize: 1, theme: 'dark', calcResults: null, executiveText: '', activeInputIndex: null, tutorialStep: 0,
+            isTutorialActive: false, useStartDate: false, startDate: '', isLabView: false, labInfAmount: '1000000', labInfRate: '5'
+        };
+
+        // --- Utilidades ---
+        const formatCurrency = (val) => isNaN(val) || val === null ? 'RD$ 0.00' : Number(val).toLocaleString('es-DO', { style: 'currency', currency: 'DOP', minimumFractionDigits: 2 });
+        const formatRatio = (val) => isNaN(val) || val === null ? 'N/A' : Number(val).toFixed(2);
+        const formatPercent = (val) => isNaN(val) || val === null ? 'N/A' : `${(Number(val) * 100).toFixed(2)}%`;
+        const formatDate = (date) => !date || isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString('es-DO', { year: 'numeric', month: 'long', day: 'numeric' });
+        const parseCurrency = (val) => parseFloat(String(val).replace(/,/g, ''));
+        const getTableMonthStr = (monthIndex) => {
+            const baseDateStr = (state.useStartDate && state.startDate) ? state.startDate : new Date().toISOString().split('T')[0];
+            const d = new Date(baseDateStr + 'T00:00:00');
+            d.setMonth(d.getMonth() + monthIndex - 1); 
+            const monthName = d.toLocaleDateString('es-DO', { month: 'short' });
+            return `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${d.getFullYear()}`;
+        };
+
+        const animateValue = (elementId, start, end, duration, formatFn) => {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 4); 
+                el.innerHTML = formatFn(start + (end - start) * ease);
+                if (progress < 1) window.requestAnimationFrame(step);
+                else el.innerHTML = formatFn(end);
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        function handleCurrencyInputEvent(e) {
+            let val = e.target.value;
+            if (val === '') { state[e.target.dataset.key] = ''; e.target.value = ''; updateApp(); return; }
+            let cleanVal = val.replace(/[^0-9.]/g, '');
+            const parts = cleanVal.split('.');
+            if (parts.length > 2) cleanVal = parts[0] + '.' + parts.slice(1).join('');
+            if (cleanVal === '.') cleanVal = '0.';
+            const [intP, decP] = cleanVal.split('.');
+            let display = new Intl.NumberFormat('es-DO').format(intP || 0);
+            if (decP !== undefined) display += `.${decP.substring(0, 2)}`;
+            if (val.endsWith('.') && !display.includes('.')) display += '.';
+            e.target.value = display;
+            state[e.target.dataset.key] = display;
+            updateApp();
+        }
+
+        function handleNumberInputEvent(e) {
+            let val = e.target.value;
+            let sanitized = val.replace(/[^0-9.]/g, '');
+            if (sanitized.split('.').length > 2) sanitized = sanitized.replace(/\.(?=.*\.)/g, "");
+            e.target.value = sanitized;
+            state[e.target.dataset.key] = sanitized;
+            updateApp();
+        }
+
+        // --- Lógica del Lab de Inflación ---
+        function calculateLabInflation() {
+            const amount = parseCurrency(state.labInfAmount) || 0;
+            const rate = parseFloat(state.labInfRate) || 0;
+            
+            if (amount <= 0 || isNaN(rate)) {
+                setHTML('lab-inf-results', '<p class="text-sm text-slate-500 text-center">Ingresa valores para simular.</p>');
+                return;
+            }
+
+            const years = [1, 3, 5];
+            let html = '';
+            
+            years.forEach(y => {
+                const realValue = amount / Math.pow(1 + (rate/100), y);
+                const barWidth = Math.max(10, (realValue / amount) * 100);
+                html += `
+                    <div class="relative">
+                        <div class="flex justify-between text-xs sm:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 px-2">
+                            <span>Año ${y}</span>
+                            <span class="text-blue-600 dark:text-blue-400 font-black">${formatCurrency(realValue)}</span>
+                        </div>
+                        <div class="w-full bg-slate-200/80 dark:bg-slate-800/80 rounded-full h-8 sm:h-10 shadow-inner overflow-hidden border border-black/5 dark:border-white/5">
+                            <div class="bg-gradient-to-r from-blue-400 to-cyan-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(59,130,246,0.3)]" style="width: 0%" data-target-width="${barWidth}%"></div>
+                        </div>
+                    </div>`;
+            });
+            
+            setHTML('lab-inf-results', html);
+            
+            setTimeout(() => {
+                const resEl = document.getElementById('lab-inf-results');
+                if(resEl) resEl.querySelectorAll('div[data-target-width]').forEach(el => {
+                    el.style.width = el.getAttribute('data-target-width');
+                });
+            }, 50);
+
+            const year5Value = amount / Math.pow(1 + (rate/100), 5);
+            const dropPct = ((amount - year5Value) / amount) * 100;
+            setText('lab-inf-pct', dropPct.toFixed(1) + '%');
+        }
+
+        const tailwindColors = {
+            emerald: { text: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-600/10 dark:bg-emerald-400/10', border: 'border-emerald-500/20 dark:border-emerald-400/20' },
+            amber: { text: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-600/10 dark:bg-amber-400/10', border: 'border-amber-500/20 dark:border-amber-400/20' },
+            sky: { text: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-600/10 dark:bg-sky-400/10', border: 'border-sky-500/20 dark:border-sky-400/20' },
+            purple: { text: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-600/10 dark:bg-purple-400/10', border: 'border-purple-500/20 dark:border-purple-400/20' },
+            indigo: { text: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-600/10 dark:bg-indigo-400/10', border: 'border-indigo-500/20 dark:border-indigo-400/20' },
+            blue: { text: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-600/10 dark:bg-blue-400/10', border: 'border-blue-500/20 dark:border-blue-400/20' },
+            rose: { text: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-600/10 dark:bg-rose-400/10', border: 'border-rose-500/20 dark:border-rose-400/20' },
+            slate: { text: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-600/10 dark:bg-slate-400/10', border: 'border-slate-500/20 dark:border-slate-400/20' }
+        };
+
+        function createMetricCard(title, value, iconName, colorTheme, id) {
+            const c = tailwindColors[colorTheme] || tailwindColors.emerald;
+            let valStr = String(value);
+            let tClass = "text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter"; 
+            if (valStr.length > 20) tClass = "text-sm sm:text-base md:text-lg lg:text-xl tracking-tighter";
+            else if (valStr.length > 15) tClass = "text-base sm:text-lg md:text-xl lg:text-2xl tracking-tighter";
+            else if (valStr.length > 11) tClass = "text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter";
+
+            return `
+                <div class="bg-white/90 dark:bg-slate-800/60 backdrop-blur-xl p-6 sm:p-8 rounded-[2.5rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.3)] border border-slate-200/80 dark:border-slate-700/60 glass-edge premium-hover h-full flex flex-col justify-between group cursor-default animate-pop">
+                    <div>
+                        <div class="flex items-center mb-6 sm:mb-8">
+                            <div class="mr-4 sm:mr-5 p-3 sm:p-4 rounded-2xl ${c.bg} transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-inner border ${c.border} flex-shrink-0">
+                                <i data-lucide="${iconName}" class="${c.text} w-6 h-6 sm:w-8 sm:h-8 transition-transform drop-shadow-sm"></i>
+                            </div>
+                            <div class="flex items-center flex-1">
+                                <p class="text-[10px] sm:text-xs md:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors leading-tight">${title}</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex items-center h-10 sm:h-14 overflow-visible">
+                            <p id="${id}" class="font-black ${c.text} ${tClass} transition-all duration-300 leading-none drop-shadow-sm whitespace-nowrap">${value}</p>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function createSmallMetricCard(title, value, iconName, colorTheme) {
+            const c = tailwindColors[colorTheme] || tailwindColors.emerald;
+            let valStr = String(value);
+            let tClass = "text-lg sm:text-xl tracking-tighter";
+            if (valStr.length > 18) tClass = "text-xs sm:text-sm tracking-tighter";
+            else if (valStr.length > 14) tClass = "text-sm sm:text-base tracking-tighter";
+
+            return `
+                <div class="flex items-center p-4 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl border border-slate-200/60 dark:border-slate-600/40 shadow-sm transition-all duration-300 hover:shadow-md hover:bg-white dark:hover:bg-slate-800 hover:-translate-y-1 group cursor-default">
+                    <div class="p-3 rounded-xl ${c.bg} mr-4 transition-transform group-hover:scale-110 group-hover:-rotate-6 shadow-inner flex-shrink-0">
+                        <i data-lucide="${iconName}" class="${c.text} w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1 w-full overflow-visible">
+                        <p class="text-[10px] sm:text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5 opacity-80">${title}</p>
+                        <p class="font-black ${c.text} ${tClass} leading-none transition-transform origin-left group-hover:scale-105 whitespace-nowrap">${value}</p>
+                    </div>
+                </div>`;
+        }
+
+        function calculate() {
+            const amount = parseCurrency(state.amount);
+            const interest = parseFloat(state.interest);
+            const term = parseFloat(state.term);
+            const insurance = parseCurrency(state.insurance) || 0;
+            const freq = parseInt(state.abonoFreq) || 1;
+
+            if (isNaN(amount) || amount <= 0 || isNaN(interest) || interest < 0 || isNaN(term) || term <= 0) {
+                state.calcResults = null;
+                return false;
+            }
+
+            let baseDate = new Date();
+            if (state.useStartDate && state.startDate) {
+                const parsedDate = new Date(state.startDate + 'T00:00:00');
+                if (!isNaN(parsedDate.getTime())) baseDate = parsedDate;
+            }
+
+            let abonoStart = 1;
+            if (state.abonoStartMonthValue) {
+                const startD = new Date(baseDate.getTime());
+                const [aYear, aMonth] = state.abonoStartMonthValue.split('-');
+                const abonoD = new Date(aYear, parseInt(aMonth) - 1, 1);
+                const yearDiff = abonoD.getFullYear() - startD.getFullYear();
+                const monthDiff = abonoD.getMonth() - startD.getMonth();
+                const totalMonths = (yearDiff * 12) + monthDiff + 1; 
+                abonoStart = Math.max(1, totalMonths);
+            }
+
+            const calcDate = (months) => { 
+                const d = new Date(baseDate.getTime()); 
+                d.setMonth(d.getMonth() + months); 
+                return d; 
+            };
+
+            const getRateForMonth = (m) => {
+                if (state.isVariableRate && state.variableRateMonth && m >= parseInt(state.variableRateMonth)) {
+                    let vRate = parseFloat(state.variableRate);
+                    if(!isNaN(vRate) && vRate >= 0) return vRate / 100 / 12;
+                }
+                return interest / 100 / 12;
+            };
+
+            let originalSchedule = [];
+            let origBalance = amount;
+            let currentOrigPayment = 0;
+            let lastOrigRate = -1;
+
+            for(let i=1; i<=term && origBalance > 0.01; i++) {
+                let currentRate = getRateForMonth(i);
+                if (currentRate !== lastOrigRate) {
+                    let remMonths = term - i + 1;
+                    currentOrigPayment = currentRate === 0 ? origBalance / remMonths : (origBalance * currentRate) / (1 - Math.pow(1 + currentRate, -remMonths));
+                    lastOrigRate = currentRate;
+                }
+                
+                let intP = origBalance * currentRate;
+                let prinP = currentOrigPayment - intP;
+                let startBal = origBalance;
+                
+                if (origBalance < prinP) {
+                    prinP = origBalance;
+                    currentOrigPayment = prinP + intP;
+                }
+                origBalance -= prinP;
+                
+                originalSchedule.push({ 
+                    month: i, startBalance: startBal, principal: prinP, interest: intP,
+                    payment: currentOrigPayment, balance: Math.max(0, origBalance)
+                });
+            }
+            
+            const totalOrigIns = insurance * originalSchedule.length;
+            const totalOrigInt = originalSchedule.reduce((a, c) => a + c.interest, 0);
+            const original = {
+                schedule: originalSchedule,
+                monthlyPayment: originalSchedule[0].payment, 
+                totalInterest: totalOrigInt, 
+                totalInsurance: totalOrigIns,
+                totalPaid: amount + totalOrigInt + totalOrigIns, 
+                termInMonths: originalSchedule.length,
+                payoffDate: calcDate(originalSchedule.length)
+            };
+
+            let parsedFixedAbono = parseCurrency(state.fixedAbonoAmount) || 0;
+            if (state.abonoStrategy === 'target' && state.targetMonths) {
+                let target = parseInt(state.targetMonths);
+                if(target > 0 && target <= term) {
+                    let low = 0, high = amount, mid = 0;
+                    for (let k = 0; k < 50; k++) {
+                        mid = (low + high) / 2;
+                        let simBal = amount;
+                        let simMonths = 0;
+                        let simCurrentPayment = 0;
+                        let simLastRate = -1;
+                        for (let j = 1; j <= term && simBal > 0.01; j++) {
+                            simMonths++;
+                            let cRate = getRateForMonth(j);
+                            if (cRate !== simLastRate) {
+                                let remMonths = term - j + 1;
+                                simCurrentPayment = cRate === 0 ? simBal / remMonths : (simBal * cRate) / (1 - Math.pow(1 + cRate, -remMonths));
+                                simLastRate = cRate;
+                            }
+                            let intP = simBal * cRate;
+                            let prinP = simCurrentPayment - intP;
+                            let extraP = (simMonths >= abonoStart && (freq === 0 ? simMonths===abonoStart : (freq===1 || (simMonths-abonoStart)%freq===0))) ? mid : 0;
+                            if (simBal < prinP + extraP) simBal = 0;
+                            else simBal -= (prinP + extraP);
+                        }
+                        if (simMonths <= target) high = mid;
+                        else low = mid;
+                    }
+                    parsedFixedAbono = high;
+                    state.calculatedTargetAbono = high;
+                } else {
+                    parsedFixedAbono = 0;
+                }
+            }
+
+            let balance = amount;
+            let schedule = [];
+            let totalAbonosPaid = 0;
+            let monthsPaid = 0;
+            let currentMonthlyPayment = 0;
+            let lastRate = -1;
+
+            for (let i = 1; i <= term && balance > 0.01; i++) {
+                monthsPaid++;
+                const startBalance = balance;
+                let currentRate = getRateForMonth(i);
+                
+                if (state.abonoStrategy === 'payment' || currentRate !== lastRate) {
+                    let remMonths = term - i + 1;
+                    currentMonthlyPayment = currentRate === 0 ? balance / remMonths : (balance * currentRate) / (1 - Math.pow(1 + currentRate, -remMonths));
+                    lastRate = currentRate;
+                }
+
+                const interestPayment = balance * currentRate;
+                
+                let extraPayment = 0;
+                if (state.isFixedAbono) {
+                    if (monthsPaid >= abonoStart) {
+                        if (freq === 0) {
+                            if (monthsPaid === abonoStart) extraPayment = parsedFixedAbono;
+                        } else if (freq === 1 || (monthsPaid - abonoStart) % freq === 0) {
+                            extraPayment = parsedFixedAbono;
+                        }
+                    }
+                } else {
+                    extraPayment = parseCurrency(state.abonos[i-1]) || 0;
+                }
+
+                let principalPayment = currentMonthlyPayment - interestPayment;
+                let actualPayment = currentMonthlyPayment;
+                
+                if (balance <= principalPayment + extraPayment) {
+                    if (balance <= principalPayment) {
+                        principalPayment = balance;
+                        actualPayment = principalPayment + interestPayment;
+                        extraPayment = 0;
+                    } else {
+                        extraPayment = balance - principalPayment;
+                        actualPayment = principalPayment + interestPayment;
+                    }
+                    balance = 0;
+                } else {
+                    balance -= (principalPayment + extraPayment);
+                }
+                
+                totalAbonosPaid += extraPayment;
+                
+                schedule.push({
+                    month: monthsPaid, payment: actualPayment, principal: principalPayment,
+                    interest: interestPayment, extra: extraPayment, balance: Math.max(0, balance),
+                    startBalance
+                });
+            }
+            
+            const totalAbonosInt = schedule.reduce((a, p) => a + p.interest, 0);
+            const totalAbonosIns = insurance * monthsPaid;
+            const totalPaidWithAbonos = schedule.reduce((a, p) => a + p.payment + p.extra, 0) + totalAbonosIns;
+
+            const withAbonos = {
+                schedule, totalInterest: totalAbonosInt, totalInsurance: totalAbonosIns,
+                totalPaid: totalPaidWithAbonos, termInMonths: monthsPaid,
+                totalAbonosPaid, payoffDate: calcDate(monthsPaid)
+            };
+
+            let refinance = null;
+            if (state.refinanceRate !== '') {
+                let refRate = parseFloat(state.refinanceRate);
+                let refCosts = parseCurrency(state.refinanceCosts) || 0;
+                if (!isNaN(refRate) && refRate >= 0) {
+                    let rMonthly = refRate / 100 / 12;
+                    let rAmt = amount + refCosts;
+                    let rPmt = rMonthly === 0 ? rAmt / term : (rAmt * rMonthly) / (1 - Math.pow(1 + rMonthly, -term));
+                    let rTotalInterest = (rPmt * term) - rAmt;
+                    let rTotalPaid = rAmt + rTotalInterest + (insurance * term); 
+                    refinance = {
+                        monthlyPayment: rPmt, totalInterest: rTotalInterest,
+                        totalPaid: rTotalPaid, savings: original.totalPaid - rTotalPaid
+                    };
+                }
+            }
+
+            const kpis = {
+                totalSavings: original.totalPaid - withAbonos.totalPaid,
+                interestSaved: original.totalInterest - withAbonos.totalInterest,
+                insuranceSaved: original.totalInsurance - withAbonos.totalInsurance,
+                monthsSaved: original.termInMonths - withAbonos.termInMonths
+            };
+
+            const pRate = parseFloat(state.penaltyRate) || 0;
+            const penaltyCost = withAbonos.totalAbonosPaid * (pRate / 100);
+
+            state.calcResults = { original, withAbonos, refinance, penaltyCost, inputs: { amount, interest, term, insurance }, kpis };
+            generateSummaryText();
+            return true;
+        }
+
+        function updateApp() {
+            const hasData = calculate();
+            const emptyState = document.getElementById('empty-state');
+            const resultsContainer = document.getElementById('results-container');
+
+            if(state.isLabView) {
+                calculateLabInflation();
+                return; 
+            }
+
+            if (state.abonoStrategy === 'target') {
+                if(state.calculatedTargetAbono > 0) {
+                    setText('target-abono-result', `Abono Exacto Requerido: ${formatCurrency(state.calculatedTargetAbono)}`);
+                } else {
+                    setText('target-abono-result', '');
+                }
+            }
+
+            if (hasData) {
+                if(emptyState) { emptyState.classList.add('hidden'); emptyState.classList.remove('visible'); }
+                if(resultsContainer) {
+                    resultsContainer.classList.remove('hidden');
+                    setTimeout(() => {
+                        resultsContainer.classList.add('visible');
+                        const staggerItems = resultsContainer.querySelectorAll('.stagger-card');
+                        staggerItems.forEach((item, index) => {
+                            setTimeout(() => item.classList.add('visible'), index * 100); 
+                        });
+                    }, 50);
+                }
+
+                renderMetrics();
+                renderTable();
+                if (state.showAdvanced) {
+                    renderPenaltyAnalysis(); 
+                    renderRefinanceChart();
+                }
+                
+                const banner = document.getElementById('funny-reaction-banner');
+                if (state.calcResults && state.calcResults.kpis.totalSavings > 0 && !state.isTutorialActive) {
+                    const saved = formatCurrency(state.calcResults.kpis.totalSavings);
+                    setHTML('funny-reaction-text', `Literalmente le estás quitando <span class="text-white bg-amber-600 dark:bg-amber-500 px-3 py-1 rounded-lg shadow-sm mx-1">${saved}</span> de las manos al banco.<br/>¡Una completa salvajada!`);
+                    if(banner) {
+                        banner.classList.remove('hidden');
+                        setTimeout(() => banner.classList.add('visible'), 100);
+                    }
+                } else {
+                    if(banner) {
+                        banner.classList.add('hidden');
+                        banner.classList.remove('visible');
+                    }
+                }
+            } else {
+                if(resultsContainer) {
+                    resultsContainer.classList.add('hidden');
+                    resultsContainer.classList.remove('visible');
+                }
+                document.querySelectorAll('.stagger-card').forEach(item => item.classList.remove('visible'));
+                if(emptyState) {
+                    emptyState.classList.remove('hidden');
+                    setTimeout(() => emptyState.classList.add('visible'), 50);
+                }
+            }
+            if(window.lucide) window.lucide.createIcons();
+        }
+
+        function renderMetrics() {
+            const { original, withAbonos, inputs, kpis } = state.calcResults;
+            
+            setHTML('key-metrics-grid-top', `
+                ${createMetricCard('Ahorro Total Neto', 'RD$ 0.00', 'piggy-bank', 'emerald', 'kpi-total-savings')}
+                ${createMetricCard('Intereses Evitados', 'RD$ 0.00', 'trending-down', 'amber', 'kpi-interest-saved')}
+                ${createMetricCard('Seguros Ahorrados', 'RD$ 0.00', 'shield', 'sky', 'kpi-insurance-saved')}
+            `);
+            
+            const finalNewPayment = withAbonos.schedule[withAbonos.schedule.length - 1].payment + inputs.insurance;
+            const originalPayment = original.schedule[0].payment + inputs.insurance;
+            const bottomCard1Title = state.abonoStrategy === 'payment' ? 'Tu Cuota Bajará Hasta' : 'Tiempo Recuperado';
+            const bottomCard1Icon = state.abonoStrategy === 'payment' ? 'arrow-down-circle' : 'clock';
+            const bottomCard1Id = state.abonoStrategy === 'payment' ? 'kpi-new-quota' : 'kpi-months-saved';
+            
+            setHTML('key-metrics-grid-bottom', `
+                ${createMetricCard(bottomCard1Title, '0', bottomCard1Icon, 'purple', bottomCard1Id)}
+                ${createMetricCard('Tu Costo Final', 'RD$ 0.00', 'check-circle', 'indigo', 'kpi-final-cost')}
+                ${createMetricCard('Día de Libertad', formatDate(withAbonos.payoffDate), 'calendar-check', 'blue', 'kpi-payoff-date')}
+            `);
+            
+            setTimeout(() => {
+                animateValue('kpi-total-savings', 0, kpis.totalSavings, 1500, formatCurrency);
+                animateValue('kpi-interest-saved', 0, kpis.interestSaved, 1500, formatCurrency);
+                animateValue('kpi-insurance-saved', 0, kpis.insuranceSaved, 1500, formatCurrency);
+                if (state.abonoStrategy === 'payment') {
+                    animateValue('kpi-new-quota', originalPayment, finalNewPayment, 1500, formatCurrency);
+                } else {
+                    animateValue('kpi-months-saved', 0, kpis.monthsSaved, 1500, (v) => `${Math.round(v)} meses`);
+                }
+                animateValue('kpi-final-cost', 0, withAbonos.totalPaid, 1500, formatCurrency);
+            }, 50);
+            
+            const origReturn = (original.totalInterest + original.totalInsurance) / inputs.amount;
+            const accelReturn = (withAbonos.totalInterest + withAbonos.totalInsurance) / inputs.amount;
+            const diffReturn = origReturn - accelReturn;
+
+            setHTML('original-plan-metrics', `
+                ${createSmallMetricCard('Capital Solicitado', formatCurrency(inputs.amount), 'building', 'slate')}
+                ${createSmallMetricCard('Costo Total Final', formatCurrency(original.totalPaid), 'wallet', 'rose')}
+                ${createSmallMetricCard('Intereses Cobrados', formatCurrency(original.totalInterest), 'trending-down', 'rose')}
+                ${createSmallMetricCard('Seguro Pagado', formatCurrency(original.totalInsurance), 'shield', 'sky')}
+                ${createSmallMetricCard('Retorno del Banco', formatPercent(origReturn), 'percent', 'rose')}
+                ${createSmallMetricCard('Tiempo de Pago', `${original.termInMonths} meses`, 'calendar-x', 'slate')}
+            `);
+            
+            setHTML('accelerated-plan-metrics', `
+                ${createSmallMetricCard('Capital Solicitado', formatCurrency(inputs.amount), 'building', 'amber')}
+                ${createSmallMetricCard('Costo Total Final', formatCurrency(withAbonos.totalPaid), 'wallet', 'amber')}
+                ${createSmallMetricCard('Intereses Cobrados', formatCurrency(withAbonos.totalInterest), 'trending-down', 'rose')}
+                ${createSmallMetricCard('Seguro Pagado', formatCurrency(withAbonos.totalInsurance), 'shield', 'sky')}
+                ${createSmallMetricCard('Retorno del Banco', formatPercent(accelReturn), 'percent', 'amber')}
+                ${createSmallMetricCard('Tiempo de Pago', `${withAbonos.termInMonths} meses`, 'calendar-check', 'amber')}
+            `);
+            
+            setHTML('difference-plan-metrics', `
+                ${createSmallMetricCard('Diferencia Capital', 'RD$ 0.00', 'minus-circle', 'slate')}
+                ${createSmallMetricCard('Ahorro Total Neto', `+ ${formatCurrency(kpis.totalSavings)}`, 'piggy-bank', 'emerald')}
+                ${createSmallMetricCard('Ahorro de Intereses', `+ ${formatCurrency(kpis.interestSaved)}`, 'arrow-down-right', 'emerald')}
+                ${createSmallMetricCard('Ahorro de Seguros', `+ ${formatCurrency(kpis.insuranceSaved)}`, 'arrow-down-right', 'emerald')}
+                ${createSmallMetricCard('Bajaste el Retorno', `- ${formatPercent(diffReturn)}`, 'percent', 'emerald')}
+                ${createSmallMetricCard('Tiempo A tu Favor', `+ ${kpis.monthsSaved} meses`, 'fast-forward', 'emerald')}
+            `);
+        }
+
+        function renderPenaltyAnalysis() {
+            if (!state.calcResults) return;
+            const { kpis, penaltyCost } = state.calcResults;
+            const interestSavings = kpis.interestSaved;
+
+            setText('label-penalty-savings', "+ " + formatCurrency(interestSavings));
+            setText('label-penalty-cost', "- " + formatCurrency(penaltyCost));
+
+            const maxVal = Math.max(interestSavings, penaltyCost, 1);
+            const savingsPct = (interestSavings / maxVal) * 100;
+            const penaltyPct = (penaltyCost / maxVal) * 100;
+
+            setTimeout(() => {
+                setWidth('bar-penalty-savings', `${Math.max(5, savingsPct)}%`);
+                setWidth('bar-penalty-cost', `${Math.max(5, penaltyPct)}%`);
+            }, 100);
+
+            const netSavings = interestSavings - penaltyCost;
+
+            if (netSavings > 0) {
+                 setHTML('penalty-recommendation', `<div class="bg-emerald-100 dark:bg-emerald-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-emerald-200 dark:border-emerald-800 flex-shrink-0"><i data-lucide="shield-check" class="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400"></i></div>
+                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-emerald-600 dark:text-emerald-400">EL ABONO ES RENTABLE</span></p>
+                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">Pagarás <strong>${formatCurrency(penaltyCost)}</strong> de multa al banco, pero los intereses que evitas (<strong>${formatCurrency(interestSavings)}</strong>) son muchísimo mayores. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Ahorro Neto Real (Restando Multa): ${formatCurrency(netSavings)}. ¡Adelante!</span></p></div>`);
+            } else if (penaltyCost > interestSavings) {
+                 setHTML('penalty-recommendation', `<div class="bg-rose-100 dark:bg-rose-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-rose-200 dark:border-rose-800 flex-shrink-0"><i data-lucide="alert-triangle" class="w-6 h-6 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-400"></i></div>
+                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-rose-600 dark:text-rose-400">NO ABONES (TRAMPA BANCARIA)</span></p>
+                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">El banco te castigará con <strong>${formatCurrency(penaltyCost)}</strong>, lo cual es MAYOR a los <strong>${formatCurrency(interestSavings)}</strong> que te ahorrarás en intereses. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Pérdida Neta: ${formatCurrency(Math.abs(netSavings))}. Mejor guarda ese dinero.</span></p></div>`);
+            } else {
+                 setHTML('penalty-recommendation', `<div class="bg-slate-100 dark:bg-slate-700/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-slate-200 dark:border-slate-600 flex-shrink-0"><i data-lucide="sleep" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400"></i></div>
+                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">Añade Abonos Extra</p><p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">Activa tu estrategia para ver si la penalidad del banco se traga tu ahorro.</p></div>`);
+            }
+        }
+
+        function renderRefinanceChart() {
+            if (!state.calcResults || !state.calcResults.refinance) {
+                 setHTML('refinance-recommendation', `<div class="bg-slate-100 dark:bg-slate-700/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-slate-200 dark:border-slate-600 flex-shrink-0"><i data-lucide="building" class="w-6 h-6 sm:w-8 sm:h-8 text-slate-400"></i></div>
+                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">Esperando Oferta</p><p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-relaxed">Ingresa la tasa y gastos del otro banco para evaluar si vale la pena.</p></div>`);
+                 return;
+            }
+
+            const ref = state.calcResults.refinance;
+            if (ref.savings > 0) {
+                 setHTML('refinance-recommendation', `<div class="bg-emerald-100 dark:bg-emerald-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-emerald-200 dark:border-emerald-800 flex-shrink-0"><i data-lucide="check-circle" class="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400"></i></div>
+                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-emerald-600 dark:text-emerald-400">ES RENTABLE CAMBIAR</span></p>
+                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">Incluso sumando al capital los <strong>${formatCurrency(parseCurrency(state.refinanceCosts) || 0)}</strong> de penalidad, la nueva tasa es lo suficientemente buena como para ahorrarte <strong>${formatCurrency(ref.savings)}</strong> al final del préstamo frente a tu banco original. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Tu nueva cuota sería: ${formatCurrency(ref.monthlyPayment + parseCurrency(state.insurance))}</span></p></div>`);
+            } else {
+                 setHTML('refinance-recommendation', `<div class="bg-rose-100 dark:bg-rose-900/40 p-4 sm:p-5 rounded-xl sm:rounded-2xl mr-4 shadow-inner border border-rose-200 dark:border-rose-800 flex-shrink-0"><i data-lucide="alert-triangle" class="w-6 h-6 sm:w-8 sm:h-8 text-rose-600 dark:text-rose-400"></i></div>
+                    <div><p class="text-xs sm:text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Conclusión: <span class="text-rose-600 dark:text-rose-400">QUÉDATE DONDE ESTÁS</span></p>
+                    <p class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">El "ahorro" en la tasa se lo comen los gastos de cierre de <strong>${formatCurrency(parseCurrency(state.refinanceCosts) || 0)}</strong>. Si te cambias de banco, terminarás perdiendo <strong>${formatCurrency(Math.abs(ref.savings))}</strong> al final de la jornada. <br/><span class="block mt-1 text-slate-800 dark:text-slate-200 font-bold border-t border-slate-200 dark:border-slate-700/50 pt-1.5">Mejor aplica abonos a capital en tu banco actual.</span></p></div>`);
+            }
+        }
+
+        function renderTable() {
+            const { schedule, totalInterest, totalPaid } = state.calcResults.withAbonos;
+            const ins = state.calcResults.inputs.insurance;
+
+            const extraColClassTh = "bg-amber-50/80 dark:bg-amber-900/20 text-amber-800 dark:text-amber-400 font-black border-x border-amber-200/40 dark:border-amber-700/30 shadow-inner";
+            const extraColClassTd = "bg-amber-50/30 dark:bg-amber-900/10 border-x border-amber-100/40 dark:border-amber-800/20";
+            
+            const size = state.tableViewSize; 
+
+            const baseDateStr = (state.useStartDate && state.startDate) ? state.startDate : new Date().toISOString().split('T')[0];
+            const baseDate = new Date(baseDateStr + 'T00:00:00');
+
+            if (size > 1) {
+                const groups = {};
+                const groupKeys = [];
+                const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+                schedule.forEach(r => {
+                    const d = new Date(baseDate.getTime());
+                    d.setMonth(d.getMonth() + r.month - 1);
+                    const year = d.getFullYear();
+                    const monthIndex = d.getMonth(); 
+                    const monthStr = monthNames[monthIndex];
+                    
+                    let groupKey = '';
+                    let periodName = '';
+                    
+                    if (size === 12) {
+                        groupKey = `Y-${year}`;
+                        periodName = `Año`;
+                    } else if (size === 6) {
+                        const sem = Math.floor(monthIndex / 6) + 1;
+                        groupKey = `S-${year}-${sem}`;
+                        periodName = `Semestre ${sem}`;
+                    } else if (size === 3) {
+                        const trim = Math.floor(monthIndex / 3) + 1;
+                        groupKey = `T-${year}-${trim}`;
+                        periodName = `Trimestre ${trim}`;
+                    }
+
+                    if (!groups[groupKey]) {
+                        groups[groupKey] = { 
+                            periodName: periodName,
+                            year: year,
+                            startMonthStr: monthStr,
+                            endMonthStr: monthStr,
+                            startBalance: r.startBalance, 
+                            principal: 0, 
+                            interest: 0, 
+                            payment: 0,
+                            extra: 0, 
+                            insurance: 0, 
+                            endBalance: 0 
+                        };
+                        groupKeys.push(groupKey);
+                    } else {
+                        groups[groupKey].endMonthStr = monthStr;
+                    }
+
+                    groups[groupKey].principal += r.principal; 
+                    groups[groupKey].interest += r.interest; 
+                    groups[groupKey].payment += r.payment; 
+                    groups[groupKey].extra += r.extra; 
+                    groups[groupKey].insurance += ins;
+                    groups[groupKey].endBalance = r.balance; 
+                });
+                
+                setHTML('table-head', `<tr>
+                    <th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">N°</th>
+                    ${['Periodo', 'Saldo Inicial', 'Capital', 'Interés', 'Seguro', 'Cuota Reg. Total'].map(h => `<th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">${h}</th>`).join('')}
+                    <th class="px-5 py-6 text-xs uppercase tracking-widest text-center ${extraColClassTh}">Abono Extra</th>
+                    <th class="px-5 py-6 text-xs font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">Saldo Final</th></tr>`);
+                
+                setHTML('table-body', groupKeys.map((key, i) => {
+                    const r = groups[key];
+                    let label = '';
+                    if (size === 12) {
+                        label = `Año ${r.year}`;
+                    } else {
+                        if (r.startMonthStr === r.endMonthStr) {
+                            label = `${r.periodName} (${r.startMonthStr}) ${r.year}`;
+                        } else {
+                            label = `${r.periodName} (${r.startMonthStr} - ${r.endMonthStr}) ${r.year}`;
+                        }
+                    }
+
+                    return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/60 shadow-sm dark:shadow-none transition-all duration-300 group hover:scale-[1.01] hover:-translate-y-0.5" style="animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(i * 40, 800)}ms both;">
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-black text-slate-400 dark:text-slate-500 text-center">${i + 1}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200 text-center">${label}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-medium text-slate-600 dark:text-slate-400 text-right group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">${formatCurrency(r.startBalance)}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right group-hover:scale-105 transition-transform origin-right">${formatCurrency(r.principal)}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-bold text-rose-500 dark:text-rose-400 text-right">${formatCurrency(r.interest)}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-medium text-slate-500 dark:text-slate-500 text-right">${formatCurrency(r.insurance)}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-bold text-slate-700 dark:text-slate-300 text-right">${formatCurrency(r.payment + r.insurance)}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-black text-amber-600 dark:text-amber-400 text-right ${extraColClassTd}">${formatCurrency(r.extra)}</td>
+                        <td class="px-5 py-5 whitespace-nowrap text-sm font-black text-slate-900 dark:text-white text-right">${formatCurrency(r.endBalance)}</td>
+                    </tr>`;
+                }).join(''));
+
+            } else {
+                setHTML('table-head', `<tr>
+                    <th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">N°</th>
+                    ${['Periodo', 'Saldo Inicial', 'Capital', 'Interés', 'Seguro', 'Cuota Reg. Total'].map(h => `<th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">${h}</th>`).join('')}
+                    <th class="px-4 py-6 text-[11px] uppercase tracking-widest text-center ${extraColClassTh}">Tu Abono Extra</th>
+                    <th class="px-4 py-6 text-[11px] font-black uppercase tracking-widest text-center text-slate-500 dark:text-slate-400">Saldo Final</th></tr>`);
+                
+                setHTML('table-body', schedule.map((r, i) => `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/60 shadow-sm dark:shadow-none transition-all duration-300 group hover:scale-[1.01] hover:-translate-y-0.5" style="animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${Math.min(i * 20, 800)}ms both;">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-slate-400 dark:text-slate-500 text-center">${i + 1}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-slate-800 dark:text-slate-200 text-center">${getTableMonthStr(r.month)}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-600 dark:text-slate-400 text-right group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">${formatCurrency(r.startBalance)}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-emerald-600 dark:text-emerald-400 text-right group-hover:scale-105 transition-transform origin-right">${formatCurrency(r.principal)}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-rose-500 dark:text-rose-400 text-right">${formatCurrency(r.interest)}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-500 dark:text-slate-500 text-right">${formatCurrency(ins)}</td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-bold text-slate-700 dark:text-slate-300 text-right">${formatCurrency(r.payment + ins)}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-center ${extraColClassTd}">
+                            <input type="text" data-index="${i}" value="${r.extra > 0 ? new Intl.NumberFormat('es-DO').format(r.extra) : ''}" 
+                                ${state.isFixedAbono ? 'disabled' : ''} 
+                                placeholder="0.00"
+                                class="abono-input w-28 sm:w-32 p-2 sm:p-2.5 text-right font-black border bg-white/90 dark:bg-slate-900/90 border-amber-300/50 dark:border-amber-600/50 rounded-xl shadow-inner focus:ring-4 focus:ring-amber-500/30 focus:border-amber-500 transition-all text-amber-700 dark:text-amber-400 placeholder-amber-200 dark:placeholder-amber-800/30 disabled:bg-transparent disabled:border-transparent disabled:text-amber-600 dark:disabled:text-amber-400 disabled:shadow-none hover:shadow-md outline-none" />
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-black text-slate-900 dark:text-white text-right">${formatCurrency(r.balance)}</td>
+                    </tr>`).join(''));
+            }
+            
+            const totPrin = schedule.reduce((a,r) => a + r.principal, 0);
+            const totExt = schedule.reduce((a,r) => a + r.extra, 0);
+            const totalPaymentWithIns = schedule.reduce((a,r) => a + r.payment + ins, 0);
+
+            setHTML('table-foot', `
+                <tr>
+                    <td colspan="3" class="px-5 py-7 text-right font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest text-xs">Totales Finales:</td>
+                    <td class="px-5 py-7 text-right font-black text-emerald-600 dark:text-emerald-400 text-base">${formatCurrency(totPrin)}</td>
+                    <td class="px-5 py-7 text-right font-black text-rose-600 dark:text-rose-500 text-base">${formatCurrency(totalInterest)}</td>
+                    <td class="px-5 py-7 text-right font-black text-slate-500 dark:text-slate-400 text-base">${formatCurrency(schedule.length * ins)}</td>
+                    <td class="px-5 py-7 text-right font-black text-slate-700 dark:text-slate-300 text-base">${formatCurrency(totalPaymentWithIns)}</td>
+                    <td class="px-5 py-7 text-right font-black text-amber-600 dark:text-amber-400 text-base ${extraColClassTh} bg-transparent">${formatCurrency(totExt)}</td>
+                    <td class="px-5 py-7"></td>
+                </tr>`);
+
+            if (state.activeInputIndex !== null && size === 1) {
+                const elBody = document.getElementById('table-body');
+                if(elBody) {
+                    const input = elBody.querySelector(`input[data-index="${state.activeInputIndex}"]`);
+                    if (input) { input.focus(); input.selectionStart = input.value.length; }
+                }
+            }
+        }
+
+        function generateSummaryText() {
+            if(!state.calcResults) return;
+            const { original, withAbonos, inputs, kpis } = state.calcResults;
+
+            let strategyText = '';
+            if (state.abonoStrategy === 'term' || state.abonoStrategy === 'target') {
+                strategyText = `Con los abonos extra que estás implementando, retomas el volante. Pagarás tu deuda en solo **${withAbonos.termInMonths} meses** (terminando el **${formatDate(withAbonos.payoffDate)}**), reduciendo tu costo final a **${formatCurrency(withAbonos.totalPaid)}** y pagando apenas **${formatCurrency(withAbonos.totalInterest)}** en intereses.`;
+            } else {
+                strategyText = `Con los abonos extra que estás implementando, has decidido priorizar tu liquidez mensual. Tu cuota regular irá disminuyendo progresivamente, dándote más respiro cada mes. Además, reducirás tu costo final a **${formatCurrency(withAbonos.totalPaid)}** y pagarás apenas **${formatCurrency(withAbonos.totalInterest)}** en intereses.`;
+            }
+
+            state.executiveText = `**Hola. Aquí tienes tu análisis financiero, directo y claro:**
+
+**LA SITUACIÓN (El Problema):**
+Tienes un préstamo de **${formatCurrency(inputs.amount)}**. Si sigues pagando de forma normal, te tomará **${original.termInMonths} meses** terminar (hasta el **${formatDate(original.payoffDate)}**). El banco te terminará sacando un total de **${formatCurrency(original.totalPaid)}**, de los cuales **${formatCurrency(original.totalInterest)}** son pura ganancia para ellos en intereses.
+
+**TU ESTRATEGIA (La Solución):**
+${strategyText}
+
+**TU VICTORIA (Lo que te llevas):**
+• **TE AHORRAS:** **${formatCurrency(kpis.totalSavings)}** (Puro dinero que se queda en tu cuenta, no en la del banco).
+${state.abonoStrategy === 'payment' 
+    ? `• **LIBERAS LIQUIDEZ:** Al ir bajando tu cuota mensual, tendrás más dinero disponible en tu bolsillo mes a mes.` 
+    : `• **RECUPERAS:** **${kpis.monthsSaved} meses** de tu vida completamente libres de esta deuda.`}
+
+Haciendo esto, estás demostrando inteligencia financiera y blindando tu futuro. **¡Continúa así, vas por excelente camino!**`;
+
+            const htmlFormat = state.executiveText.split('\n').map(line => {
+                if(!line.trim()) return '<div class="h-3"></div>';
+                let formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 dark:text-white font-black">$1</strong>');
+                if (line.trim().startsWith('•')) {
+                    return `<div class="flex items-start ml-2 sm:ml-4 my-4 bg-emerald-50/50 dark:bg-emerald-900/20 p-4 sm:p-5 rounded-[1.5rem] border border-emerald-200/60 dark:border-emerald-700/50 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="bg-emerald-100 dark:bg-emerald-800/60 p-2 rounded-full mr-4 flex-shrink-0 border border-emerald-200 dark:border-emerald-600/50">
+                                    <i data-lucide="check" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+                                </div>
+                                <p class="text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-snug mt-1">${formatted.replace('• ', '')}</p>
+                            </div>`;
+                }
+                return `<p class="mb-2 text-slate-700 dark:text-slate-300 text-base sm:text-lg leading-relaxed">${formatted}</p>`;
+            }).join('');
+            
+            setHTML('summary-text-content', htmlFormat);
+            if(window.lucide) window.lucide.createIcons();
+        }
+
+        function exportToExcel() {
+            if (!state.calcResults || !window.XLSX) return;
+            const { original, withAbonos, inputs, kpis } = state.calcResults;
+            const wb = XLSX.utils.book_new();
+
+            const origReturn = (original.totalInterest + original.totalInsurance) / inputs.amount;
+            const accelReturn = (withAbonos.totalInterest + withAbonos.totalInsurance) / inputs.amount;
+            const diffReturn = origReturn - accelReturn;
+
+            const wsResumenData = [
+                ["REPORTE ESTRATÉGICO Y RESUMEN COMPARATIVO"],
+                [],
+                ["PARÁMETROS DEL PRÉSTAMO"],
+                ["Monto Solicitado:", formatCurrency(inputs.amount)],
+                ["Tasa de Interés:", inputs.interest + "%"],
+                ["Plazo Original:", inputs.term + " meses"],
+                ["Seguro Mensual:", formatCurrency(inputs.insurance)],
+                [],
+                ["COMPARATIVO DE ESTRATEGIAS", "Plan del Banco (Normal)", "Tu Estrategia (Acelerado)", "Diferencia (Tu Ahorro Tangible)"],
+                ["Costo Total Final", formatCurrency(original.totalPaid), formatCurrency(withAbonos.totalPaid), "+ " + formatCurrency(kpis.totalSavings)],
+                ["Intereses Cobrados", formatCurrency(original.totalInterest), formatCurrency(withAbonos.totalInterest), "+ " + formatCurrency(kpis.interestSaved)],
+                ["Seguro Pagado", formatCurrency(original.totalInsurance), formatCurrency(withAbonos.totalInsurance), "+ " + formatCurrency(kpis.insuranceSaved)],
+                ["Retorno del Banco", formatPercent(origReturn), formatPercent(accelReturn), "- " + formatPercent(diffReturn)],
+                ["Tiempo Total de Pago", original.termInMonths + " meses", withAbonos.termInMonths + " meses", kpis.monthsSaved + " meses a tu favor"]
+            ];
+            const wsResumen = XLSX.utils.aoa_to_sheet(wsResumenData);
+            wsResumen['!cols'] = [{ wch: 30 }, { wch: 30 }, { wch: 30 }, { wch: 35 }];
+            XLSX.utils.book_append_sheet(wb, wsResumen, "Resumen Estratégico");
+
+            const headersOrig = ["Cuota N°", "Periodo", "Saldo Inicial", "Abono a Capital", "Intereses Pagados", "Seguro Pagado", "Cuota Regular Total", "Saldo Final"];
+            const dataOrig = [headersOrig];
+            original.schedule.forEach((r, index) => {
+                dataOrig.push([index + 1, getTableMonthStr(r.month), r.startBalance, r.principal, r.interest, inputs.insurance, r.payment + inputs.insurance, r.balance]);
+            });
+            const wsOrig = XLSX.utils.aoa_to_sheet(dataOrig);
+            wsOrig['!cols'] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 15 }];
+            XLSX.utils.book_append_sheet(wb, wsOrig, "Plan Normal");
+
+            const headersAccel = ["Cuota N°", "Periodo", "Saldo Inicial", "Abono a Capital", "Intereses Pagados", "Seguro Pagado", "Cuota Regular Total", "TU ABONO EXTRA", "Saldo Final"];
+            const dataAccel = [headersAccel];
+            withAbonos.schedule.forEach((r, index) => {
+                dataAccel.push([index + 1, getTableMonthStr(r.month), r.startBalance, r.principal, r.interest, inputs.insurance, r.payment + inputs.insurance, r.extra, r.balance]);
+            });
+            const wsAccel = XLSX.utils.aoa_to_sheet(dataAccel);
+            wsAccel['!cols'] = [{ wch: 10 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 18 }, { wch: 15 }];
+            XLSX.utils.book_append_sheet(wb, wsAccel, "Plan Acelerado");
+
+            XLSX.writeFile(wb, "Estrategia_Ahorro_MinimalismoFinanciero.xlsx");
+        }
+
+        function exportToPdf() {
+            if (!window.jspdf || !state.calcResults) return;
+            const doc = new window.jspdf.jsPDF('p', 'mm', 'a4');
+            const { original, withAbonos, inputs, kpis } = state.calcResults;
+
+            const primary = [15, 23, 42];    
+            const success = [16, 185, 129];  
+            const textDark = [51, 65, 85];
+            const textGray = [100, 116, 139];
+            let yPos = 0;
+
+            doc.setFillColor(...primary);
+            doc.rect(0, 0, 210, 35, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(22);
+            doc.text('REPORTE ESTRATÉGICO', 20, 22);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(200, 200, 200);
+            doc.text(`Generado el: ${formatDate(new Date())}`, 20, 29);
+            yPos = 45;
+
+            doc.setTextColor(...textDark);
+            doc.setFontSize(12);
+            doc.text('Hola. Aquí tienes tu análisis financiero, directo y claro:', 20, yPos);
+            yPos += 8;
+
+            const origReturn = (original.totalInterest + original.totalInsurance) / inputs.amount;
+            const accelReturn = (withAbonos.totalInterest + withAbonos.totalInsurance) / inputs.amount;
+
+            const textSituacion = `Tienes un préstamo de ${formatCurrency(inputs.amount)}. Si sigues pagando de forma normal, te tomará ${original.termInMonths} meses terminar (hasta el ${formatDate(original.payoffDate)}). El banco te terminará sacando un total de ${formatCurrency(original.totalPaid)}, de los cuales ${formatCurrency(original.totalInterest)} son pura ganancia para ellos en intereses.`;
+            const linesSituacion = doc.splitTextToSize(textSituacion, 160);
+            const box1Height = 42 + (linesSituacion.length * 5); 
+
+            doc.setFillColor(254, 242, 242);
+            doc.setDrawColor(252, 165, 165);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(20, yPos, 170, box1Height, 3, 3, 'FD');
+            
+            doc.setTextColor(220, 38, 38);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.text('LA SITUACIÓN ACTUAL (El Plan del Banco)', 25, yPos + 8);
+            
+            doc.setTextColor(71, 85, 105);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Costo Total Final:', 25, yPos + 16);
+            doc.text('Intereses Cobrados:', 25, yPos + 22);
+            doc.text('Retorno del Banco:', 25, yPos + 28);
+            doc.text('Tiempo a Pagar:', 25, yPos + 34);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${formatCurrency(original.totalPaid)}`, 65, yPos + 16);
+            doc.text(`${formatCurrency(original.totalInterest)}`, 65, yPos + 22);
+            doc.text(`${formatPercent(origReturn)}`, 65, yPos + 28);
+            doc.text(`${original.termInMonths} meses`, 65, yPos + 34);
+
+            doc.setTextColor(...textDark);
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(10);
+            doc.text(linesSituacion, 25, yPos + 44);
+            yPos += box1Height + 8; 
+
+            const textEstrategia = (state.abonoStrategy === 'term' || state.abonoStrategy === 'target')
+                ? `Con los abonos extra que estás implementando, retomas el volante. Pagarás tu deuda en solo ${withAbonos.termInMonths} meses (terminando el ${formatDate(withAbonos.payoffDate)}), reduciendo tu costo final a ${formatCurrency(withAbonos.totalPaid)} y pagando apenas ${formatCurrency(withAbonos.totalInterest)} en intereses.`
+                : `Con los abonos extra que estás implementando, has decidido priorizar tu liquidez mensual. Tu cuota regular irá disminuyendo progresivamente, dándote más respiro cada mes. Reducirás tu costo final a ${formatCurrency(withAbonos.totalPaid)} y pagarás apenas ${formatCurrency(withAbonos.totalInterest)} en intereses.`;
+            const linesEstrategia = doc.splitTextToSize(textEstrategia, 160);
+            const box2Height = 42 + (linesEstrategia.length * 5); 
+
+            doc.setFillColor(255, 251, 235);
+            doc.setDrawColor(252, 211, 77);
+            doc.roundedRect(20, yPos, 170, box2Height, 3, 3, 'FD');
+            
+            doc.setTextColor(217, 119, 6);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.text('TU ESTRATEGIA ACELERADA (La Solución)', 25, yPos + 8);
+            
+            doc.setTextColor(71, 85, 105);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Costo Total Final:', 25, yPos + 16);
+            doc.text('Intereses Cobrados:', 25, yPos + 22);
+            doc.text('Retorno del Banco:', 25, yPos + 28);
+            doc.text('Tiempo a Pagar:', 25, yPos + 34);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${formatCurrency(withAbonos.totalPaid)}`, 65, yPos + 16);
+            doc.text(`${formatCurrency(withAbonos.totalInterest)}`, 65, yPos + 22);
+            doc.text(`${formatPercent(accelReturn)}`, 65, yPos + 28);
+            doc.text(`${withAbonos.termInMonths} meses`, 65, yPos + 34);
+
+            doc.setTextColor(...textDark);
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(10);
+            doc.text(linesEstrategia, 25, yPos + 44);
+            yPos += box2Height + 8;
+
+            doc.setFillColor(240, 253, 244);
+            doc.setDrawColor(...success);
+            doc.roundedRect(20, yPos, 170, 35, 4, 4, 'FD');
+
+            doc.setTextColor(...success);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('TU VICTORIA TANGIBLE', 25, yPos + 10);
+            
+            doc.setTextColor(...primary);
+            doc.setFontSize(11);
+            doc.text(`1. TE AHORRAS: ${formatCurrency(kpis.totalSavings)}`, 25, yPos + 20);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text('(Dinero directo a tu bolsillo, no al banco)', 30, yPos + 25);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            if (state.abonoStrategy === 'payment') {
+                doc.text(`2. LIBERAS LIQUIDEZ MENSUAL`, 105, yPos + 20);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.text('(Tu cuota disminuye, dándote respiro mensual)', 110, yPos + 25);
+            } else {
+                doc.text(`2. RECUPERAS: ${kpis.monthsSaved} meses de tu vida`, 105, yPos + 20);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.text('(Meses de libertad sin tener esta deuda)', 110, yPos + 25);
+            }
+            yPos += 45;
+
+            doc.setTextColor(...textGray);
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(11);
+            doc.text('"Haciendo esto demuestras inteligencia financiera. ¡Continúa así!"', 105, yPos, { align: 'center' });
+
+            doc.setTextColor(180, 180, 180);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.text('Creado por Virgilio Smith | Minimalismo Financiero', 105, 285, { align: 'center' });
+
+            doc.save('Reporte_Estrategico_Financiero.pdf');
+        }
+
+        const tutorialData = [
+            { icon: 'lightbulb', title: '1. La Fórmula del Banco', text: 'Mito: "El interés se divide en partes iguales". Realidad: El banco cobra los intereses sobre el saldo pendiente. ¡Por eso al principio sientes que solo pagas interés! Aquí lo hackearemos.', targetId: 'main-title', pointerPos: 'bottom' },
+            { icon: 'edit-3', title: '2. Tus Datos', text: 'Pon los datos de tu préstamo actual. Aquí configuramos el "monstruo" que vamos a derrotar. Usa la opción "Añadir Tasa Variable" si tu banco te cambia el %. ', targetId: 'tour-inputs', pointerPos: 'top' },
+            { icon: 'zap', title: '3. Tu Estrategia', text: '¡Aquí está la gasolina! Dile al sistema cuánto vas a abonar. Juega con los botones: ¿Quieres reducir tus meses de esclavitud o quieres bajar tu cuota para tener liquidez? ¡Tú mandas!', targetId: 'tour-strategy', pointerPos: 'left' },
+            { icon: 'target', title: '4. Impacto Real', text: 'Mira cuánto dinero le quitas al banco y cómo destrozas su porcentaje de ganancia. ¡Tu victoria directa y tangente!', targetId: 'tour-metrics', pointerPos: 'top' },
+            { icon: 'alert-octagon', title: '5. La Trampa de Penalidad', text: 'Los bancos te cobran por abonar. Aquí comparamos lo que te ahorras vs lo que pagas de multa para ver si te conviene hacer ese abono.', targetId: 'tour-penalty-analysis', pointerPos: 'top' },
+            { icon: 'building', title: '6. Compra de Deuda', text: '¿Te ofrecen otra tasa? Ingresa el % nuevo y los gastos legales, y el sistema te dirá si el cambio es negocio o si perderás dinero.', targetId: 'tour-refinance', pointerPos: 'top' },
+            { icon: 'file-check-2', title: '7. Tu Plan de Batalla', text: 'Descarga un reporte ejecutivo o un Excel detallado para que lo pongas en tu nevera.', targetId: 'tour-report', pointerPos: 'top' },
+            { icon: 'list', title: '8. El Mapa Detallado', text: 'Y aquí tienes el mapa exacto. Mes a mes verás cómo cae el saldo. Toma el control absoluto de tus números.', targetId: 'tour-table', pointerPos: 'top' }
+        ];
+
+        function prepareTutorialState() {
+            if (!state.calcResults) {
+                const ia = document.getElementById('input-amount'); if(ia) ia.value = "1,500,000";
+                const ii = document.getElementById('input-interest'); if(ii) ii.value = "14";
+                const it = document.getElementById('input-term'); if(it) it.value = "120";
+                const iins = document.getElementById('input-insurance'); if(iins) iins.value = "1,200";
+                state.amount = "1500000";
+                state.interest = "14";
+                state.term = "120";
+                state.insurance = "1200";
+            }
+            
+            state.isFixedAbono = true;
+            const tfa = document.getElementById('toggle-fixed-abono');
+            if(tfa) tfa.checked = true;
+            document.getElementById('toggle-bg')?.classList.add('bg-amber-500');
+            document.getElementById('toggle-dot')?.classList.add('translate-x-6');
+            document.getElementById('fixed-abono-container')?.classList.remove('hidden');
+            const ifa = document.getElementById('input-fixed-abono');
+            if(ifa) ifa.value = "8,000";
+            state.fixedAbonoAmount = "8000";
+
+            state.showAdvanced = true;
+            const ta = document.getElementById('toggle-advanced');
+            if(ta) ta.checked = true;
+            document.getElementById('advanced-toggle-bg')?.classList.add('bg-amber-500');
+            document.getElementById('advanced-toggle-dot')?.classList.add('translate-x-6');
+            document.getElementById('advanced-container')?.classList.remove('hidden');
+            
+            updateApp(); 
+        }
+
+        function renderTutorialStep() {
+            const data = tutorialData[state.tutorialStep];
+            if(!data) return;
+            setText('tutorial-title', data.title);
+            setText('tutorial-text', data.text);
+            const iconEl = document.getElementById('tutorial-icon');
+            if(iconEl) iconEl.setAttribute('data-lucide', data.icon);
+            if(window.lucide) window.lucide.createIcons();
+
+            const progress = ((state.tutorialStep + 1) / tutorialData.length) * 100;
+            setWidth('tutorial-progress', `${progress}%`);
+
+            const dotsHtml = tutorialData.map((_, i) => 
+                `<div class="w-3 h-3 rounded-full transition-all duration-300 ${i === state.tutorialStep ? 'bg-amber-500 scale-125' : 'bg-slate-300 dark:bg-slate-600'}"></div>`
+            ).join('');
+            setHTML('tutorial-dots', dotsHtml);
+
+            const btnNext = document.getElementById('btn-next-tutorial');
+            if(btnNext) {
+                if (state.tutorialStep === tutorialData.length - 1) {
+                    btnNext.innerHTML = '¡Entendido, a Dominar! <i data-lucide="check-circle" class="w-5 h-5 ml-2"></i>';
+                    btnNext.className = 'bg-amber-500 text-slate-900 font-black py-4 px-8 rounded-2xl hover:bg-amber-400 transition-all shadow-md hover:shadow-[0_10px_20px_rgba(245,158,11,0.4)] active:scale-95 flex items-center text-xs sm:text-sm uppercase tracking-widest border border-amber-300';
+                } else {
+                    btnNext.innerHTML = 'Siguiente <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>';
+                    btnNext.className = 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-4 px-8 rounded-2xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-md hover:shadow-xl active:scale-95 flex items-center text-xs sm:text-sm uppercase tracking-widest';
+                }
+            }
+            if(window.lucide) window.lucide.createIcons();
+
+            const targetEl = document.getElementById(data.targetId);
+            if(targetEl) {
+                const y = targetEl.getBoundingClientRect().top + window.scrollY - 150;
+                window.scrollTo({top: y, behavior: 'smooth'});
+                setTimeout(() => { updateSpotlight(); }, 400);
+            }
+        }
+
+        function updateSpotlight() {
+            if (!state.isTutorialActive) return;
+            const data = tutorialData[state.tutorialStep];
+            if(!data) return;
+            const targetEl = document.getElementById(data.targetId);
+            if (!targetEl) return;
+            
+            const rect = targetEl.getBoundingClientRect();
+            const focus = document.getElementById('tutorial-focus');
+            const hand = document.getElementById('tutorial-hand');
+            
+            const padding = 20; 
+            
+            if(focus) {
+                focus.style.top = `${rect.top - padding}px`;
+                focus.style.left = `${rect.left - padding}px`;
+                focus.style.width = `${rect.width + padding*2}px`;
+                focus.style.height = `${rect.height + padding*2}px`;
+            }
+            
+            if(hand) {
+                if (data.pointerPos === 'left' && rect.left > 80) {
+                    hand.style.top = `50%`;
+                    hand.style.left = `-60px`;
+                    hand.style.transform = `translateY(-50%)`;
+                    hand.textContent = '👉';
+                } else {
+                    hand.style.top = `-60px`;
+                    hand.style.left = `50%`;
+                    hand.style.transform = `translateX(-50%)`;
+                    hand.textContent = '👇';
+                }
+            }
+        }
+
+        function openTutorial() {
+            state.isTutorialActive = true;
+            prepareTutorialState();
+            state.tutorialStep = 0;
+            
+            document.body.style.paddingBottom = "350px"; 
+            
+            const focus = document.getElementById('tutorial-focus');
+            const hand = document.getElementById('tutorial-hand');
+            const controlBox = document.getElementById('tutorial-control-box');
+            
+            if(focus) focus.classList.remove('hidden');
+            if(hand) hand.classList.remove('hidden');
+            if(controlBox) controlBox.classList.remove('hidden');
+            
+            setTimeout(() => {
+                if(controlBox) controlBox.classList.remove('opacity-0', 'translate-y-8');
+                renderTutorialStep();
+            }, 50);
+            
+            window.addEventListener('scroll', updateSpotlight, {passive: true});
+            window.addEventListener('resize', updateSpotlight, {passive: true});
+        }
+
+        function closeTutorial() {
+            state.isTutorialActive = false;
+            window.removeEventListener('scroll', updateSpotlight);
+            window.removeEventListener('resize', updateSpotlight);
+            
+            const controlBox = document.getElementById('tutorial-control-box');
+            if(controlBox) controlBox.classList.add('opacity-0', 'translate-y-8');
+            const focus = document.getElementById('tutorial-focus');
+            if(focus) focus.classList.add('hidden');
+            
+            setTimeout(() => {
+                if(controlBox) controlBox.classList.add('hidden');
+                const hand = document.getElementById('tutorial-hand');
+                if(hand) hand.classList.add('hidden');
+                document.body.style.paddingBottom = "0px";
+                
+                state.amount = '';
+                state.interest = '';
+                state.term = '';
+                state.insurance = '';
+                state.isFixedAbono = false;
+                state.fixedAbonoAmount = '';
+                state.showAdvanced = false;
+                state.isVariableRate = false;
+                
+                const ia = document.getElementById('input-amount'); if(ia) ia.value = '';
+                const ii = document.getElementById('input-interest'); if(ii) ii.value = '';
+                const it = document.getElementById('input-term'); if(it) it.value = '';
+                const iins = document.getElementById('input-insurance'); if(iins) iins.value = '';
+                const ifa = document.getElementById('input-fixed-abono'); if(ifa) ifa.value = '';
+                
+                const tfa = document.getElementById('toggle-fixed-abono'); if(tfa) tfa.checked = false;
+                document.getElementById('toggle-bg')?.classList.remove('bg-amber-500');
+                document.getElementById('toggle-dot')?.classList.remove('translate-x-6');
+                document.getElementById('fixed-abono-container')?.classList.add('hidden');
+                
+                const ta = document.getElementById('toggle-advanced'); if(ta) ta.checked = false;
+                document.getElementById('advanced-toggle-bg')?.classList.remove('bg-amber-500');
+                document.getElementById('advanced-toggle-dot')?.classList.remove('translate-x-6');
+                const advCont = document.getElementById('advanced-container');
+                if(advCont) {
+                    advCont.classList.add('hidden');
+                    advCont.classList.remove('visible');
+                }
+
+                document.getElementById('variable-rate-box')?.classList.add('hidden');
+
+                updateApp(); 
+            }, 300);
+        }
+
+        // --- Inicialización ---
+        function triggerAnimations() {
+            setTimeout(() => { document.querySelectorAll('.fade-in-up').forEach(el => el.classList.add('visible')); }, 50);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btn-enter-app')?.addEventListener('click', () => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.classList.add('splash-hidden');
+                    setTimeout(() => {
+                        splash.remove();
+                    }, 800);
+                }
+            });
+
+            if(window.lucide) window.lucide.createIcons();
+            triggerAnimations();
+
+            ['input-amount', 'input-insurance'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.dataset.key = id.split('-')[1];
+                    el.addEventListener('input', handleCurrencyInputEvent);
+                }
+            });
+            ['input-interest', 'input-term', 'input-variable-rate', 'input-variable-month'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    let key = id.split('-')[1];
+                    if (id.includes('variable')) key = id === 'input-variable-rate' ? 'variableRate' : 'variableRateMonth';
+                    el.dataset.key = key;
+                    el.addEventListener('input', handleNumberInputEvent);
+                }
+            });
+
+            document.getElementById('btn-toggle-variable')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                state.isVariableRate = !state.isVariableRate;
+                const box = document.getElementById('variable-rate-box');
+                const btn = document.getElementById('btn-toggle-variable');
+                if (state.isVariableRate) {
+                    if(box) box.classList.remove('hidden');
+                    if(btn) btn.classList.add('bg-rose-500/30');
+                } else {
+                    if(box) box.classList.add('hidden');
+                    if(btn) btn.classList.remove('bg-rose-500/30');
+                    state.variableRate = '';
+                    state.variableRateMonth = '';
+                    const ivr = document.getElementById('input-variable-rate'); if(ivr) ivr.value = '';
+                    const ivm = document.getElementById('input-variable-month'); if(ivm) ivm.value = '';
+                    updateApp();
+                }
+            });
+            
+            const today = new Date();
+            const todayISO = today.toISOString().split('T')[0];
+            const todayMonthStr = today.toISOString().slice(0, 7); 
+            
+            const startDateInput = document.getElementById('input-start-date');
+            if (startDateInput) {
+                startDateInput.value = todayISO;
+                state.startDate = todayISO;
+                startDateInput.addEventListener('change', (e) => {
+                    state.startDate = e.target.value;
+                    updateApp();
+                });
+            }
+
+            const abonoStartInput = document.getElementById('input-abono-start-month');
+            if (abonoStartInput) {
+                abonoStartInput.value = todayMonthStr;
+                state.abonoStartMonthValue = todayMonthStr;
+                abonoStartInput.addEventListener('change', (e) => {
+                    state.abonoStartMonthValue = e.target.value;
+                    updateApp();
+                });
+            }
+
+            document.getElementById('toggle-start-date')?.addEventListener('change', (e) => {
+                state.useStartDate = e.target.checked;
+                document.getElementById('toggle-date-bg')?.classList.toggle('bg-emerald-500', state.useStartDate);
+                document.getElementById('toggle-date-dot')?.classList.toggle('translate-x-6', state.useStartDate);
+                
+                const container = document.getElementById('start-date-container');
+                if(state.useStartDate) {
+                    container?.classList.remove('hidden');
+                    setTimeout(() => container?.classList.add('visible'), 10);
+                } else {
+                    container?.classList.remove('visible');
+                    setTimeout(() => container?.classList.add('hidden'), 300);
+                }
+                updateApp();
+            });
+
+            ['input-invest-rate', 'input-target-months', 'input-penalty-rate'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    let k = id.split('-')[1];
+                    if (id.includes('target')) k = 'targetMonths';
+                    if (id.includes('penalty')) k = 'penaltyRate';
+                    el.dataset.key = k;
+                    el.addEventListener('input', handleNumberInputEvent);
+                }
+            });
+
+            // Lógica de Navegación del Laboratorio
+            const btnOpenLab = document.getElementById('btn-open-lab');
+            const btnBackSim = document.getElementById('btn-back-sim');
+            const appWrapper = document.getElementById('app-wrapper');
+            const labWrapper = document.getElementById('scenarios-wrapper');
+
+            btnOpenLab?.addEventListener('click', () => {
+                state.isLabView = true;
+                if(appWrapper) appWrapper.classList.add('hidden');
+                if(appWrapper) appWrapper.classList.remove('block');
+                if(labWrapper) labWrapper.classList.remove('hidden');
+                if(labWrapper) labWrapper.classList.add('block');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                updateApp(); 
+            });
+
+            btnBackSim?.addEventListener('click', () => {
+                state.isLabView = false;
+                if(labWrapper) labWrapper.classList.add('hidden');
+                if(labWrapper) labWrapper.classList.remove('block');
+                if(appWrapper) appWrapper.classList.remove('hidden');
+                if(appWrapper) appWrapper.classList.add('block');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                updateApp();
+            });
+
+            // Listeners para Lab Inflación
+            ['lab-inf-amount'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.dataset.key = 'labInfAmount';
+                    el.addEventListener('input', handleCurrencyInputEvent);
+                }
+            });
+            ['lab-inf-rate'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.dataset.key = 'labInfRate';
+                    el.addEventListener('input', handleNumberInputEvent);
+                }
+            });
+
+            ['input-ref-rate', 'input-ref-cost'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.dataset.key = id === 'input-ref-rate' ? 'refinanceRate' : 'refinanceCosts';
+                    if (id.includes('rate')) el.addEventListener('input', handleNumberInputEvent);
+                    else el.addEventListener('input', handleCurrencyInputEvent);
+                }
+            });
+
+            document.getElementById('toggle-fixed-abono')?.addEventListener('change', (e) => {
+                state.isFixedAbono = e.target.checked;
+                document.getElementById('toggle-bg')?.classList.toggle('bg-amber-500', state.isFixedAbono);
+                document.getElementById('toggle-dot')?.classList.toggle('translate-x-6', state.isFixedAbono);
+                
+                const container = document.getElementById('fixed-abono-container');
+                if(state.isFixedAbono) {
+                    container?.classList.remove('hidden');
+                    setTimeout(() => container?.classList.remove('scale-y-0', 'opacity-0'), 10);
+                } else {
+                    container?.classList.add('hidden');
+                }
+                updateApp();
+            });
+
+            const btnStratTerm = document.getElementById('btn-strat-term');
+            const btnStratPay = document.getElementById('btn-strat-pay');
+            const btnStratTarget = document.getElementById('btn-strat-target');
+            
+            const setStrategy = (strat) => {
+                state.abonoStrategy = strat;
+                
+                const baseClass = 'px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex-1 xl:flex-none tracking-wide active:scale-95';
+                const activeClass = 'px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 flex-1 xl:flex-none tracking-wide active:scale-95';
+                
+                if (btnStratTerm) btnStratTerm.className = strat === 'term' ? activeClass : baseClass;
+                if (btnStratPay) btnStratPay.className = strat === 'payment' ? activeClass : baseClass;
+                if (btnStratTarget) btnStratTarget.className = strat === 'target' ? activeClass + " group/meta relative overflow-hidden" : baseClass + " group/meta relative overflow-hidden";
+                if(btnStratTarget && strat === 'target') {
+                    btnStratTarget.innerHTML = `<span class="relative z-10 flex items-center justify-center">Fijar Meta <i data-lucide="target" class="w-3.5 h-3.5 ml-1.5 text-amber-500"></i></span>`;
+                } else if (btnStratTarget) {
+                    btnStratTarget.innerHTML = `<span class="relative z-10 flex items-center justify-center">Fijar Meta <i data-lucide="target" class="w-3.5 h-3.5 ml-1.5 opacity-70 group-hover/meta:opacity-100"></i></span>`;
+                }
+                if(window.lucide) window.lucide.createIcons();
+
+                const wrapAmt = document.getElementById('wrapper-abono-amount');
+                const wrapFreq = document.getElementById('wrapper-abono-freq');
+                const wrapTgt = document.getElementById('wrapper-target-months');
+
+                if (strat === 'target') {
+                    if(wrapAmt) wrapAmt.classList.replace('block', 'hidden');
+                    if(wrapFreq) wrapFreq.classList.replace('block', 'hidden');
+                    if(wrapTgt) wrapTgt.classList.replace('hidden', 'block');
+                } else {
+                    if(wrapAmt) wrapAmt.classList.replace('hidden', 'block');
+                    if(wrapFreq) wrapFreq.classList.replace('hidden', 'block');
+                    if(wrapTgt) wrapTgt.classList.replace('block', 'hidden');
+                }
+
+                updateApp();
+            };
+
+            btnStratTerm?.addEventListener('click', () => setStrategy('term'));
+            btnStratPay?.addEventListener('click', () => setStrategy('payment'));
+            btnStratTarget?.addEventListener('click', () => setStrategy('target'));
+
+            const fixedInput = document.getElementById('input-fixed-abono');
+            if (fixedInput) {
+                fixedInput.dataset.key = 'fixedAbonoAmount';
+                fixedInput.addEventListener('input', handleCurrencyInputEvent);
+            }
+            
+            document.getElementById('select-abono-freq')?.addEventListener('change', (e) => {
+                state.abonoFreq = e.target.value;
+                updateApp();
+            });
+
+            document.getElementById('toggle-advanced')?.addEventListener('change', (e) => {
+                state.showAdvanced = e.target.checked;
+                document.getElementById('advanced-toggle-bg')?.classList.toggle('bg-amber-500', state.showAdvanced);
+                document.getElementById('advanced-toggle-dot')?.classList.toggle('translate-x-6', state.showAdvanced);
+                
+                const advContainer = document.getElementById('advanced-container');
+                if(state.showAdvanced) {
+                    advContainer?.classList.remove('hidden');
+                    setTimeout(() => advContainer?.classList.add('visible'), 50);
+                    updateApp(); 
+                } else {
+                    advContainer?.classList.remove('visible');
+                    setTimeout(() => advContainer?.classList.add('hidden'), 500);
+                }
+            });
+
+            const setUITheme = (newTheme) => {
+                state.theme = newTheme;
+                document.documentElement.className = state.theme;
+                const btnLight = document.getElementById('btn-theme-light');
+                const btnDark = document.getElementById('btn-theme-dark');
+                if (state.theme === 'dark') {
+                    if (btnDark) btnDark.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold bg-slate-700 text-amber-400 shadow-inner border border-slate-600/50 active:scale-95';
+                    if (btnLight) btnLight.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold text-gray-500 hover:text-amber-500 dark:text-slate-400 active:scale-95';
+                } else {
+                    if (btnLight) btnLight.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold bg-white text-amber-500 shadow-inner border border-slate-200/50 active:scale-95';
+                    if (btnDark) btnDark.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full transition-all text-xs sm:text-sm font-bold text-gray-500 hover:text-amber-500 active:scale-95';
+                }
+            };
+            document.getElementById('btn-theme-light')?.addEventListener('click', () => setUITheme('light'));
+            document.getElementById('btn-theme-dark')?.addEventListener('click', () => setUITheme('dark'));
+
+            document.getElementById('table-body')?.addEventListener('input', (e) => {
+                if (e.target.matches('.abono-input') && !state.isFixedAbono) {
+                    const idx = e.target.dataset.index;
+                    state.activeInputIndex = idx;
+                    let val = e.target.value.replace(/[^0-9.]/g, '');
+                    const parts = val.split('.');
+                    if(parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+                    if(val === '.') val = '0.';
+                    const [intP, decP] = val.split('.');
+                    let display = new Intl.NumberFormat('es-DO').format(intP || 0);
+                    if(decP !== undefined) display += `.${decP.substring(0, 2)}`;
+                    if(e.target.value.endsWith('.') && !display.includes('.')) display += '.';
+                    state.abonos[idx] = display;
+                    updateApp();
+                }
+            });
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    state.tableViewSize = parseInt(e.target.dataset.view);
+                    state.activeInputIndex = null;
+                    document.querySelectorAll('.view-btn').forEach(b => {
+                        b.className = 'view-btn px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-xl transition-all duration-300 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 tracking-wide flex-1 sm:flex-none active:scale-95';
+                    });
+                    e.target.className = 'view-btn active px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-slate-100 tracking-wide flex-1 sm:flex-none active:scale-95';
+                    updateApp();
+                });
+            });
+
+            const modal = document.getElementById('summary-modal');
+            const modalContent = document.getElementById('summary-modal-content');
+            document.getElementById('btn-show-summary')?.addEventListener('click', () => {
+                if (modal) modal.classList.remove('hidden');
+                setTimeout(() => { 
+                    if (modal) modal.classList.remove('opacity-0'); 
+                    if (modalContent) modalContent.classList.remove('scale-95'); 
+                }, 10);
+            });
+            document.getElementById('btn-close-summary')?.addEventListener('click', () => {
+                if (modal) modal.classList.add('opacity-0'); 
+                if (modalContent) modalContent.classList.add('scale-95');
+                setTimeout(() => { if (modal) modal.classList.add('hidden'); }, 300);
+            });
+
+            document.getElementById('btn-export-pdf')?.addEventListener('click', exportToPdf);
+            document.getElementById('btn-export-excel')?.addEventListener('click', exportToExcel);
+
+            document.getElementById('btn-tutorial-float')?.addEventListener('click', openTutorial);
+            document.getElementById('btn-close-tutorial')?.addEventListener('click', closeTutorial);
+            document.getElementById('btn-next-tutorial')?.addEventListener('click', () => {
+                if (state.tutorialStep < tutorialData.length - 1) {
+                    state.tutorialStep++;
+                    renderTutorialStep();
+                } else {
+                    closeTutorial();
+                }
+            });
+
+            setInterval(() => {
+                if(!state.isTutorialActive) {
+                    const floatBtn = document.getElementById('btn-tutorial-float');
+                    if (floatBtn) {
+                        floatBtn.classList.add('is-pinging');
+                        setTimeout(() => floatBtn.classList.remove('is-pinging'), 2500);
+                    }
+                }
+            }, 20000); 
+        });
     </script>
 </body>
 </html>
