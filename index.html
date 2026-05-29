@@ -82,7 +82,7 @@
         <div class="p-3 border-t border-slate-100">
             <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full flex items-center px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-colors">
                 <i data-lucide="database" class="w-5 h-5"></i>
-                <span class="ml-3 font-medium hidden lg:block text-sm">Instrucciones BD</span>
+                <span class="ml-3 font-medium hidden lg:block text-sm">Configuración BD</span>
             </button>
         </div>
     </aside>
@@ -352,8 +352,24 @@
                     </div>
                 </div>
 
-                <!-- VIEW: INSTRUCCIONES -->
+                <!-- VIEW: INSTRUCCIONES / CONFIGURACIÓN -->
                 <div id="view-instrucciones" class="view-section fade-in hidden max-w-3xl mx-auto">
+                    
+                    <!-- NUEVO PANEL DE CONEXIÓN UI -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-6">
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">Paso 1: Conecta tu Base de Datos</h2>
+                        <p class="text-sm text-slate-500 mb-6">Pega aquí la URL de tu Google Apps Script. <strong class="text-brand-600">No necesitas editar el código HTML</strong>, se guardará de forma segura en tu navegador.</p>
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                            <button onclick="guardarUrlConfig()" class="bg-brand-600 text-white font-bold rounded-xl px-6 py-3 hover:bg-brand-700 transition-colors shadow-md flex items-center justify-center gap-2">
+                                <i data-lucide="link" class="w-4 h-4"></i> Conectar
+                            </button>
+                        </div>
+                        <div id="config-status" class="mt-3 text-sm font-semibold flex items-center gap-1 text-slate-400">
+                            <i data-lucide="info" class="w-4 h-4"></i> Sin conectar
+                        </div>
+                    </div>
+
                     <div class="bg-slate-900 text-slate-300 p-8 rounded-3xl border border-slate-800 shadow-xl relative overflow-hidden">
                         <div class="absolute -right-4 -top-4 opacity-10"><i data-lucide="database" class="w-32 h-32 text-white"></i></div>
                         <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
@@ -369,7 +385,7 @@
                             <li><strong>LA MAGIA:</strong> En la barra de arriba de Apps Script, asegúrate de que esté seleccionada la función <code>setupAutomatizado</code> y dale al botón <strong>Ejecutar ▶️</strong>. (Acepta los permisos de Google). ¡Ve a tu Excel y verás que el script armó todas las columnas por ti!</li>
                             <li>Haz clic arriba a la derecha en <strong>Implementar > Nueva implementación</strong>. Elige <strong>Aplicación Web</strong>, y en acceso pon <strong>Cualquier persona</strong>.</li>
                             <li>Copia la URL que te dará Google.</li>
-                            <li>Abre el código de esta página web (index.html) y en la sección <code>CONFIGURACIÓN VITAL</code> (al inicio de los scripts), pega esa URL en la variable <code>CONFIG_URL_GOOGLE</code>.</li>
+                            <li>Sube al recuadro blanco de arriba, pega esa URL y dale al botón <strong>"Conectar"</strong>.</li>
                         </ol>
 
                         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs overflow-x-auto text-sky-400">
@@ -430,9 +446,38 @@ function doPost(e) {
         lucide.createIcons();
 
         // =========================================================================
-        // ⚠️ CONFIGURACIÓN VITAL: PEGA AQUÍ LA URL DE TU APPS SCRIPT
+        // CONFIGURACIÓN DINÁMICA DE LA BASE DE DATOS (SIN EDITAR HTML)
         // =========================================================================
-        const CONFIG_URL_GOOGLE = "PEGA_AQUÍ_LA_URL_QUE_TE_DIO_APPS_SCRIPT";
+        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
+
+        function guardarUrlConfig() {
+            const input = document.getElementById('config-url-input');
+            const url = input.value.trim();
+            if(url && url.startsWith('https://script.google.com/')) {
+                localStorage.setItem('nexusERP_url', url);
+                CONFIG_URL_GOOGLE = url;
+                actualizarEstadoConfig();
+                showToast('Conexión exitosa. Base de datos enlazada.', 'success');
+            } else {
+                showToast('Por favor, ingresa una URL válida de Google Apps Script.', 'error');
+            }
+        }
+
+        function actualizarEstadoConfig() {
+            const input = document.getElementById('config-url-input');
+            const status = document.getElementById('config-status');
+            if(!input || !status) return;
+
+            if(CONFIG_URL_GOOGLE) {
+                input.value = CONFIG_URL_GOOGLE;
+                status.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> Conectado a Google Sheets`;
+                status.className = "mt-3 text-sm font-semibold flex items-center gap-1 text-emerald-600";
+            } else {
+                status.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> Sin conectar - Los datos solo se guardarán temporalmente en esta sesión`;
+                status.className = "mt-3 text-sm font-semibold flex items-center gap-1 text-amber-500";
+            }
+            if(window.lucide) lucide.createIcons();
+        }
         // =========================================================================
 
         // --- ESTADO DE LA APLICACIÓN (Base de Datos Local Reactiva) ---
@@ -454,6 +499,7 @@ function doPost(e) {
             updateMonthFilterOptions();
             navigate('dashboard');
             renderAtributosForm();
+            actualizarEstadoConfig(); // Inicializa el estado visual de la URL
         });
 
         // --- NAVEGACIÓN ---
@@ -476,7 +522,7 @@ function doPost(e) {
                 'catalogo': 'Maestro de Productos',
                 'compras': 'Gestión de Entradas',
                 'ventas': 'Punto de Venta FIFO',
-                'instrucciones': 'Conexión Backend'
+                'instrucciones': 'Configuración de Base de Datos'
             };
             document.getElementById('page-title').innerText = titles[viewId];
 
