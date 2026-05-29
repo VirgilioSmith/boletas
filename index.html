@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus ERP - POS & Finanzas</title>
+    <title>Nexus ERP - Ventas & Finanzas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -25,10 +25,6 @@
         @keyframes slideOutDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
         .toast-enter { animation: slideInUp 0.3s forwards; }
         .toast-exit { animation: slideOutDown 0.3s forwards; }
-        
-        /* Tema del POS (Punto de Venta) */
-        .pos-bg { background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%); }
-        .glass-panel { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     </style>
     <script>
         tailwind.config = {
@@ -65,10 +61,10 @@
 
         <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 px-3">Operaciones Diarias</div>
-            <!-- Botón POS Principal -->
-            <button onclick="navigate('pos')" id="nav-pos" class="w-full flex items-center px-3 py-3 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors group mb-4 border border-transparent">
-                <div class="bg-slate-100 p-2 rounded-lg group-hover:bg-white shadow-sm transition-all mr-3"><i data-lucide="calculator" class="w-5 h-5 text-slate-700"></i></div>
-                <span class="font-bold text-[15px]">Caja / Punto de Venta</span>
+            <!-- Botón Ventas Principal -->
+            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center px-3 py-3 rounded-xl text-brand-700 bg-brand-50 font-bold transition-colors mb-4 border border-transparent">
+                <div class="bg-white p-2 rounded-lg shadow-sm transition-all mr-3"><i data-lucide="shopping-bag" class="w-5 h-5 text-brand-600"></i></div>
+                <span class="text-[15px]">Punto de Venta</span>
             </button>
             
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 px-3 mt-6">Gestión e Inventario</div>
@@ -77,9 +73,6 @@
             </button>
             <button onclick="navigate('catalogo')" id="nav-catalogo" class="w-full flex items-center px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-colors">
                 <i data-lucide="tags" class="w-5 h-5"></i><span class="ml-3 font-medium text-sm">Maestro de Productos</span>
-            </button>
-            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center px-3 py-2.5 rounded-lg text-slate-500 hover:bg-slate-50 transition-colors">
-                <i data-lucide="history" class="w-5 h-5"></i><span class="ml-3 font-medium text-sm">Historial de Salidas</span>
             </button>
 
             <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 px-3 mt-6">Contabilidad</div>
@@ -94,7 +87,7 @@
         <div class="p-4 border-t border-slate-100 bg-slate-50 m-4 rounded-xl">
             <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full flex items-center text-slate-600 hover:text-brand-600 transition-colors">
                 <i data-lucide="database" class="w-4 h-4"></i>
-                <span class="ml-2 font-semibold text-xs">Configuración Base de Datos</span>
+                <span class="ml-2 font-semibold text-xs">Configuración BD</span>
             </button>
             <div id="status-indicator-sidebar" class="mt-2 text-[10px] uppercase font-bold tracking-wider flex items-center gap-1 text-slate-400">
                 <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div> Estado: Offline
@@ -104,8 +97,8 @@
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
-        <!-- HEADER PÚBLICO (No POS) -->
-        <header id="main-header" class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-10 hidden">
+        <!-- HEADER PÚBLICO -->
+        <header id="main-header" class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-10">
             <h2 id="page-title" class="text-lg font-bold text-slate-800 tracking-tight">Cargando...</h2>
             
             <div class="flex items-center gap-4">
@@ -121,92 +114,74 @@
 
         <!-- VIEWS CONTAINER -->
         <div class="flex-1 overflow-y-auto h-full">
-            
-            <!-- VIEW 1: POS (PUNTO DE VENTA) -->
-            <div id="view-pos" class="view-section h-full w-full pos-bg flex flex-col lg:flex-row fade-in">
-                
-                <!-- Panel Izquierdo: Selección -->
-                <div class="flex-1 p-8 overflow-y-auto">
-                    <div class="flex items-center justify-between mb-8">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tight">Caja Registradora</h2>
-                            <p class="text-slate-400 text-sm mt-1">Selecciona productos del inventario disponible.</p>
-                        </div>
-                        <div class="bg-slate-800/50 text-slate-300 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 border border-slate-700">
-                            <i data-lucide="clock" class="w-4 h-4 text-brand-400"></i> <span id="pos-time">12:00 PM</span>
-                        </div>
-                    </div>
 
-                    <!-- Buscador/Filtro -->
-                    <div class="relative mb-6">
-                        <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-slate-500"></i>
-                        <input type="text" id="pos-search" placeholder="Buscar producto por nombre..." oninput="renderPosGrid()" class="w-full bg-slate-800/50 border border-slate-700 text-white rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder:text-slate-500">
-                    </div>
-
-                    <!-- Grid de Productos (Stock > 0) -->
-                    <div id="pos-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-20">
-                        <!-- Llenado por JS -->
-                    </div>
-                </div>
-
-                <!-- Panel Derecho: Ticket / Factura -->
-                <div class="w-full lg:w-96 bg-white shadow-[-10px_0_30px_rgba(0,0,0,0.1)] flex flex-col shrink-0">
-                    <div class="p-6 border-b border-slate-100 bg-slate-50/50">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-bold text-lg text-slate-800">Ticket de Venta</h3>
-                            <button onclick="limpiarPosCarrito()" class="text-slate-400 hover:text-red-500 p-1 transition-colors" title="Vaciar Carrito"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                        
-                        <!-- Mini form de precio unitario y cantidad (cuando se selecciona algo) -->
-                        <div id="pos-edit-panel" class="hidden bg-white p-4 rounded-xl border border-brand-200 shadow-sm relative mb-2">
-                            <div class="absolute -top-3 left-4 bg-brand-100 text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Editando Item</div>
-                            <p id="pos-edit-name" class="font-bold text-slate-800 text-sm mb-3 truncate pr-4">Producto</p>
-                            <div class="flex gap-2">
-                                <div class="flex-1">
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Cant.</label>
-                                    <div class="flex items-center border border-slate-200 rounded-lg mt-1 overflow-hidden">
-                                        <button onclick="posCambiarCant(-1)" class="px-2 py-1.5 bg-slate-50 text-slate-600 hover:bg-slate-100 font-bold">-</button>
-                                        <input type="number" id="pos-edit-qty" class="w-full text-center text-sm font-semibold text-slate-800 outline-none py-1.5 bg-white" onchange="posUpdateItem()" min="1">
-                                        <button onclick="posCambiarCant(1)" class="px-2 py-1.5 bg-slate-50 text-slate-600 hover:bg-slate-100 font-bold">+</button>
+            <!-- VIEW: VENTAS (PUNTO DE VENTA SIMPLIFICADO) -->
+            <div id="view-ventas" class="view-section fade-in p-8">
+                <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
+                    <!-- Formulario Ventas -->
+                    <div class="lg:col-span-4 space-y-6">
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-brand-50 rounded-bl-full -z-0"></div>
+                            <div class="relative z-10">
+                                <h3 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="shopping-bag" class="w-5 h-5 text-brand-600"></i> Registrar Venta</h3>
+                                <p class="text-xs text-slate-500 mb-6">Da salida a los productos de tu inventario.</p>
+                                
+                                <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Fecha</label>
+                                        <input type="date" id="vent-fecha" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none text-sm text-slate-700">
                                     </div>
-                                </div>
-                                <div class="flex-1">
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Precio U. ($)</label>
-                                    <input type="number" id="pos-edit-price" class="w-full border border-slate-200 rounded-lg mt-1 py-1.5 px-2 text-sm font-semibold text-slate-800 outline-none focus:border-brand-500 text-right" onchange="posUpdateItem()" min="0" step="0.01">
-                                </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Producto (Stock Disponible)</label>
+                                        <select id="vent-producto" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none text-sm text-slate-700"></select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Cantidad</label>
+                                            <input type="number" id="vent-cant" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none text-sm text-slate-700">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Precio Venta U. ($)</label>
+                                            <input type="number" id="vent-precio" min="0" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none text-sm text-slate-700">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full bg-slate-900 text-white font-bold rounded-xl py-3 mt-4 shadow-xl hover:bg-brand-600 transition-colors flex justify-center items-center gap-2">
+                                        <i data-lucide="check-circle" class="w-5 h-5"></i> Procesar Venta
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Lista de items en ticket -->
-                    <div class="flex-1 overflow-y-auto p-4 bg-slate-50/30">
-                        <ul id="pos-ticket-list" class="space-y-2">
-                            <!-- Llenado por JS -->
-                            <div class="text-center py-10 text-slate-400 flex flex-col items-center">
-                                <i data-lucide="shopping-cart" class="w-10 h-10 mb-2 opacity-20"></i>
-                                <p class="text-sm font-medium">Carrito vacío</p>
+                    <!-- Tabla Ventas -->
+                    <div class="lg:col-span-8">
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
+                            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                                <h3 class="text-lg font-bold text-slate-800">Historial de Salidas</h3>
                             </div>
-                        </ul>
-                    </div>
-
-                    <!-- Totales y Cobro -->
-                    <div class="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] relative z-10">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-slate-500 font-medium text-sm">Subtotal</span>
-                            <span id="pos-subtotal" class="font-semibold text-slate-700">$0.00</span>
+                            <div class="flex-1 overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="text-xs text-slate-500 uppercase bg-white border-b border-slate-100">
+                                        <tr>
+                                            <th class="px-6 py-4 font-semibold">Fecha</th>
+                                            <th class="px-6 py-4 font-semibold">Producto</th>
+                                            <th class="px-6 py-4 font-semibold text-center">Cant.</th>
+                                            <th class="px-6 py-4 font-semibold text-right">Precio Venta U.</th>
+                                            <th class="px-6 py-4 font-semibold text-right text-red-500">Costo FIFO (Total)</th>
+                                            <th class="px-6 py-4 font-semibold text-right text-emerald-600">Ganancia (Total)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ventas-body" class="divide-y divide-slate-100">
+                                        <!-- Llenado por JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center mb-6 pt-2 border-t border-slate-100 border-dashed">
-                            <span class="text-slate-800 font-bold text-lg">Total a Cobrar</span>
-                            <span id="pos-total" class="font-black text-3xl text-brand-600 tracking-tight">$0.00</span>
-                        </div>
-                        <button onclick="procesarVentaPOS()" id="pos-btn-cobrar" class="w-full bg-slate-900 text-white font-bold text-lg py-4 rounded-xl shadow-xl hover:bg-brand-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i data-lucide="credit-card" class="w-5 h-5"></i> Procesar Pago
-                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 2: DASHBOARD FINANCIERO -->
+            <!-- VIEW: DASHBOARD FINANCIERO -->
             <div id="view-dashboard" class="view-section fade-in p-8">
                 <div class="max-w-6xl mx-auto space-y-8">
                     <!-- KPIs -->
@@ -273,7 +248,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 3: FINANZAS (EGRESOS) -->
+            <!-- VIEW: FINANZAS (EGRESOS) -->
             <div id="view-finanzas" class="view-section fade-in p-8">
                 <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
                     <!-- Formulario Egresos -->
@@ -297,7 +272,7 @@
                                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Monto ($)</label>
                                         <input type="number" id="egre-monto" min="0.01" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-amber-500 outline-none text-sm text-slate-700">
                                     </div>
-                                    <button type="submit" class="w-full bg-amber-500 text-white font-bold rounded-xl py-3 mt-2 shadow-md hover:bg-amber-600 transition-colors">Registrar Egreso</button>
+                                    <button type="submit" class="w-full bg-amber-500 text-white font-bold rounded-xl py-3 mt-2 shadow-md hover:bg-amber-600 transition-colors flex justify-center items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5"></i> Registrar Egreso</button>
                                 </form>
                             </div>
                         </div>
@@ -334,13 +309,13 @@
                 </div>
             </div>
 
-            <!-- VIEW 4: CATÁLOGO -->
+            <!-- VIEW: CATÁLOGO -->
             <div id="view-catalogo" class="view-section fade-in p-8">
                 <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
                     <!-- Formulario -->
                     <div class="lg:col-span-4 space-y-6">
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-24 h-24 bg-brand-50 rounded-bl-full -z-0"></div>
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -z-0"></div>
                             <div class="relative z-10">
                                 <h3 class="text-lg font-bold text-slate-800 mb-1">Crear Producto</h3>
                                 <p class="text-xs text-slate-500 mb-6">Define los artículos que venderás.</p>
@@ -348,22 +323,22 @@
                                 <form id="form-producto" onsubmit="handleCrearProducto(event)" class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Nombre</label>
-                                        <input type="text" id="prod-nombre" required placeholder="Ej: Gorra Nike" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+                                        <input type="text" id="prod-nombre" required placeholder="Ej: Gorra Nike" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-1.5">Categoría</label>
-                                        <input type="text" id="prod-categoria" required placeholder="Ej: Accesorios" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+                                        <input type="text" id="prod-categoria" required placeholder="Ej: Accesorios" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
                                     </div>
                                     
                                     <div class="pt-2 border-t border-slate-100">
                                         <div class="flex justify-between items-center mb-3">
                                             <label class="text-xs font-bold text-slate-600 uppercase tracking-wide">Cualidades (Opcional)</label>
-                                            <button type="button" onclick="addAtributo()" class="text-xs bg-brand-50 text-brand-700 px-2 py-1 rounded hover:bg-brand-100 font-bold flex items-center gap-1 transition-colors"><i data-lucide="plus" class="w-3 h-3"></i> Añadir</button>
+                                            <button type="button" onclick="addAtributo()" class="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded hover:bg-indigo-100 font-bold flex items-center gap-1 transition-colors"><i data-lucide="plus" class="w-3 h-3"></i> Añadir</button>
                                         </div>
                                         <div id="atributos-container" class="space-y-2"></div>
                                     </div>
 
-                                    <button type="submit" class="w-full bg-slate-900 text-white font-bold rounded-xl py-3 mt-4 shadow-md hover:bg-brand-600 transition-colors">Guardar Producto</button>
+                                    <button type="submit" class="w-full bg-slate-900 text-white font-bold rounded-xl py-3 mt-4 shadow-md hover:bg-indigo-600 transition-colors flex items-center justify-center gap-2"><i data-lucide="tag" class="w-4 h-4"></i> Guardar Producto</button>
                                 </form>
                             </div>
                         </div>
@@ -394,7 +369,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 5: COMPRAS (INVENTARIO) -->
+            <!-- VIEW: COMPRAS (INVENTARIO) -->
             <div id="view-compras" class="view-section fade-in p-8">
                 <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
                     <!-- Formulario -->
@@ -424,7 +399,7 @@
                                             <input type="number" id="comp-costo" min="0" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-slate-700">
                                         </div>
                                     </div>
-                                    <button type="submit" class="w-full bg-emerald-600 text-white font-bold rounded-xl py-3 mt-2 shadow-md hover:bg-emerald-700 transition-colors">Ingresar Inventario</button>
+                                    <button type="submit" class="w-full bg-emerald-600 text-white font-bold rounded-xl py-3 mt-2 shadow-md hover:bg-emerald-700 transition-colors flex justify-center items-center gap-2"><i data-lucide="arrow-down-to-line" class="w-5 h-5"></i> Ingresar Inventario</button>
                                 </form>
                             </div>
                         </div>
@@ -457,38 +432,8 @@
                 </div>
             </div>
 
-            <!-- VIEW 6: VENTAS (HISTORIAL) -->
-            <div id="view-ventas" class="view-section fade-in p-8">
-                <div class="max-w-6xl mx-auto">
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                            <h3 class="text-lg font-bold text-slate-800">Registro de Salidas (Facturación)</h3>
-                            <button onclick="navigate('pos')" class="bg-brand-100 text-brand-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-brand-200 transition-colors flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4"></i> Nueva Venta en Caja</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="text-xs text-slate-500 uppercase bg-white border-b border-slate-100">
-                                    <tr>
-                                        <th class="px-6 py-4 font-semibold">Fecha</th>
-                                        <th class="px-6 py-4 font-semibold">Producto</th>
-                                        <th class="px-6 py-4 font-semibold text-center">Cant.</th>
-                                        <th class="px-6 py-4 font-semibold text-right">Precio Venta U.</th>
-                                        <th class="px-6 py-4 font-semibold text-right text-red-500">Costo FIFO (Total)</th>
-                                        <th class="px-6 py-4 font-semibold text-right text-emerald-600">Ganancia (Total)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ventas-body" class="divide-y divide-slate-100">
-                                    <!-- Llenado por JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW 7: INSTRUCCIONES / CONFIGURACIÓN -->
+            <!-- VIEW: INSTRUCCIONES / CONFIGURACIÓN -->
             <div id="view-instrucciones" class="view-section fade-in max-w-3xl mx-auto p-8">
-                <!-- PANEL DE CONEXIÓN UI -->
                 <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-6">
                     <h2 class="text-xl font-bold text-slate-800 mb-2">Conexión Segura de Base de Datos</h2>
                     <p class="text-sm text-slate-500 mb-6">Pega aquí la URL Web App de tu Google Apps Script para enlazar el sistema.</p>
@@ -527,7 +472,6 @@
         // =========================================================================
         // CONFIGURACIÓN Y CONEXIÓN BASE DE DATOS
         // =========================================================================
-        // URL NATIVA INYECTADA (Tu propia Base de Datos):
         const DEFAULT_URL = "https://script.google.com/macros/s/AKfycby-0Ao0lGDL-Eq_EApMP0ntbMws0nU8ko-AfBTc7i0PxfofOoKA12m5I-BcaDRAsP8k/exec";
         let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || DEFAULT_URL;
 
@@ -539,7 +483,7 @@
                 CONFIG_URL_GOOGLE = url;
                 actualizarEstadoConfig();
                 showToast('¡Conectado! Intentando sincronizar datos...', 'success');
-                setTimeout(() => window.location.reload(), 1500); // Recargar para forzar descarga
+                setTimeout(() => window.location.reload(), 1500);
             } else {
                 showToast('URL inválida. Debe empezar con https://script.google.com/', 'error');
             }
@@ -570,22 +514,19 @@
             if(window.lucide) lucide.createIcons();
         }
 
-        // --- ESTADO GLOBAL (LOCAL STATE) ---
+        // --- ESTADO GLOBAL ---
         let state = {
-            catalogo: [], compras: [], ventas: [], egresos: [],
-            posCart: [], posSubtotal: 0, formAtributos: []
+            catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: []
         };
         let charts = {};
 
-        // --- PETICIONES A GOOGLE SHEETS (EL PUENTE) ---
+        // --- PETICIONES A GOOGLE SHEETS ---
         async function cargarDatosDesdeGoogle() {
             if (!CONFIG_URL_GOOGLE) {
                 document.getElementById('loading-overlay').classList.add('hidden');
                 return;
             }
-            
             try {
-                // Para lectura (GET), el navegador no bloquea JSON si el script devuelve correctamente.
                 const response = await fetch(CONFIG_URL_GOOGLE);
                 const data = await response.json();
                 
@@ -607,20 +548,13 @@
 
         function enviarAGoogleSheets(tipo, payload) {
             if (!CONFIG_URL_GOOGLE) return;
-            
-            // LA MAGIA ANTI-BLOQUEO: method POST, mode no-cors, Content-Type text/plain.
-            // Esto asegura que el celular o la PC manden el dato directo a Google sin preguntar por permisos CORS.
             fetch(CONFIG_URL_GOOGLE, {
                 method: 'POST', 
                 mode: 'no-cors', 
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ tipo: tipo, ...payload })
-            }).then(() => {
-                console.log(`Dato (${tipo}) enviado al servidor exitosamente.`);
-            }).catch(err => {
-                console.error("Error envío:", err);
-                showToast('Error de conexión al enviar el dato.', 'error');
-            });
+            }).then(() => console.log(`Dato (${tipo}) enviado exitosamente.`))
+              .catch(err => { console.error("Error envío:", err); showToast('Error de conexión.', 'error'); });
         }
 
         // =========================================================================
@@ -631,71 +565,65 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('comp-fecha').value = today;
             document.getElementById('egre-fecha').value = today;
-            
-            // Reloj POS
-            setInterval(() => {
-                document.getElementById('pos-time').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            }, 1000);
+            document.getElementById('vent-fecha').value = today;
 
             actualizarEstadoConfig();
-            addAtributo(); // 1 campo vacío por defecto
+            addAtributo();
             
             if(CONFIG_URL_GOOGLE) {
-                // Iniciar directamente en la Caja Registradora
-                navigate('pos'); 
+                navigate('ventas'); // Iniciar en Punto de Venta Simple
                 cargarDatosDesdeGoogle();
             } else {
                 document.getElementById('loading-overlay').classList.add('hidden');
                 navigate('instrucciones');
-                showToast('Bienvenido. Por favor configura la Base de Datos primero.', 'info');
             }
         });
 
         function renderAll() {
-            renderCatalogo(); renderCompras(); renderVentas(); renderEgresos();
-            renderPosGrid(); renderDashboard();
+            renderCatalogo(); renderCompras(); renderVentas(); renderEgresos(); renderDashboard();
+            
+            // Refrescar selects
+            if(document.getElementById('view-compras').classList.contains('active')) navigate('compras');
+            if(document.getElementById('view-ventas').classList.contains('active')) navigate('ventas');
         }
 
         // =========================================================================
-        // NAVEGACIÓN Y UI GENERAL
+        // NAVEGACIÓN
         // =========================================================================
         function navigate(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
             
-            // Estilos Sidebar
             document.querySelectorAll('aside nav button').forEach(el => {
                 el.classList.remove('bg-brand-50', 'text-brand-700', 'font-bold');
                 el.classList.add('text-slate-500', 'hover:bg-slate-50');
             });
             const activeBtn = document.getElementById('nav-' + viewId);
-            if(activeBtn && viewId !== 'pos') {
+            if(activeBtn) {
                 activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-50');
                 activeBtn.classList.add('bg-brand-50', 'text-brand-700', 'font-bold');
             }
 
-            // Header Top Bar logic
-            const header = document.getElementById('main-header');
-            if(viewId === 'pos') {
-                header.classList.add('hidden'); // Ocultar topbar en POS
-            } else {
-                header.classList.remove('hidden');
-                const titles = {
-                    'dashboard': 'Dashboard Financiero', 'catalogo': 'Maestro de Productos',
-                    'compras': 'Entradas de Inventario', 'ventas': 'Historial de Salidas',
-                    'finanzas': 'Finanzas y Egresos', 'instrucciones': 'Ajustes del Sistema'
-                };
-                document.getElementById('page-title').innerText = titles[viewId] || '';
-            }
+            const titles = {
+                'ventas': 'Punto de Venta', 'dashboard': 'Dashboard Financiero', 
+                'catalogo': 'Maestro de Productos', 'compras': 'Entradas de Inventario', 
+                'finanzas': 'Finanzas y Egresos', 'instrucciones': 'Ajustes del Sistema'
+            };
+            document.getElementById('page-title').innerText = titles[viewId] || '';
 
-            // Disparar renders específicos
-            if(viewId === 'pos') renderPosGrid();
-            if(viewId === 'dashboard') renderDashboard();
             if(viewId === 'compras') {
                 const select = document.getElementById('comp-producto');
                 select.innerHTML = '<option value="">-- Selecciona producto --</option>' + 
                     state.catalogo.map(p => `<option value="${p.id}">${p.nombre} (${p.categoria})</option>`).join('');
             }
+            if(viewId === 'ventas') {
+                const select = document.getElementById('vent-producto');
+                const stock = getStockConsolidado();
+                select.innerHTML = '<option value="">-- Selecciona producto con stock --</option>' + 
+                    stock.map(p => `<option value="${p.id}">${p.nombre} (Disp: ${p.stock})</option>`).join('');
+                renderVentas();
+            }
+            if(viewId === 'dashboard') renderDashboard();
         }
 
         function showToast(msg, type = 'success') {
@@ -703,9 +631,9 @@
             const toast = document.createElement('div');
             const isErr = type === 'error';
             const icon = isErr ? 'alert-circle' : (type === 'info' ? 'info' : 'check-circle');
-            const bgClass = isErr ? 'bg-red-900 border-red-700 text-white' : (type === 'info' ? 'bg-blue-900 border-blue-700 text-white' : 'bg-slate-900 border-slate-800 text-white');
+            const bgClass = isErr ? 'bg-red-900 border-red-700' : (type === 'info' ? 'bg-blue-900 border-blue-700' : 'bg-slate-900 border-slate-800');
             
-            toast.className = `flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl border ${bgClass} toast-enter min-w-[300px]`;
+            toast.className = `flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl border text-white ${bgClass} toast-enter min-w-[300px]`;
             toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 ${isErr?'text-red-400':(type==='info'?'text-blue-400':'text-emerald-400')}"></i><p class="font-semibold text-sm">${msg}</p>`;
             
             container.appendChild(toast);
@@ -718,7 +646,7 @@
         }
 
         // =========================================================================
-        // MÓDULO 1: POS (CAJA REGISTRADORA)
+        // MÓDULO 1: VENTAS (PUNTO DE VENTA SIMPLIFICADO)
         // =========================================================================
         function getStockConsolidado() {
             return state.catalogo.map(prod => {
@@ -727,214 +655,89 @@
             }).filter(p => p.stock > 0);
         }
 
-        function renderPosGrid() {
-            const grid = document.getElementById('pos-grid');
-            const search = document.getElementById('pos-search').value.toLowerCase();
-            const stock = getStockConsolidado();
-            
-            const filtered = stock.filter(p => p.nombre.toLowerCase().includes(search) || p.categoria.toLowerCase().includes(search));
-            
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 bg-slate-800/30 rounded-2xl border border-slate-700 border-dashed"><i data-lucide="package-x" class="w-12 h-12 mx-auto mb-3 opacity-50"></i><p>No hay productos en inventario.</p></div>`;
-                lucide.createIcons({root: grid});
+        function handleVentaSubmit(e) {
+            e.preventDefault();
+            const fecha = document.getElementById('vent-fecha').value;
+            const productoId = document.getElementById('vent-producto').value;
+            const cantidad = parseInt(document.getElementById('vent-cant').value);
+            const precio = parseFloat(document.getElementById('vent-precio').value);
+
+            if (!productoId) return;
+
+            // Validar Stock
+            const stockDisponible = state.compras.filter(c => c.productoId === productoId).reduce((acc, c) => acc + c.cantidad_restante, 0);
+            if (cantidad > stockDisponible) {
+                showToast(`Stock insuficiente. Solo tienes ${stockDisponible} unidades.`, 'error');
                 return;
             }
 
-            grid.innerHTML = filtered.map(p => `
-                <div onclick="posAddItem('${p.id}', '${p.nombre.replace(/'/g, "\\'")}', ${p.stock})" class="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-brand-500 rounded-2xl p-4 cursor-pointer transition-all group flex flex-col justify-between min-h-[140px] shadow-lg">
-                    <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-brand-400 bg-brand-400/10 px-2 py-0.5 rounded">${p.categoria}</span>
-                        <h4 class="font-bold text-white mt-2 text-sm leading-tight group-hover:text-brand-300 transition-colors">${p.nombre}</h4>
-                    </div>
-                    <div class="mt-4 flex justify-between items-end">
-                        <div>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold">Disp.</p>
-                            <p class="text-xl font-black ${p.stock < 5 ? 'text-amber-400' : 'text-slate-200'}">${p.stock}</p>
-                        </div>
-                        <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center group-hover:bg-brand-500 transition-colors"><i data-lucide="plus" class="w-4 h-4 text-white"></i></div>
-                    </div>
-                </div>
-            `).join('');
-            lucide.createIcons({root: grid});
-        }
+            // Aplicar FIFO
+            let comprasVirtuales = JSON.parse(JSON.stringify(state.compras)); // Clonamos
+            comprasVirtuales.sort((a, b) => a.id.localeCompare(b.id)); // Más viejos primero
 
-        let selectedItemIndex = -1; // Para el mini-panel de edición
+            let qtyRestante = cantidad;
+            let costoTotalFIFO = 0;
 
-        function posAddItem(id, nombre, maxStock) {
-            const existing = state.posCart.find(item => item.id === id);
-            if(existing) {
-                if(existing.qty < maxStock) { existing.qty++; } 
-                else { showToast('Stock máximo alcanzado', 'error'); return; }
-            } else {
-                state.posCart.push({ id, nombre, maxStock, qty: 1, price: 0 }); // Precio inicia en 0 hasta que el user lo digite
-            }
-            // Seleccionar automáticamente el último añadido/modificado para editar precio
-            selectedItemIndex = state.posCart.findIndex(i => i.id === id);
-            renderPosTicket();
-        }
-
-        function posSelectItemToEdit(index) {
-            selectedItemIndex = index;
-            renderPosTicket();
-        }
-
-        function posCambiarCant(delta) {
-            if(selectedItemIndex === -1) return;
-            const item = state.posCart[selectedItemIndex];
-            const newQty = item.qty + delta;
-            if(newQty > 0 && newQty <= item.maxStock) {
-                item.qty = newQty;
-                document.getElementById('pos-edit-qty').value = newQty;
-                renderPosTicket(false); // false para no perder foco
-            }
-        }
-
-        function posUpdateItem() {
-            if(selectedItemIndex === -1) return;
-            const qtyStr = document.getElementById('pos-edit-qty').value;
-            const priceStr = document.getElementById('pos-edit-price').value;
-            const item = state.posCart[selectedItemIndex];
-            
-            let newQty = parseInt(qtyStr) || 1;
-            if(newQty > item.maxStock) newQty = item.maxStock;
-            if(newQty < 1) newQty = 1;
-            
-            item.qty = newQty;
-            item.price = parseFloat(priceStr) || 0;
-            renderPosTicket(false);
-        }
-
-        function posRemoveItem(index, event) {
-            event.stopPropagation();
-            state.posCart.splice(index, 1);
-            if(selectedItemIndex === index) selectedItemIndex = -1;
-            else if(selectedItemIndex > index) selectedItemIndex--;
-            renderPosTicket();
-        }
-
-        function limpiarPosCarrito() {
-            state.posCart = [];
-            selectedItemIndex = -1;
-            renderPosTicket();
-        }
-
-        function renderPosTicket(updateEditPanel = true) {
-            const list = document.getElementById('pos-ticket-list');
-            const editPanel = document.getElementById('pos-edit-panel');
-            
-            state.posSubtotal = state.posCart.reduce((sum, item) => sum + (item.qty * item.price), 0);
-            
-            document.getElementById('pos-subtotal').innerText = `$${state.posSubtotal.toFixed(2)}`;
-            document.getElementById('pos-total').innerText = `$${state.posSubtotal.toFixed(2)}`;
-            
-            const btnCobrar = document.getElementById('pos-btn-cobrar');
-            btnCobrar.disabled = state.posCart.length === 0 || state.posCart.some(i => i.price <= 0);
-
-            // Update List
-            if(state.posCart.length === 0) {
-                list.innerHTML = `<div class="text-center py-10 text-slate-400 flex flex-col items-center"><i data-lucide="shopping-cart" class="w-10 h-10 mb-2 opacity-20"></i><p class="text-sm font-medium">Carrito vacío</p></div>`;
-                editPanel.classList.add('hidden');
-            } else {
-                list.innerHTML = state.posCart.map((item, index) => `
-                    <li onclick="posSelectItemToEdit(${index})" class="group cursor-pointer bg-white p-3 rounded-xl border ${selectedItemIndex === index ? 'border-brand-500 shadow-md ring-1 ring-brand-500' : 'border-slate-200 hover:border-slate-300'} transition-all flex items-center justify-between">
-                        <div class="flex-1 overflow-hidden">
-                            <h5 class="font-bold text-sm text-slate-800 truncate">${item.nombre}</h5>
-                            <p class="text-xs text-slate-500 font-medium">${item.qty} x $${item.price.toFixed(2)} = <span class="font-bold text-slate-700">$${(item.qty * item.price).toFixed(2)}</span></p>
-                        </div>
-                        <button onclick="posRemoveItem(${index}, event)" class="text-slate-300 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-lg ml-2 transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
-                    </li>
-                `).join('');
-                
-                // Update Edit Panel
-                if(selectedItemIndex !== -1 && updateEditPanel) {
-                    const selItem = state.posCart[selectedItemIndex];
-                    editPanel.classList.remove('hidden');
-                    document.getElementById('pos-edit-name').innerText = selItem.nombre;
-                    document.getElementById('pos-edit-qty').value = selItem.qty;
-                    document.getElementById('pos-edit-price').value = selItem.price || '';
-                    if(selItem.price === 0) document.getElementById('pos-edit-price').focus(); // Auto focus si precio es 0
-                } else if(selectedItemIndex === -1) {
-                    editPanel.classList.add('hidden');
-                }
-            }
-            lucide.createIcons({root: list});
-        }
-
-        // --- LÓGICA FIFO AL VENDER ---
-        function procesarVentaPOS() {
-            if(state.posCart.length === 0) return;
-            
-            // Validar precios
-            if(state.posCart.some(i => i.price <= 0)) {
-                showToast('Todos los productos deben tener un precio de venta mayor a 0.', 'error');
-                return;
-            }
-
-            const fechaStr = new Date().toLocaleString('es-ES', { hour12: false });
-            let comprasVirtuales = JSON.parse(JSON.stringify(state.compras)); // Clon profundo para mutar
-            
-            // Ordenamos por ID (simulando fecha de ingreso más antigua primero)
-            comprasVirtuales.sort((a, b) => a.id.localeCompare(b.id));
-
-            let nuevasVentas = [];
-            let errorFIFO = false;
-
-            state.posCart.forEach(itemTicket => {
-                let qtyRestantePorAsignar = itemTicket.qty;
-                let costoTotalVenta = 0;
-
-                for (let i = 0; i < comprasVirtuales.length; i++) {
-                    let lote = comprasVirtuales[i];
-                    if (lote.productoId === itemTicket.id && lote.cantidad_restante > 0) {
-                        if (lote.cantidad_restante >= qtyRestantePorAsignar) {
-                            lote.cantidad_restante -= qtyRestantePorAsignar;
-                            costoTotalVenta += qtyRestantePorAsignar * lote.costo;
-                            qtyRestantePorAsignar = 0;
-                            break;
-                        } else {
-                            costoTotalVenta += lote.cantidad_restante * lote.costo;
-                            qtyRestantePorAsignar -= lote.cantidad_restante;
-                            lote.cantidad_restante = 0;
-                        }
+            for (let i = 0; i < comprasVirtuales.length; i++) {
+                let lote = comprasVirtuales[i];
+                if (lote.productoId === productoId && lote.cantidad_restante > 0) {
+                    if (lote.cantidad_restante >= qtyRestante) {
+                        lote.cantidad_restante -= qtyRestante;
+                        costoTotalFIFO += qtyRestante * lote.costo;
+                        qtyRestante = 0;
+                        break;
+                    } else {
+                        costoTotalFIFO += lote.cantidad_restante * lote.costo;
+                        qtyRestante -= lote.cantidad_restante;
+                        lote.cantidad_restante = 0;
                     }
                 }
-
-                if (qtyRestantePorAsignar > 0) {
-                    errorFIFO = true; // No debería pasar si validamos stock al añadir, pero por seguridad.
-                } else {
-                    const ventaObj = {
-                        id: `VENT-${Date.now()}-${Math.floor(Math.random()*1000)}`,
-                        fecha: fechaStr,
-                        productoId: itemTicket.id,
-                        cantidad: itemTicket.qty,
-                        precio: itemTicket.price,
-                        costo_fifo: costoTotalVenta,
-                        ganancia: (itemTicket.qty * itemTicket.price) - costoTotalVenta
-                    };
-                    nuevasVentas.push(ventaObj);
-                }
-            });
-
-            if (errorFIFO) {
-                showToast('Error crítico: Inconsistencia de inventario durante el cálculo FIFO.', 'error');
-                return;
             }
 
-            // Aplicar los cambios al estado global
-            state.compras = comprasVirtuales; // Actualizamos stock restante
-            state.ventas = [...state.ventas, ...nuevasVentas];
-            
-            // Subir a Base de Datos (enviar las nuevas ventas en bucle y actualizar compras simulando si fuera necesario - en Apps Script tendríamos que actualizar la celda exacta de compra, por simplicidad de este sistema de append, confiaremos en el recálculo al refrescar, pero mandamos la venta)
-            nuevasVentas.forEach(v => enviarAGoogleSheets("VENTA", v));
-            // NOTA: Para una actualización perfecta del inventario en Google Sheets sin recargar la página completa, 
-            // requeriría un endpoint PUT en Apps Script para buscar la fila y restar.
-            // Por ahora, el registro de la venta queda impecable. La consistencia local se mantiene.
+            const ventaObj = {
+                id: `VENT-${Date.now()}-${Math.floor(Math.random()*1000)}`,
+                fecha: fecha,
+                productoId: productoId,
+                cantidad: cantidad,
+                precio: precio,
+                costo_fifo: costoTotalFIFO,
+                ganancia: (cantidad * precio) - costoTotalFIFO
+            };
 
-            limpiarPosCarrito();
-            renderPosGrid(); // Refresca botones visuales de stock
-            showToast('¡Pago procesado exitosamente!', 'success');
+            // Actualizar estado
+            state.compras = comprasVirtuales; // Stock actualizado
+            state.ventas.push(ventaObj);
+
+            enviarAGoogleSheets("VENTA", ventaObj);
+
+            // Reset formulario y re-render
+            document.getElementById('vent-cant').value = '';
+            document.getElementById('vent-precio').value = '';
+            navigate('ventas'); // Actualiza el select con el nuevo stock
+            showToast('¡Venta registrada exitosamente!', 'success');
         }
 
+        function renderVentas() {
+            const tbody = document.getElementById('ventas-body');
+            const data = getFilteredData(state.ventas, 'fecha');
+            
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-400">Sin ventas registradas en este periodo.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.slice().reverse().map(v => {
+                const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desconocido'};
+                return `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 text-slate-500 font-medium">${v.fecha.split('T')[0].split(',')[0]}</td>
+                    <td class="px-6 py-4 font-bold text-slate-800">${p.nombre}</td>
+                    <td class="px-6 py-4 text-center font-bold text-slate-600 bg-slate-50/50">${v.cantidad}</td>
+                    <td class="px-6 py-4 text-right font-semibold text-slate-700">$${v.precio.toFixed(2)}</td>
+                    <td class="px-6 py-4 text-right text-red-500 font-semibold border-l border-slate-50">-$${v.costo_fifo.toFixed(2)}</td>
+                    <td class="px-6 py-4 text-right text-emerald-600 font-black">+$${v.ganancia.toFixed(2)}</td>
+                </tr>
+            `}).join('');
+        }
 
         // =========================================================================
         // MÓDULO 2: CATÁLOGO
@@ -970,8 +773,7 @@
 
             const obj = {
                 id: `PROD-${Date.now()}`,
-                nombre, categoria,
-                atributos: atributosValidos
+                nombre, categoria, atributos: atributosValidos
             };
 
             state.catalogo.push(obj);
@@ -1013,11 +815,8 @@
 
             const obj = {
                 id: `COMP-${Date.now()}`,
-                fecha: fecha,
-                productoId: productoId,
-                cantidad_inicial: cantidad,
-                cantidad_restante: cantidad,
-                costo: costo
+                fecha: fecha, productoId: productoId,
+                cantidad_inicial: cantidad, cantidad_restante: cantidad, costo: costo
             };
 
             state.compras.push(obj);
@@ -1037,11 +836,10 @@
             }
             tbody.innerHTML = state.compras.slice().reverse().map(c => {
                 const p = state.catalogo.find(x => x.id === c.productoId) || {nombre: 'Desconocido', categoria: '-'};
-                const rowClass = c.cantidad_restante === 0 ? 'bg-slate-50 opacity-60' : 'hover:bg-slate-50';
                 const badgeClass = c.cantidad_restante === 0 ? 'bg-slate-200 text-slate-500' : 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-500/30 shadow-sm';
                 
                 return `
-                <tr class="${rowClass} transition-colors">
+                <tr class="${c.cantidad_restante === 0 ? 'bg-slate-50 opacity-60' : 'hover:bg-slate-50'} transition-colors">
                     <td class="px-6 py-4 text-slate-500 font-medium">${c.fecha.split('T')[0]}</td>
                     <td class="px-6 py-4">
                         <p class="font-bold text-slate-800 leading-tight">${p.nombre}</p>
@@ -1055,32 +853,7 @@
         }
 
         // =========================================================================
-        // MÓDULO 4: VENTAS (TABLA)
-        // =========================================================================
-        function renderVentas() {
-            const tbody = document.getElementById('ventas-body');
-            const data = getFilteredData(state.ventas, 'fecha');
-            
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-slate-400">Sin ventas en este periodo.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = data.slice().reverse().map(v => {
-                const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desconocido'};
-                return `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4 text-slate-500 font-medium">${v.fecha.split(',')[0]}</td>
-                    <td class="px-6 py-4 font-bold text-slate-800">${p.nombre}</td>
-                    <td class="px-6 py-4 text-center font-bold text-slate-600 bg-slate-50/50">${v.cantidad}</td>
-                    <td class="px-6 py-4 text-right font-semibold text-slate-700">$${v.precio.toFixed(2)}</td>
-                    <td class="px-6 py-4 text-right text-red-500 font-semibold border-l border-slate-50">-$${v.costo_fifo.toFixed(2)}</td>
-                    <td class="px-6 py-4 text-right text-emerald-600 font-black">+$${v.ganancia.toFixed(2)}</td>
-                </tr>
-            `}).join('');
-        }
-
-        // =========================================================================
-        // MÓDULO 5: EGRESOS (FINANZAS)
+        // MÓDULO 4: EGRESOS (FINANZAS)
         // =========================================================================
         function handleEgresoSubmit(e) {
             e.preventDefault();
@@ -1097,7 +870,7 @@
             document.getElementById('egre-concepto').value = '';
             document.getElementById('egre-monto').value = '';
             renderEgresos();
-            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); // update si está visible
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
             showToast('Gasto registrado con éxito.');
         }
 
@@ -1105,9 +878,7 @@
             const tbody = document.getElementById('egresos-body');
             const data = getFilteredData(state.egresos, 'fecha');
             
-            // Total Box
-            const total = data.reduce((sum, e) => sum + e.monto, 0);
-            document.getElementById('egresos-total-mes').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('egresos-total-mes').innerText = `$${data.reduce((s, e) => s + e.monto, 0).toFixed(2)}`;
 
             if(data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-12 text-center text-slate-400">Sin egresos en este periodo.</td></tr>`;
@@ -1130,17 +901,15 @@
             if(filterVal === 'ALL') return dataArray;
             return dataArray.filter(item => {
                 if(!item[dateField]) return false;
-                // Parse date (maneja 'YYYY-MM-DD' o fechas con hora)
                 let dStr = item[dateField];
-                // Extraer YYYY-MM
                 let ym = "";
                 if(dStr.includes('T')) dStr = dStr.split('T')[0];
-                if(dStr.includes(',')) dStr = dStr.split(',')[0].split('/').reverse().join('-'); // Intento parche formato local
+                if(dStr.includes(',')) dStr = dStr.split(',')[0].split('/').reverse().join('-');
                 
                 const parts = dStr.split('-');
                 if(parts.length >= 2) {
-                    if(parts[0].length === 4) ym = `${parts[0]}-${parts[1]}`; // YYYY-MM
-                    else ym = `${parts[2]}-${parts[1]}`; // DD-MM-YYYY -> YYYY-MM
+                    if(parts[0].length === 4) ym = `${parts[0]}-${parts[1]}`;
+                    else ym = `${parts[2]}-${parts[1]}`;
                 }
                 return ym === filterVal;
             });
@@ -1164,16 +933,11 @@
                 if(ym) months.add(ym);
             });
 
-            // Siempre incluir mes actual
             const today = new Date();
-            const currY = today.getFullYear();
-            const currM = String(today.getMonth()+1).padStart(2,'0');
-            const currYM = `${currY}-${currM}`;
+            const currYM = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
             months.add(currYM);
 
             const sortedMonths = Array.from(months).sort().reverse();
-            
-            // Mantener valor actual si existe
             const currentVal = select.value;
             
             select.innerHTML = '<option value="ALL">Todo el tiempo</option>' + 
@@ -1184,22 +948,19 @@
                 }).join('');
             
             if(sortedMonths.includes(currentVal)) select.value = currentVal;
-            else select.value = currYM; // Default actual
+            else select.value = currYM;
         }
 
         function handleMonthChange() {
             renderVentas();
             renderEgresos();
-            if(document.getElementById('view-dashboard').classList.contains('active')) {
-                renderDashboard();
-            }
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
         }
 
         function renderDashboard() {
             const ventFiltradas = getFilteredData(state.ventas, 'fecha');
             const egreFiltrados = getFilteredData(state.egresos, 'fecha');
             
-            // KPIs
             const totalIngresos = ventFiltradas.reduce((sum, v) => sum + (v.cantidad * v.precio), 0);
             const totalCostoFIFO = ventFiltradas.reduce((sum, v) => sum + v.costo_fifo, 0);
             const totalEgresos = egreFiltrados.reduce((sum, e) => sum + e.monto, 0);
@@ -1210,25 +971,21 @@
             document.getElementById('kpi-egresos').innerText = `$${totalEgresos.toFixed(2)}`;
             document.getElementById('kpi-neto').innerText = `$${gananciaNeta.toFixed(2)}`;
             
-            // Color KPI Neto
             const kpiNetoEl = document.getElementById('kpi-neto').parentElement.parentElement;
             if(gananciaNeta < 0) {
-                kpiNetoEl.classList.remove('bg-slate-900', 'border-slate-800');
-                kpiNetoEl.classList.add('bg-red-900', 'border-red-800');
+                kpiNetoEl.classList.replace('bg-slate-900', 'bg-red-900');
+                kpiNetoEl.classList.replace('border-slate-800', 'border-red-800');
             } else {
-                kpiNetoEl.classList.add('bg-slate-900', 'border-slate-800');
-                kpiNetoEl.classList.remove('bg-red-900', 'border-red-800');
+                kpiNetoEl.classList.replace('bg-red-900', 'bg-slate-900');
+                kpiNetoEl.classList.replace('border-red-800', 'border-slate-800');
             }
 
-            // Stock Valorizado (Global, no depende del mes)
             const stockConsolidado = getStockConsolidado().map(p => {
-                const lotes = state.compras.filter(c => c.productoId === p.id);
-                const valor = lotes.reduce((acc, c) => acc + (c.cantidad_restante * c.costo), 0);
+                const valor = state.compras.filter(c => c.productoId === p.id).reduce((acc, c) => acc + (c.cantidad_restante * c.costo), 0);
                 return { ...p, valor };
-            }).sort((a,b) => b.valor - a.valor); // Mayor valor primero
+            }).sort((a,b) => b.valor - a.valor);
 
-            const totalInvertidoStock = stockConsolidado.reduce((sum, p) => sum + p.valor, 0);
-            document.getElementById('kpi-valor-stock').innerText = `$${totalInvertidoStock.toFixed(2)}`;
+            document.getElementById('kpi-valor-stock').innerText = `$${stockConsolidado.reduce((sum, p) => sum + p.valor, 0).toFixed(2)}`;
 
             const stockGrid = document.getElementById('dashboard-stock-grid');
             if(stockConsolidado.length === 0) stockGrid.innerHTML = '<div class="col-span-full text-slate-400 text-sm italic">Inventario vacío.</div>';
@@ -1243,12 +1000,10 @@
                 </div>
             `).join('');
 
-            // Gráficos
-            renderCharts(ventFiltradas, egreFiltrados, stockConsolidado);
+            renderCharts(ventFiltradas, egreFiltrados);
         }
 
-        function renderCharts(ventas, egresos, stockData) {
-            // Chart 1: Distribución Categorías (Ventas Brutas)
+        function renderCharts(ventas, egresos) {
             const catSales = {};
             ventas.forEach(v => {
                 const p = state.catalogo.find(x => x.id === v.productoId);
@@ -1266,7 +1021,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: {font:{family:'Inter', size:11}, usePointStyle:true} } }, cutout: '70%' }
             });
 
-            // Chart 2: Tendencias (Bar Chart simple para no complicar fechas si hay pocas)
             if(charts.tend) charts.tend.destroy();
             charts.tend = new Chart(document.getElementById('chart-tendencias'), {
                 type: 'bar',
