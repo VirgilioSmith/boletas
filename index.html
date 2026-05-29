@@ -527,7 +527,9 @@
         // =========================================================================
         // CONFIGURACIÓN Y CONEXIÓN BASE DE DATOS
         // =========================================================================
-        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
+        // URL NATIVA INYECTADA (Tu propia Base de Datos):
+        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycby-0Ao0lGDL-Eq_EApMP0ntbMws0nU8ko-AfBTc7i0PxfofOoKA12m5I-BcaDRAsP8k/exec";
+        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || DEFAULT_URL;
 
         function guardarUrlConfig() {
             const input = document.getElementById('config-url-input');
@@ -639,6 +641,8 @@
             addAtributo(); // 1 campo vacío por defecto
             
             if(CONFIG_URL_GOOGLE) {
+                // Iniciar directamente en la Caja Registradora
+                navigate('pos'); 
                 cargarDatosDesdeGoogle();
             } else {
                 document.getElementById('loading-overlay').classList.add('hidden');
