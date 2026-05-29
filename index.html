@@ -46,6 +46,15 @@
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen overflow-hidden flex font-sans selection:bg-brand-500 selection:text-white">
 
+    <!-- PANTALLA DE CARGA (NUEVO) -->
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[100] hidden flex-col items-center justify-center text-white transition-opacity duration-300">
+        <i data-lucide="loader-2" class="w-12 h-12 animate-spin text-brand-500 mb-4"></i>
+        <h2 class="text-2xl font-bold tracking-tight">Sincronizando Base de Datos...</h2>
+        <p class="text-slate-400 text-sm mt-2 flex items-center gap-2">
+            <i data-lucide="cloud-download" class="w-4 h-4"></i> Descargando registros de Google Sheets
+        </p>
+    </div>
+
     <!-- SIDEBAR -->
     <aside class="w-20 lg:w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-all duration-300 z-20 shadow-sm shrink-0">
         <div>
@@ -94,25 +103,25 @@
         <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 z-10 shrink-0">
             <h1 id="page-title" class="text-xl font-bold text-slate-800">Dashboard Estadístico</h1>
             
-            <!-- Selector Global de Fecha -->
             <div class="flex items-center gap-3">
+                <button onclick="cargarDatosDesdeGoogle()" class="p-2 text-slate-400 hover:text-brand-600 transition-colors group relative" title="Actualizar Datos">
+                    <i data-lucide="refresh-cw" class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500"></i>
+                </button>
                 <div class="flex items-center gap-2 bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg border border-slate-200">
                     <i data-lucide="calendar" class="w-4 h-4"></i>
                     <select id="global-month-filter" onchange="renderDashboard()" class="bg-transparent border-none text-sm font-semibold focus:ring-0 outline-none cursor-pointer">
                         <option value="ALL">Todo el tiempo</option>
-                        <!-- Opciones de mes se llenan dinámicamente -->
                     </select>
                 </div>
             </div>
         </header>
 
-        <!-- CONTENEDOR DE VISTAS (Scrollable) -->
+        <!-- CONTENEDOR DE VISTAS -->
         <div class="flex-1 overflow-y-auto p-4 md:p-8" id="main-scroll-area">
             <div class="max-w-6xl mx-auto w-full">
                 
                 <!-- VIEW: DASHBOARD -->
                 <div id="view-dashboard" class="view-section fade-in hidden space-y-6">
-                    <!-- KPIs -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
                             <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="wallet" class="w-12 h-12"></i></div>
@@ -136,7 +145,6 @@
                         </div>
                     </div>
 
-                    <!-- Gráficos -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                             <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-400"></i> Rendimiento de Productos (Beneficio vs Costo)</h3>
@@ -152,7 +160,6 @@
                         </div>
                     </div>
 
-                    <!-- Tabla de Stock -->
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <h3 class="text-base font-bold text-slate-800 flex items-center gap-2"><i data-lucide="package-check" class="w-4 h-4 text-slate-400"></i> Valorización de Inventario Actual (Todos los meses)</h3>
@@ -168,7 +175,6 @@
                                     </tr>
                                 </thead>
                                 <tbody id="dash-stock-body" class="divide-y divide-slate-100 bg-white">
-                                    <!-- Llenado por JS -->
                                 </tbody>
                             </table>
                         </div>
@@ -198,9 +204,7 @@
                                             <i data-lucide="plus" class="w-3 h-3"></i> Añadir
                                         </button>
                                     </div>
-                                    <div id="atributos-container" class="space-y-2">
-                                        <!-- Atributos dinámicos aquí -->
-                                    </div>
+                                    <div id="atributos-container" class="space-y-2"></div>
                                     <p class="text-[11px] text-slate-400 mt-2">Ej: Color, Talla, Material. Ayuda a segmentar reportes futuros.</p>
                                 </div>
 
@@ -212,7 +216,7 @@
                     </div>
                     <div class="lg:col-span-8">
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden h-full flex flex-col">
-                            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                                 <h3 class="text-lg font-bold text-slate-800">Maestro de Productos</h3>
                             </div>
                             <div class="flex-1 overflow-x-auto p-0">
@@ -224,9 +228,7 @@
                                             <th class="px-6 py-4 font-semibold">Cualidades</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="catalogo-body" class="divide-y divide-slate-100">
-                                        <!-- Llenado por JS -->
-                                    </tbody>
+                                    <tbody id="catalogo-body" class="divide-y divide-slate-100"></tbody>
                                 </table>
                                 <div id="catalogo-empty" class="hidden p-12 text-center text-slate-400 flex flex-col items-center justify-center">
                                     <i data-lucide="inbox" class="w-12 h-12 mb-3 opacity-20"></i>
@@ -246,7 +248,6 @@
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Seleccionar Producto</label>
                                     <select id="comp-producto" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
-                                        <!-- Opciones JS -->
                                     </select>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
@@ -286,7 +287,6 @@
                                         </tr>
                                     </thead>
                                     <tbody id="compras-body" class="divide-y divide-slate-100">
-                                        <!-- Llenado por JS -->
                                     </tbody>
                                 </table>
                             </div>
@@ -303,7 +303,6 @@
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wide mb-1.5">Producto a Vender</label>
                                     <select id="vent-producto" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                                        <!-- Solo productos con stock > 0 -->
                                     </select>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
@@ -344,7 +343,6 @@
                                         </tr>
                                     </thead>
                                     <tbody id="ventas-body" class="divide-y divide-slate-100">
-                                        <!-- Llenado por JS -->
                                     </tbody>
                                 </table>
                             </div>
@@ -355,12 +353,11 @@
                 <!-- VIEW: INSTRUCCIONES / CONFIGURACIÓN -->
                 <div id="view-instrucciones" class="view-section fade-in hidden max-w-3xl mx-auto">
                     
-                    <!-- NUEVO PANEL DE CONEXIÓN UI -->
                     <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm mb-6">
-                        <h2 class="text-xl font-bold text-slate-800 mb-2">Paso 1: Conecta tu Base de Datos</h2>
-                        <p class="text-sm text-slate-500 mb-6">Pega aquí la URL de tu Google Apps Script. <strong class="text-brand-600">No necesitas editar el código HTML</strong>, se guardará de forma segura en tu navegador.</p>
+                        <h2 class="text-xl font-bold text-slate-800 mb-2">Conecta tu Base de Datos</h2>
+                        <p class="text-sm text-slate-500 mb-6">Pega aquí la URL de tu Google Apps Script. El sistema leerá y escribirá en tu Excel automáticamente.</p>
                         <div class="flex flex-col md:flex-row gap-3">
-                            <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
+                            <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/AKfycby-0Ao0lGDL-Eq_EApMP0ntbMws0nU8ko-AfBTc7i0PxfofOoKA12m5I-BcaDRAsP8k/exec" class="flex-1 bg-slate-50 border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500 outline-none transition-all">
                             <button onclick="guardarUrlConfig()" class="bg-brand-600 text-white font-bold rounded-xl px-6 py-3 hover:bg-brand-700 transition-colors shadow-md flex items-center justify-center gap-2">
                                 <i data-lucide="link" class="w-4 h-4"></i> Conectar
                             </button>
@@ -373,64 +370,16 @@
                     <div class="bg-slate-900 text-slate-300 p-8 rounded-3xl border border-slate-800 shadow-xl relative overflow-hidden">
                         <div class="absolute -right-4 -top-4 opacity-10"><i data-lucide="database" class="w-32 h-32 text-white"></i></div>
                         <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                            <i data-lucide="server-cog"></i> Configuración Backend (Google Sheets)
+                            <i data-lucide="server-cog"></i> Configuración Automática
                         </h2>
-                        
-                        <p class="mb-4">Para que este sistema HTML funcione como un SaaS real y guarde todo en tu nube de Google, sigue estos pasos:</p>
-                        
                         <ol class="list-decimal pl-5 space-y-4 mb-6">
-                            <li>Crea un archivo nuevo, totalmente en blanco, en <strong>Google Sheets</strong>.</li>
-                            <li>En el Sheets, ve arriba a <strong>Extensiones > Apps Script</strong>.</li>
-                            <li>Borra todo lo que salga ahí y pega el código de abajo.</li>
-                            <li><strong>LA MAGIA:</strong> En la barra de arriba de Apps Script, asegúrate de que esté seleccionada la función <code>setupAutomatizado</code> y dale al botón <strong>Ejecutar ▶️</strong>. (Acepta los permisos de Google). ¡Ve a tu Excel y verás que el script armó todas las columnas por ti!</li>
-                            <li>Haz clic arriba a la derecha en <strong>Implementar > Nueva implementación</strong>. Elige <strong>Aplicación Web</strong>, y en acceso pon <strong>Cualquier persona</strong>.</li>
-                            <li>Copia la URL que te dará Google.</li>
-                            <li>Sube al recuadro blanco de arriba, pega esa URL y dale al botón <strong>"Conectar"</strong>.</li>
+                            <li>Crea un archivo nuevo en <strong>Google Sheets</strong>.</li>
+                            <li>Ve a <strong>Extensiones > Apps Script</strong>.</li>
+                            <li>Borra todo y pega el código que se te proporcionó (El que tiene <code>setupAutomatizado</code> y las funciones <code>doGet</code> y <code>doPost</code>).</li>
+                            <li>Selecciona <code>setupAutomatizado</code> en la barra superior y dale <strong>Ejecutar ▶️</strong> (Acepta permisos).</li>
+                            <li>Haz clic en <strong>Implementar > Nueva implementación</strong> (Aplicación Web -> Cualquier persona).</li>
+                            <li>Copia la URL y pégala en el recuadro blanco de arriba.</li>
                         </ol>
-
-                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs overflow-x-auto text-sky-400">
-<pre><code>// 1. FUNCIÓN DE AUTO-CONSTRUCCIÓN (EJECUTAR 1 VEZ)
-function setupAutomatizado() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  
-  function prepararHoja(nombre, columnas) {
-    var hoja = ss.getSheetByName(nombre) || ss.insertSheet(nombre);
-    hoja.clear(); 
-    hoja.getRange(1, 1, 1, columnas.length).setValues([columnas])
-        .setFontWeight("bold").setBackground("#0f172a").setFontColor("#ffffff");
-    hoja.setFrozenRows(1);
-    for(var i=1; i<=columnas.length; i++) hoja.autoResizeColumn(i);
-  }
-
-  prepararHoja("Catalogo", ["ID", "Nombre", "Categoría", "Atributos (JSON)"]);
-  prepararHoja("Compras", ["ID", "Fecha", "ID Producto", "Cantidad Inicial", "Cantidad Restante", "Costo Unitario ($)"]);
-  prepararHoja("Ventas", ["ID", "Fecha", "ID Producto", "Cantidad Vendida", "Precio Venta ($)", "Costo FIFO ($)", "Ganancia Neta ($)"]);
-
-  var h1 = ss.getSheetByName("Hoja 1"), h2 = ss.getSheetByName("Sheet1");
-  if (h1 && ss.getSheets().length > 1) ss.deleteSheet(h1);
-  if (h2 && ss.getSheets().length > 1) ss.deleteSheet(h2);
-}
-
-// 2. EL BACKEND (RECIBE DATOS DEL HTML)
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet();
-    var data = JSON.parse(e.postData.contents);
-    var tipo = data.tipo;
-    
-    if(tipo === "CATALOGO") {
-      sheet.getSheetByName("Catalogo").appendRow([data.id, data.nombre, data.categoria, JSON.stringify(data.atributos)]);
-    } else if(tipo === "COMPRA") {
-      sheet.getSheetByName("Compras").appendRow([data.id, data.fecha, data.productoId, data.cantidad_inicial, data.cantidad_restante, data.costo]);
-    } else if(tipo === "VENTA") {
-      sheet.getSheetByName("Ventas").appendRow([data.id, data.fecha, data.productoId, data.cantidad, data.precio, data.costo_fifo, data.ganancia]);
-    }
-    return ContentService.createTextOutput(JSON.stringify({"status": "Exito"})).setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({"status": "Error", "msg": err.toString()})).setMimeType(ContentService.MimeType.JSON);
-  }
-}</code></pre>
-                        </div>
                     </div>
                 </div>
 
@@ -446,9 +395,10 @@ function doPost(e) {
         lucide.createIcons();
 
         // =========================================================================
-        // CONFIGURACIÓN DINÁMICA DE LA BASE DE DATOS (SIN EDITAR HTML)
+        // CONFIGURACIÓN DINÁMICA DE LA BASE DE DATOS
         // =========================================================================
-        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
+        // 🔥 AQUÍ SE INYECTÓ TU URL OFICIAL NATIVAMENTE 🔥
+        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "https://script.google.com/macros/s/AKfycby-0Ao0lGDL-Eq_EApMP0ntbMws0nU8ko-AfBTc7i0PxfofOoKA12m5I-BcaDRAsP8k/exec";
 
         function guardarUrlConfig() {
             const input = document.getElementById('config-url-input');
@@ -457,7 +407,7 @@ function doPost(e) {
                 localStorage.setItem('nexusERP_url', url);
                 CONFIG_URL_GOOGLE = url;
                 actualizarEstadoConfig();
-                showToast('Conexión exitosa. Base de datos enlazada.', 'success');
+                cargarDatosDesdeGoogle(); // 🔥 DISPARA LA DESCARGA AUTOMÁTICA
             } else {
                 showToast('Por favor, ingresa una URL válida de Google Apps Script.', 'error');
             }
@@ -470,7 +420,7 @@ function doPost(e) {
 
             if(CONFIG_URL_GOOGLE) {
                 input.value = CONFIG_URL_GOOGLE;
-                status.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> Conectado a Google Sheets`;
+                status.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> Conectado y Sincronizado a Google Sheets`;
                 status.className = "mt-3 text-sm font-semibold flex items-center gap-1 text-emerald-600";
             } else {
                 status.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4"></i> Sin conectar - Los datos solo se guardarán temporalmente en esta sesión`;
@@ -478,7 +428,6 @@ function doPost(e) {
             }
             if(window.lucide) lucide.createIcons();
         }
-        // =========================================================================
 
         // --- ESTADO DE LA APLICACIÓN (Base de Datos Local Reactiva) ---
         let state = {
@@ -487,22 +436,77 @@ function doPost(e) {
             ventas: []
         };
 
-        // Instancias de gráficos
         let charts = { products: null, categories: null };
 
-        // Al iniciar
+        // =========================================================================
+        // 🔥 NUEVA FUNCIÓN: LEER DATOS DESDE GOOGLE AL ENTRAR A LA PÁGINA
+        // =========================================================================
+        async function cargarDatosDesdeGoogle() {
+            if (!CONFIG_URL_GOOGLE) {
+                console.warn("No hay URL configurada. Modo local activo.");
+                return;
+            }
+
+            const loading = document.getElementById('loading-overlay');
+            loading.classList.remove('hidden');
+            loading.classList.add('flex');
+
+            try {
+                // Hacer petición GET a Google Sheets
+                const response = await fetch(CONFIG_URL_GOOGLE);
+                const data = await response.json();
+
+                // Actualizar nuestro "Cerebro Local" con la base de datos de la nube
+                state.catalogo = data.catalogo || [];
+                state.compras = data.compras || [];
+                state.ventas = data.ventas || [];
+
+                // Refrescar toda la pantalla
+                renderCatalogo();
+                renderCompras();
+                renderVentas();
+                updateMonthFilterOptions();
+                renderDashboard();
+
+                showToast('Base de datos sincronizada con éxito', 'success');
+            } catch (error) {
+                console.error("Error sincronizando base de datos:", error);
+                showToast('Error de conexión. Revisa tu URL de Google Sheets.', 'error');
+            } finally {
+                loading.classList.add('hidden');
+                loading.classList.remove('flex');
+            }
+        }
+
+        // =========================================================================
+        // FUNCIÓN PARA ENVIAR (ESCRIBIR) DATOS A GOOGLE
+        // =========================================================================
+        function enviarAGoogleSheets(tipo, payload) {
+            if (!CONFIG_URL_GOOGLE) return;
+            fetch(CONFIG_URL_GOOGLE, {
+                method: 'POST',
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tipo: tipo, ...payload })
+            }).then(() => console.log(`📡 [${tipo}] Enviado a la nube.`))
+              .catch(err => console.error("Error subiendo datos:", err));
+        }
+
+        // --- INICIALIZACIÓN ---
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('comp-fecha').value = today;
             document.getElementById('vent-fecha').value = today;
             
-            updateMonthFilterOptions();
             navigate('dashboard');
             renderAtributosForm();
-            actualizarEstadoConfig(); // Inicializa el estado visual de la URL
+            actualizarEstadoConfig();
+            
+            // 🔥 AL ABRIR LA PÁGINA, DESCARGA LOS DATOS AUTOMÁTICAMENTE
+            cargarDatosDesdeGoogle(); 
         });
 
-        // --- NAVEGACIÓN ---
+        // --- STREAMING_CHUNK:Navigation and Toast Helpers... ---
         function navigate(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(`view-${viewId}`).classList.remove('hidden');
@@ -517,13 +521,7 @@ function doPost(e) {
                 activeBtn.classList.add('bg-brand-50', 'text-brand-600', 'font-bold');
             }
 
-            const titles = {
-                'dashboard': 'Dashboard Estadístico',
-                'catalogo': 'Maestro de Productos',
-                'compras': 'Gestión de Entradas',
-                'ventas': 'Punto de Venta FIFO',
-                'instrucciones': 'Configuración de Base de Datos'
-            };
+            const titles = { 'dashboard': 'Dashboard Estadístico', 'catalogo': 'Maestro de Productos', 'compras': 'Gestión de Entradas', 'ventas': 'Punto de Venta FIFO', 'instrucciones': 'Configuración de Base de Datos' };
             document.getElementById('page-title').innerText = titles[viewId];
 
             if(viewId === 'catalogo') renderCatalogo();
@@ -535,7 +533,6 @@ function doPost(e) {
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            
             const isError = type === 'error';
             const bgColor = isError ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-slate-900 border-slate-800 text-white';
             const icon = isError ? 'alert-circle' : 'check-circle-2';
@@ -543,40 +540,12 @@ function doPost(e) {
 
             toast.className = `flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl border ${bgColor} toast-enter max-w-sm`;
             toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 shrink-0 ${iconColor}"></i><p class="font-medium text-sm leading-tight">${message}</p>`;
-            
             container.appendChild(toast);
             lucide.createIcons();
-
-            setTimeout(() => {
-                toast.classList.replace('toast-enter', 'toast-leave');
-                setTimeout(() => toast.remove(), 400);
-            }, 4000);
+            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-leave'); setTimeout(() => toast.remove(), 400); }, 4000);
         }
 
-        // --- CONEXIÓN BACKEND SÚPER EFICIENTE ---
-        function enviarAGoogleSheets(tipo, payload) {
-            // Verificamos si configuró la URL
-            if (!CONFIG_URL_GOOGLE || CONFIG_URL_GOOGLE.includes("PEGA_AQUÍ")) {
-                console.warn(`[Local Mode] ${tipo} guardado solo en memoria temporal. Configura la URL para guardar en la nube.`);
-                return;
-            }
-
-            // Petición asíncrona "ciega" (no-cors) para que no bloquee ni cause problemas de origen.
-            // Es súper rápida y eficiente.
-            fetch(CONFIG_URL_GOOGLE, {
-                method: 'POST',
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tipo: tipo, ...payload })
-            }).then(() => {
-                console.log(`📡 [${tipo}] Datos enviados a Sheets correctamente.`);
-            }).catch(err => {
-                console.error(`🚨 Error enviando [${tipo}]:`, err);
-                showToast("Error de conexión silenciosa con la base de datos.", "error");
-            });
-        }
-
-        // --- LÓGICA: CATÁLOGO ---
+        // --- STREAMING_CHUNK:Catalog Logic... ---
         let atributosTemp = [{clave: '', valor: ''}];
 
         function renderAtributosForm() {
@@ -604,17 +573,10 @@ function doPost(e) {
             const categoria = document.getElementById('cat-categoria').value.trim();
             const atributosValidos = atributosTemp.filter(a => a.clave.trim() !== '' && a.valor.trim() !== '');
 
-            const nuevoProd = {
-                id: `P-${Date.now()}`,
-                nombre: nombre,
-                categoria: categoria,
-                atributos: atributosValidos
-            };
-
+            const nuevoProd = { id: `P-${Date.now()}`, nombre: nombre, categoria: categoria, atributos: atributosValidos };
             state.catalogo.push(nuevoProd);
             
-            // 🔥 Enviar al Backend Súper Eficiente
-            enviarAGoogleSheets('CATALOGO', nuevoProd);
+            enviarAGoogleSheets('CATALOGO', nuevoProd); // Escribe en Google
             
             showToast(`Producto "${nombre}" creado.`);
             e.target.reset();
@@ -651,7 +613,7 @@ function doPost(e) {
             document.getElementById('cat-list').innerHTML = categoriasUnicas.map(c => `<option value="${c}">`).join('');
         }
 
-        // --- LÓGICA: COMPRAS ---
+        // --- STREAMING_CHUNK:Purchases Logic... ---
         function renderCompras() {
             const selectProd = document.getElementById('comp-producto');
             selectProd.innerHTML = '<option value="">-- Seleccione un producto --</option>' + 
@@ -672,7 +634,7 @@ function doPost(e) {
                                 ${c.cantidad_restante}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-right font-medium">$${c.costo.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-medium">$${Number(c.costo).toFixed(2)}</td>
                     </tr>
                 `;
             }).reverse().join('');
@@ -687,18 +649,9 @@ function doPost(e) {
 
             if(!prodId) return showToast('Selecciona un producto.', 'error');
 
-            const nuevaCompra = {
-                id: `C-${Date.now()}`,
-                fecha: fecha,
-                productoId: prodId,
-                cantidad_inicial: cant,
-                cantidad_restante: cant,
-                costo: costo
-            };
-
+            const nuevaCompra = { id: `C-${Date.now()}`, fecha: fecha, productoId: prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: costo };
             state.compras.push(nuevaCompra);
             
-            // 🔥 Enviar al Backend Súper Eficiente
             enviarAGoogleSheets('COMPRA', nuevaCompra);
             
             showToast('Lote registrado en el inventario.', 'success');
@@ -707,7 +660,7 @@ function doPost(e) {
             renderCompras();
         }
 
-        // --- LÓGICA: VENTAS & FIFO ---
+        // --- STREAMING_CHUNK:Sales and FIFO Logic... ---
         function renderVentas() {
             const stockPorProducto = {};
             state.compras.forEach(c => {
@@ -733,8 +686,8 @@ function doPost(e) {
                         <td class="px-6 py-4 font-bold text-slate-800">${nombre}</td>
                         <td class="px-6 py-4 text-center font-semibold bg-slate-50">${v.cantidad}</td>
                         <td class="px-6 py-4 text-right font-medium text-slate-700">$${(v.cantidad * v.precio).toFixed(2)}</td>
-                        <td class="px-6 py-4 text-right font-medium text-rose-500">-$${v.costo_fifo.toFixed(2)}</td>
-                        <td class="px-6 py-4 text-right font-black text-emerald-600">+$${v.ganancia.toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-medium text-rose-500">-$${Number(v.costo_fifo).toFixed(2)}</td>
+                        <td class="px-6 py-4 text-right font-black text-emerald-600">+$${Number(v.ganancia).toFixed(2)}</td>
                     </tr>
                 `;
             }).reverse().join('');
@@ -749,26 +702,19 @@ function doPost(e) {
 
             if(!prodId) return showToast('Seleccione un producto.', 'error');
 
-            const inventarioDisponible = state.compras
-                .filter(c => c.productoId === prodId)
-                .reduce((acc, curr) => acc + curr.cantidad_restante, 0);
+            const inventarioDisponible = state.compras.filter(c => c.productoId === prodId).reduce((acc, curr) => acc + curr.cantidad_restante, 0);
 
             if(inventarioDisponible < qtyDeseada) {
                 return showToast(`Stock insuficiente. Disp: ${inventarioDisponible}.`, 'error');
             }
 
-            // ALGORITMO FIFO SÚPER EFICIENTE
+            // ALGORITMO FIFO
             let qtyRestante = qtyDeseada;
             let costoTotalFIFO = 0;
-            
-            // Ordenar por Fecha más antigua y luego ID para asegurar First-In, First-Out
-            let lotesDelProducto = state.compras
-                .filter(c => c.productoId === prodId && c.cantidad_restante > 0)
-                .sort((a, b) => a.fecha.localeCompare(b.fecha) || a.id.localeCompare(b.id));
+            let lotesDelProducto = state.compras.filter(c => c.productoId === prodId && c.cantidad_restante > 0).sort((a, b) => a.fecha.localeCompare(b.fecha) || a.id.localeCompare(b.id));
 
             for(let lote of lotesDelProducto) {
                 if (qtyRestante <= 0) break;
-
                 if (lote.cantidad_restante >= qtyRestante) {
                     costoTotalFIFO += qtyRestante * lote.costo;
                     lote.cantidad_restante -= qtyRestante;
@@ -780,22 +726,10 @@ function doPost(e) {
                 }
             }
 
-            const ingreso = qtyDeseada * precio;
-            const ganancia = ingreso - costoTotalFIFO;
-
-            const nuevaVenta = {
-                id: `V-${Date.now()}`,
-                fecha: fecha,
-                productoId: prodId,
-                cantidad: qtyDeseada,
-                precio: precio,
-                costo_fifo: costoTotalFIFO,
-                ganancia: ganancia
-            };
+            const ganancia = (qtyDeseada * precio) - costoTotalFIFO;
+            const nuevaVenta = { id: `V-${Date.now()}`, fecha: fecha, productoId: prodId, cantidad: qtyDeseada, precio: precio, costo_fifo: costoTotalFIFO, ganancia: ganancia };
 
             state.ventas.push(nuevaVenta);
-            
-            // 🔥 Enviar al Backend Súper Eficiente
             enviarAGoogleSheets('VENTA', nuevaVenta);
             
             showToast(`Venta procesada. Ganancia: $${ganancia.toFixed(2)}`, 'success');
@@ -806,17 +740,14 @@ function doPost(e) {
             updateMonthFilterOptions();
         }
 
-        // --- LÓGICA: DASHBOARD Y ESTADÍSTICAS ---
+        // --- STREAMING_CHUNK:Dashboard Analytics Logic... ---
         function updateMonthFilterOptions() {
             const select = document.getElementById('global-month-filter');
             const currentValue = select.value;
-            
             const meses = new Set();
             state.ventas.forEach(v => meses.add(v.fecha.substring(0, 7)));
-            
             const currentMonth = new Date().toISOString().substring(0, 7);
             meses.add(currentMonth);
-
             const mesesArray = Array.from(meses).sort().reverse();
             
             let options = `<option value="ALL">Todo el tiempo</option>`;
@@ -834,12 +765,8 @@ function doPost(e) {
 
         function renderDashboard() {
             const selectedMonth = document.getElementById('global-month-filter').value;
+            const ventasFiltradas = selectedMonth === 'ALL' ? state.ventas : state.ventas.filter(v => v.fecha.startsWith(selectedMonth));
             
-            const ventasFiltradas = selectedMonth === 'ALL' 
-                ? state.ventas 
-                : state.ventas.filter(v => v.fecha.startsWith(selectedMonth));
-            
-            // 1. KPIs
             const totalIngresos = ventasFiltradas.reduce((sum, v) => sum + (v.cantidad * v.precio), 0);
             const totalCostos = ventasFiltradas.reduce((sum, v) => sum + v.costo_fifo, 0);
             const beneficio = totalIngresos - totalCostos;
@@ -850,14 +777,12 @@ function doPost(e) {
             document.getElementById('dash-beneficio').innerText = `$${beneficio.toFixed(2)}`;
             document.getElementById('dash-margen').innerText = `${margen.toFixed(1)}%`;
 
-            // 2. Data Gráficos
             const categoryData = {};
             const productData = {};
 
             ventasFiltradas.forEach(v => {
                 const prod = state.catalogo.find(p => p.id === v.productoId);
                 if(!prod) return;
-                
                 const cat = prod.categoria;
                 const pNombre = prod.nombre;
                 const ingreso = v.cantidad * v.precio;
@@ -870,41 +795,26 @@ function doPost(e) {
                 productData[pNombre].costo += v.costo_fifo;
             });
 
-            // Chart Categorías
             const catCtx = document.getElementById('chart-categories').getContext('2d');
             if(charts.categories) charts.categories.destroy();
-            
             if(Object.keys(categoryData).length === 0) {
                  charts.categories = new Chart(catCtx, { type: 'doughnut', data: { labels: ['Sin datos'], datasets: [{ data: [1], backgroundColor: ['#f1f5f9'] }] }, options: { cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }});
             } else {
-                charts.categories = new Chart(catCtx, {
-                    type: 'doughnut',
-                    data: { labels: Object.keys(categoryData), datasets: [{ data: Object.values(categoryData), backgroundColor: ['#14b8a6', '#0ea5e9', '#f59e0b', '#8b5cf6', '#ec4899'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: {family: 'Inter', size: 11} } } } }
-                });
+                charts.categories = new Chart(catCtx, { type: 'doughnut', data: { labels: Object.keys(categoryData), datasets: [{ data: Object.values(categoryData), backgroundColor: ['#14b8a6', '#0ea5e9', '#f59e0b', '#8b5cf6', '#ec4899'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, font: {family: 'Inter', size: 11} } } } } });
             }
 
-            // Chart Productos
             const prodCtx = document.getElementById('chart-products').getContext('2d');
             if(charts.products) charts.products.destroy();
-
             const pLabels = Object.keys(productData);
             const pIngresos = pLabels.map(l => productData[l].ingreso);
             const pCostos = pLabels.map(l => productData[l].costo);
 
             charts.products = new Chart(prodCtx, {
                 type: 'bar',
-                data: {
-                    labels: pLabels.length > 0 ? pLabels : ['Sin datos'],
-                    datasets: [
-                        { label: 'Ingreso Bruto', data: pLabels.length > 0 ? pIngresos : [0], backgroundColor: '#14b8a6', borderRadius: 4 },
-                        { label: 'Costo FIFO', data: pLabels.length > 0 ? pCostos : [0], backgroundColor: '#cbd5e1', borderRadius: 4 }
-                    ]
-                },
+                data: { labels: pLabels.length > 0 ? pLabels : ['Sin datos'], datasets: [ { label: 'Ingreso Bruto', data: pLabels.length > 0 ? pIngresos : [0], backgroundColor: '#14b8a6', borderRadius: 4 }, { label: 'Costo FIFO', data: pLabels.length > 0 ? pCostos : [0], backgroundColor: '#cbd5e1', borderRadius: 4 } ] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
             });
 
-            // 3. Stock Global
             const stockConsolidado = state.catalogo.map(p => {
                 const lotes = state.compras.filter(c => c.productoId === p.id);
                 const stock = lotes.reduce((acc, c) => acc + c.cantidad_restante, 0);
