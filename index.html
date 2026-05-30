@@ -120,7 +120,6 @@
         </nav>
 
         <div class="p-4 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-transparent flex flex-col gap-2">
-            <!-- BOTÓN MODO OSCURO -->
             <button onclick="toggleTheme()" class="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
                 <span class="text-xs font-bold flex items-center gap-2" id="theme-text"><i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro</span>
                 <div class="w-8 h-4 bg-slate-200 dark:bg-indigo-600 rounded-full relative"><div class="absolute w-3 h-3 bg-white rounded-full top-0.5 left-0.5 dark:translate-x-4 transition-transform shadow-sm"></div></div>
@@ -203,6 +202,21 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+                        <div class="card-panel p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i data-lucide="banknote" class="text-slate-500 w-6 h-6"></i></div>
+                            <div><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">En Efectivo</p><h4 id="dash-cash" class="text-xl font-black text-slate-900 dark:text-white">$0.00</h4></div>
+                        </div>
+                        <div class="card-panel p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center"><i data-lucide="credit-card" class="text-indigo-500 w-6 h-6"></i></div>
+                            <div><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">En Tarjeta</p><h4 id="dash-card" class="text-xl font-black text-slate-900 dark:text-white">$0.00</h4></div>
+                        </div>
+                        <div class="card-panel p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center"><i data-lucide="arrow-right-left" class="text-emerald-500 w-6 h-6"></i></div>
+                            <div><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">En Transferencia</p><h4 id="dash-transfer" class="text-xl font-black text-slate-900 dark:text-white">$0.00</h4></div>
+                        </div>
+                    </div>
+
                     <!-- TRIPLE ANÁLISIS DE RENDIMIENTO -->
                     <div class="card-panel overflow-hidden flex flex-col">
                         <div class="p-6 lg:p-8 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19]">
@@ -267,7 +281,7 @@
                             <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Control corporativo de objetivos de venta por producto.</p>
                         </div>
                         <button onclick="abrirModalPlanner()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
-                            <i data-lucide="rocket" class="w-4 h-4"></i> Planner de Metas
+                            <i data-lucide="target" class="w-4 h-4"></i> Planner de Metas
                         </button>
                     </div>
 
@@ -305,10 +319,10 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <div>
                             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Directorio B2B (CRM)</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Administra cuentas clave y evalúa su volumen de compra.</p>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Administra cuentas clave, condiciones comerciales y volumen de compra.</p>
                         </div>
                         <button onclick="abrirModalCRM()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
-                            <i data-lucide="user-plus" class="w-4 h-4"></i> Nueva Cuenta
+                            <i data-lucide="user-plus" class="w-4 h-4"></i> Registrar Cliente
                         </button>
                     </div>
 
@@ -346,7 +360,7 @@
                     <!-- KPIs Dinámicos -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="card-panel p-6 flex flex-col justify-center relative overflow-hidden group hover-lift">
-                            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="box" class="w-3 h-3 text-indigo-500"></i> Stock Físico</p>
+                            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="box" class="w-3 h-3 text-indigo-500"></i> Stock Físico Total</p>
                             <p id="inv-kpi-prods" class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">0</p>
                         </div>
                         <div class="card-panel p-6 flex flex-col justify-center relative overflow-hidden group hover-lift">
@@ -369,7 +383,7 @@
                                 <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50">
                                     <tr>
                                         <th class="px-6 py-4 font-bold rounded-l-xl">Producto / Ref</th>
-                                        <th class="px-4 py-4 font-bold">Segmento</th>
+                                        <th class="px-4 py-4 font-bold">Segmento / Prov.</th>
                                         <th class="px-4 py-4 font-bold text-center">Físico</th>
                                         <th class="px-4 py-4 font-bold text-right text-rose-500">Costo Promedio</th>
                                         <th class="px-4 py-4 font-bold text-right text-emerald-500">PVP Sugerido</th>
@@ -391,7 +405,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <div>
                             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Directorio Maestro</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Creación de perfiles, precios y estructura del catálogo.</p>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Creación de perfiles, precios, proveedores y estructura del catálogo.</p>
                         </div>
                     </div>
 
@@ -416,12 +430,29 @@
                                             <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5 ml-1">Subcategoría</label>
                                             <input type="text" id="prod-subcategoria" placeholder="Específica" class="input-global !px-3 !py-2.5 text-sm">
                                         </div>
+                                        <div class="col-span-2">
+                                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Proveedor Principal</label>
+                                            <input type="text" id="prod-proveedor" placeholder="Nombre del Suplidor" class="input-global !px-3 !py-2.5 text-sm">
+                                        </div>
                                     </div>
 
                                     <div class="bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800/60 p-3 space-y-3">
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Precio Venta (PVP)</label>
-                                            <input type="number" id="prod-precio-base" min="0" step="0.01" required placeholder="0.00" class="input-global !font-black !text-emerald-600 dark:!text-emerald-400 !text-lg !border-emerald-200 dark:!border-emerald-900/50">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">PVP Base ($)</label>
+                                                <input type="number" id="prod-precio-base" min="0" step="0.01" required placeholder="0.00" class="input-global !font-black !text-emerald-600 dark:!text-emerald-400 !border-emerald-200 dark:!border-emerald-900/50">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Unidad Medida</label>
+                                                <select id="prod-unidad" class="input-global !px-3 !py-3 text-sm appearance-none">
+                                                    <option value="Uds">Unidades (Uds)</option>
+                                                    <option value="Kg">Kilogramos (Kg)</option>
+                                                    <option value="Lbs">Libras (Lbs)</option>
+                                                    <option value="Cajas">Cajas</option>
+                                                    <option value="Lts">Litros</option>
+                                                    <option value="Mts">Metros</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="grid grid-cols-2 gap-3">
                                             <div>
@@ -449,16 +480,17 @@
                         </div>
                         
                         <div class="lg:col-span-8">
-                            <div class="card-panel overflow-hidden flex flex-col h-[750px]">
+                            <div class="card-panel overflow-hidden flex flex-col h-[850px]">
                                 <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] shrink-0">
                                     <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="database" class="text-indigo-500 w-5 h-5"></i> Directorio Base</h3>
                                 </div>
                                 <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
                                         <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50 sticky top-0 z-10">
                                             <tr>
                                                 <th class="px-6 py-4 font-bold rounded-l-xl">Artículo</th>
                                                 <th class="px-4 py-4 font-bold">Jerarquía</th>
+                                                <th class="px-4 py-4 font-bold">Proveedor</th>
                                                 <th class="px-4 py-4 font-bold text-right text-emerald-500">PVP Base</th>
                                                 <th class="px-6 py-4 font-bold w-full rounded-r-xl">Especificaciones</th>
                                             </tr>
@@ -480,7 +512,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <div>
                             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Terminal de Ventas</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Registra facturación y asigna cuenta clave B2B.</p>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Registra facturación, captura métodos de pago y emite salidas con NCF.</p>
                         </div>
                     </div>
 
@@ -489,31 +521,51 @@
                         <div class="lg:col-span-4 space-y-6">
                             <div class="card-panel p-6 lg:p-8 relative overflow-hidden">
                                 <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="scan-line" class="w-5 h-5 text-indigo-500"></i> Transacción POS</h3>
-                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-6">Genera orden de salida (FIFO).</p>
                                 
-                                <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-4">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha Emisión</label>
-                                        <input type="date" id="vent-fecha" required class="input-global">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta B2B (Opcional)</label>
-                                        <select id="vent-cliente" class="input-global appearance-none truncate"></select>
-                                    </div>
-                                    <div class="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800/60 mt-2">
-                                        <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Seleccionar Producto</label>
-                                        <select id="vent-producto" onchange="autoFillPrecioVenta()" required class="input-global appearance-none truncate !bg-white dark:!bg-[#0f172a] shadow-sm"></select>
-                                    </div>
+                                <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-4 mt-6">
                                     <div class="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Unidades</label>
-                                            <input type="number" id="vent-cant" min="1" required placeholder="0" class="input-global text-center font-black">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha</label>
+                                            <input type="date" id="vent-fecha" required class="input-global !px-3">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Precio Cobrado</label>
-                                            <input type="number" id="vent-precio" min="0" step="0.01" required placeholder="0.00" class="input-global text-center font-black !border-emerald-200 dark:!border-emerald-900/50 !text-emerald-700 dark:!text-emerald-400">
+                                            <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta B2B (Opc)</label>
+                                            <select id="vent-cliente" class="input-global !px-3 appearance-none truncate"></select>
                                         </div>
                                     </div>
+                                    
+                                    <div class="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800/60">
+                                        <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Seleccionar Producto</label>
+                                        <select id="vent-producto" onchange="autoFillPrecioVenta()" required class="input-global appearance-none truncate !bg-white dark:!bg-[#0f172a] shadow-sm"></select>
+                                        
+                                        <div class="grid grid-cols-2 gap-3 mt-3">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Unidades</label>
+                                                <input type="number" id="vent-cant" min="1" required placeholder="0" class="input-global text-center font-black !bg-white dark:!bg-[#0f172a]">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Precio Cobrado</label>
+                                                <input type="number" id="vent-precio" min="0" step="0.01" required placeholder="0.00" class="input-global text-center font-black !border-emerald-200 dark:!border-emerald-900/50 !text-emerald-700 dark:!text-emerald-400 !bg-white dark:!bg-[#0f172a]">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Método de Pago</label>
+                                            <select id="vent-metodo-pago" required class="input-global !px-3 appearance-none">
+                                                <option value="Efectivo">Efectivo</option>
+                                                <option value="Tarjeta">Tarjeta</option>
+                                                <option value="Transferencia">Transferencia</option>
+                                                <option value="Crédito">A Crédito</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Comprobante (NCF)</label>
+                                            <input type="text" id="vent-ncf" placeholder="Opcional" class="input-global !px-3">
+                                        </div>
+                                    </div>
+
                                     <button type="submit" class="w-full bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl py-3.5 mt-4 shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Procesar Factura</button>
                                 </form>
                             </div>
@@ -526,10 +578,11 @@
                                     <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="history" class="text-slate-500 w-5 h-5"></i> Flujo de Salidas Realizadas</h3>
                                 </div>
                                 <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[750px]">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
                                         <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-white dark:bg-[#0f172a] sticky top-0 z-10">
                                             <tr>
-                                                <th class="px-6 py-4 font-bold rounded-l-xl">Ticket / Cliente</th>
+                                                <th class="px-6 py-4 font-bold rounded-l-xl">Ticket / Emisión</th>
+                                                <th class="px-4 py-4 font-bold">Cliente / Pago</th>
                                                 <th class="px-4 py-4 font-bold">Artículo</th>
                                                 <th class="px-4 py-4 font-bold text-center">Vol.</th>
                                                 <th class="px-4 py-4 font-bold text-right">Monto Bruto</th>
@@ -554,7 +607,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <div>
                             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Libro Contable</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Gestión unificada de egresos y compra de mercancía.</p>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Centraliza salidas de dinero, con desglose fiscal y métodos de pago.</p>
                         </div>
                     </div>
 
@@ -575,16 +628,32 @@
                                         <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Fecha</label><input type="date" id="egre-fecha" required class="input-global !px-3"></div>
                                         <div><label id="lbl-egre-monto" class="block text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1.5 ml-1">Total Pagado ($)</label><input type="number" id="egre-monto" min="0.01" step="0.01" required placeholder="0.00" class="input-global !border-rose-200 dark:!border-rose-900/50 !bg-rose-50/30 dark:!bg-rose-900/10 !text-rose-600 !font-black text-center"></div>
                                     </div>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Método de Pago</label>
+                                            <select id="egre-metodo-pago" required class="input-global !px-3 appearance-none">
+                                                <option value="Transferencia">Transferencia</option>
+                                                <option value="Tarjeta">Tarjeta</option>
+                                                <option value="Efectivo">Efectivo</option>
+                                                <option value="Crédito Prov.">Crédito a Proveedor</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Comprobante / NCF</label>
+                                            <input type="text" id="egre-ncf" placeholder="Opcional" class="input-global !px-3">
+                                        </div>
+                                    </div>
                                     
                                     <!-- BLOQUE INVENTARIO -->
                                     <div id="bloque-gasto-inventario" class="space-y-4 p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl">
                                         <div>
                                             <label class="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1.5 ml-1">Producto Entrante</label>
-                                            <select id="comp-producto" class="input-global !border-emerald-200 dark:!border-emerald-800/50 truncate appearance-none"></select>
+                                            <select id="comp-producto" class="input-global !border-emerald-200 dark:!border-emerald-800/50 truncate appearance-none !bg-white dark:!bg-[#0f172a]"></select>
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1.5 ml-1">Unidades (Lote)</label>
-                                            <input type="number" id="comp-cant" min="1" placeholder="Ej: 50" class="input-global !border-emerald-200 dark:!border-emerald-800/50 text-center font-black">
+                                            <input type="number" id="comp-cant" min="1" placeholder="Ej: 50" class="input-global !border-emerald-200 dark:!border-emerald-800/50 text-center font-black !bg-white dark:!bg-[#0f172a]">
                                         </div>
                                     </div>
 
@@ -593,15 +662,19 @@
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Plan de Cuentas</label>
                                             <div class="flex gap-2">
-                                                <select id="egre-categoria" class="input-global truncate appearance-none"></select>
+                                                <select id="egre-categoria" class="input-global truncate appearance-none !bg-white dark:!bg-[#0f172a]"></select>
                                                 <button type="button" onclick="nuevaCategoriaGasto()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 shadow-sm"><i data-lucide="plus" class="w-4 h-4"></i></button>
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Vincular Producto (Opc)</label>
-                                            <select id="egre-producto" class="input-global truncate appearance-none"></select>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Proveedor / Entidad</label>
+                                            <input type="text" id="egre-proveedor" placeholder="Ej: Claro, Edesur..." class="input-global !bg-white dark:!bg-[#0f172a]">
                                         </div>
-                                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto Detallado</label><input type="text" id="egre-concepto" placeholder="Luz, Internet, Nómina..." class="input-global"></div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Vincular Producto (Opc)</label>
+                                            <select id="egre-producto" class="input-global truncate appearance-none !bg-white dark:!bg-[#0f172a]"></select>
+                                        </div>
+                                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto Detallado</label><input type="text" id="egre-concepto" placeholder="Justificación..." class="input-global !bg-white dark:!bg-[#0f172a]"></div>
                                     </div>
 
                                     <button type="submit" id="btn-submit-egreso" class="w-full bg-emerald-600 text-white font-bold rounded-xl py-3.5 mt-2 shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex justify-center items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Validar Ingreso de Stock</button>
@@ -610,7 +683,7 @@
                         </div>
 
                         <div class="lg:col-span-8">
-                            <div class="card-panel overflow-hidden flex flex-col h-full min-h-[500px]">
+                            <div class="card-panel overflow-hidden flex flex-col h-full min-h-[600px]">
                                 <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center gap-4 shrink-0">
                                     <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="file-text" class="text-rose-500 w-5 h-5"></i> Mayor de Egresos</h3>
                                     <div class="text-right">
@@ -619,11 +692,12 @@
                                     </div>
                                 </div>
                                 <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[650px]">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[850px]">
                                         <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-white dark:bg-[#0f172a] sticky top-0 z-10">
                                             <tr>
                                                 <th class="px-6 py-4 font-bold rounded-l-xl">Fecha / Ref</th>
                                                 <th class="px-4 py-4 font-bold">Cuenta</th>
+                                                <th class="px-4 py-4 font-bold">Pago / Prov.</th>
                                                 <th class="px-4 py-4 font-bold w-full">Concepto Contable</th>
                                                 <th class="px-6 py-4 font-bold text-right text-rose-500 rounded-r-xl">Salida ($)</th>
                                             </tr>
@@ -633,6 +707,27 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- VIEW: CUENTAS CLAVE (CRM)                  -->
+            <!-- ========================================== -->
+            <div id="view-crm" class="view-section">
+                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
+                        <div>
+                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Directorio B2B (CRM)</h2>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Administra cuentas clave, créditos y volumen de compra.</p>
+                        </div>
+                        <button onclick="abrirModalCRM()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i> Registrar Cliente
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="crm-grid">
+                        <!-- Llenado por JS -->
                     </div>
                 </div>
             </div>
@@ -659,6 +754,47 @@
 
         </div>
     </main>
+
+    <!-- MODAL CRM COMPLETO -->
+    <div id="modal-crm" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalCRM()"></div>
+        <div class="relative w-full max-w-2xl card-panel overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out" id="modal-crm-content">
+            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center shrink-0">
+                <h3 class="font-black text-xl tracking-tight text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="user-plus" class="text-indigo-500 w-5 h-5"></i> Alta Cliente B2B</h3>
+                <button onclick="cerrarModalCRM()" class="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            
+            <form onsubmit="handleCrearCliente(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Razón Social / Nombre</label>
+                        <input type="text" id="crm-nombre" required class="input-global">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">RNC / Cédula</label>
+                        <input type="text" id="crm-rnc" class="input-global">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Categoría</label>
+                        <select id="crm-tipo" class="input-global appearance-none">
+                            <option value="Normal">Normal</option>
+                            <option value="VIP Premium">VIP Premium</option>
+                            <option value="B2B Mayorista">B2B Mayorista</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Teléfono</label>
+                        <input type="text" id="crm-phone" class="input-global">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Límite Crédito ($)</label>
+                        <input type="number" id="crm-limite" min="0" step="100" placeholder="0.00" class="input-global !border-emerald-200 focus:!border-emerald-500">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl py-3.5 mt-4 shadow-lg hover:opacity-90 transition-opacity">Guardar Cliente</button>
+            </form>
+        </div>
+    </div>
 
     <!-- MODAL KARDEX PREMIUM (Bancario) -->
     <div id="modal-kardex" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
@@ -717,7 +853,6 @@
             </div>
             
             <div class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-[#020617] custom-scrollbar space-y-6">
-                
                 <div class="card-panel p-5">
                     <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="filter" class="w-3 h-3"></i> 1. Segmentar Grupo Objetivo</h4>
                     <div class="flex flex-col sm:flex-row gap-4">
@@ -725,7 +860,6 @@
                         <select id="planner-subcat" onchange="renderListaPlanner()" class="input-global flex-1 !py-3 !text-sm"><option value="ALL">Cualquier Subcategoría</option></select>
                     </div>
                 </div>
-
                 <div class="card-panel p-5 bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-100 dark:border-indigo-900/30">
                     <h4 class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="calculator" class="w-3 h-3"></i> 2. Distribución Matemática Pareja (Opcional)</h4>
                     <div class="flex flex-col sm:flex-row gap-4 items-end">
@@ -736,7 +870,6 @@
                         <button type="button" onclick="aplicarDistribucionMasiva()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm w-full sm:w-auto">Distribuir</button>
                     </div>
                 </div>
-
                 <div class="card-panel overflow-hidden">
                     <div class="grid grid-cols-12 gap-4 p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#0b0f19] text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6">
                         <div class="col-span-8">Catálogo Filtrado</div>
@@ -744,7 +877,6 @@
                     </div>
                     <div class="max-h-[35vh] overflow-y-auto custom-scrollbar p-2 space-y-1" id="planner-products-list"></div>
                 </div>
-
                 <button type="button" onclick="guardarMetas()" class="w-full text-white py-4 rounded-xl font-black text-lg shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all bg-slate-900 dark:bg-indigo-600 flex items-center justify-center gap-2">
                     <i data-lucide="save" class="w-5 h-5"></i> Confirmar Plan de Metas
                 </button>
@@ -756,7 +888,11 @@
     <script>
         const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
         
-        let state = { catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [{ clave: '', valor: '' }], categoriasGastos: ['Operativo', 'Marketing', 'Logística', 'Nómina'], clientes: [], metasGlobales: JSON.parse(localStorage.getItem('elbien_metas')) || {} };
+        let state = { 
+            catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [{ clave: '', valor: '' }], 
+            categoriasGastos: ['Operativo', 'Marketing', 'Logística', 'Nómina'], clientes: [], 
+            metasGlobales: JSON.parse(localStorage.getItem('elbien_metas')) || {} 
+        };
         let activeCatFilter = 'ALL'; let activeSubCatFilter = 'ALL';
         let charts = {};
         let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
@@ -767,10 +903,9 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
             if(window.lucide) lucide.createIcons();
-            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); // Recargar gráficos para que cambien color
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); 
         }
 
-        // Init Theme
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
@@ -838,7 +973,6 @@
         
         const emptyStateHTML = (icon, title, desc, colspan) => `<tr><td colspan="${colspan}"><div class="flex flex-col items-center justify-center py-16 text-center"><div class="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-[1rem] flex items-center justify-center mb-4 text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700"><i data-lucide="${icon}" class="w-6 h-6"></i></div><p class="text-sm font-bold text-slate-700 dark:text-slate-300">${title}</p><p class="text-xs font-medium text-slate-400 mt-1">${desc}</p></div></td></tr>`;
 
-        // DB Fetch
         function guardarUrlConfig() {
             const url = document.getElementById('config-url-input').value.trim();
             if(url.startsWith('https://script.google.com/')) { localStorage.setItem('nexusERP_url', url); CONFIG_URL_GOOGLE = url; actualizarEstadoConfig(); showToast('Conexión guardada. Sincronizando...', 'success'); setTimeout(() => window.location.reload(), 1000); } 
@@ -846,7 +980,8 @@
         }
         function actualizarEstadoConfig() {
             if(document.getElementById('config-url-input')) document.getElementById('config-url-input').value = CONFIG_URL_GOOGLE;
-            if(CONFIG_URL_GOOGLE && document.getElementById('config-status')) document.getElementById('config-status').innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-500"></i> <span class="text-emerald-600">Enlazado</span>`;
+            const htmlOnline = `<div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div> <span class="text-emerald-600">Online</span>`;
+            if(CONFIG_URL_GOOGLE && document.getElementById('config-status')) document.getElementById('config-status').innerHTML = htmlOnline;
             if(CONFIG_URL_GOOGLE && document.getElementById('config-status-sidebar')) document.getElementById('config-status-sidebar').innerHTML = `<span class="text-emerald-500">Cloud DB Activa</span>`;
             if(window.lucide) lucide.createIcons();
         }
@@ -857,14 +992,24 @@
                 const response = await fetch(CONFIG_URL_GOOGLE, { method: 'GET', mode: 'cors', credentials: 'omit', headers: { 'Accept': 'application/json' } });
                 if(!response.ok) throw new Error('Network error');
                 const data = await response.json();
-                state.catalogo = data.catalogo || []; state.compras = data.compras || []; state.ventas = data.ventas || []; state.egresos = data.egresos || []; state.clientes = data.clientes || [];
+                
+                // Mapeo seguro de nuevos campos por si el backend viejo no los trae
+                state.catalogo = (data.catalogo || []).map(c => ({...c, proveedor: c.proveedor || '', unidad: c.unidad || 'Uds'})); 
+                state.compras = data.compras || []; 
+                state.ventas = (data.ventas || []).map(v => ({...v, metodoPago: v.metodoPago || 'Efectivo', ncf: v.ncf || ''})); 
+                state.egresos = (data.egresos || []).map(e => ({...e, metodoPago: e.metodoPago || 'Transferencia', ncf: e.ncf || '', proveedor: e.proveedor || ''})); 
+                state.clientes = (data.clientes || []).map(c => ({...c, rnc: c.rnc || '', limite: c.limite || 0}));
+                
                 if(data.categorias_gastos && data.categorias_gastos.length > 0) state.categoriasGastos = data.categorias_gastos;
                 localStorage.setItem('nexusERP_backup', JSON.stringify(state));
                 updateMonthFilterOptions(); renderAll(); showToast('Sistema Sincronizado.');
             } catch (err) { 
                 const backup = localStorage.getItem('nexusERP_backup');
-                if (backup) { Object.assign(state, JSON.parse(backup)); updateMonthFilterOptions(); renderAll(); showToast('Modo Local Restablecido.', 'info'); } 
-                else showToast('Fallo crítico al leer nube.', 'error');
+                if (backup) { 
+                    const b = JSON.parse(backup);
+                    state.catalogo = b.catalogo || []; state.compras = b.compras || []; state.ventas = b.ventas || []; state.egresos = b.egresos || []; state.clientes = b.clientes || [];
+                    updateMonthFilterOptions(); renderAll(); showToast('Modo Local Restablecido.', 'info'); 
+                } else showToast('Fallo crítico al leer nube.', 'error');
             } finally { loader.classList.add('hidden'); loader.classList.remove('flex'); }
         }
         function enviarAGoogleSheets(tipo, payload) {
@@ -872,17 +1017,31 @@
             if (!CONFIG_URL_GOOGLE) return;
             fetch(CONFIG_URL_GOOGLE, { method: 'POST', mode: 'no-cors', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ tipo, ...payload }) }).catch(e=>console.warn("Offline save"));
         }
-        function renderAll() { renderCatalogo(); renderVentas(); renderEgresos(); renderInventario(); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); if(document.getElementById('view-metas').classList.contains('active')) renderMetas(); if(document.getElementById('view-crm').classList.contains('active')) renderCRM(); }
 
-        // CRM (CLIENTES)
+        // --- FUNCIONES CORE: CRM ---
         function abrirModalCRM() {
-            // Reutilizamos el modal de config o creamos la logica si fuera un modal dedicado (lo haremos via un alert simplificado para no exceder limite, o inyectando un form)
-            // Dado que pediste algo simple, simularemos el form en el DOM si se necesita, o usaremos prompts para esta vista galáctica simplificada
-            const name = prompt("Nombre del Cliente (B2B):");
-            if(!name) return;
-            const type = prompt("Tipo (VIP, Mayorista, Normal):", "Normal");
-            const obj = { id: `CL-${Date.now().toString().slice(-6)}`, nombre: name, email: '', phone: '', tipo: type, address: '', notes: '' };
-            state.clientes.push(obj); enviarAGoogleSheets("NUEVO_CLIENTE", obj); renderCRM(); showToast('Cuenta Clave añadida.');
+            document.getElementById('modal-crm').classList.remove('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-0', 'opacity-100');
+            document.getElementById('modal-crm-content').classList.replace('scale-95', 'scale-100');
+        }
+        function cerrarModalCRM() {
+            document.getElementById('modal-crm').classList.add('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-100', 'opacity-0');
+            document.getElementById('modal-crm-content').classList.replace('scale-100', 'scale-95');
+        }
+        function handleCrearCliente(e) {
+            e.preventDefault();
+            const obj = { 
+                id: `CL-${Date.now().toString().slice(-6)}`, 
+                nombre: document.getElementById('crm-nombre').value, 
+                email: '', 
+                phone: document.getElementById('crm-phone').value, 
+                tipo: document.getElementById('crm-tipo').value, 
+                address: '', 
+                notes: '',
+                rnc: document.getElementById('crm-rnc').value,
+                limite: parseFloat(document.getElementById('crm-limite').value) || 0
+            };
+            state.clientes.push(obj); enviarAGoogleSheets("NUEVO_CLIENTE", obj); renderCRM(); 
+            cerrarModalCRM(); e.target.reset(); showToast('Cuenta Clave B2B añadida.');
         }
         function renderCRM() {
             const grid = document.getElementById('crm-grid');
@@ -899,6 +1058,11 @@
                             <p class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">${c.tipo}</p>
                         </div>
                     </div>
+                    <div class="space-y-1 mb-4">
+                        ${c.rnc ? `<p class="text-xs text-slate-500"><b>RNC/Doc:</b> ${c.rnc}</p>` : ''}
+                        ${c.phone ? `<p class="text-xs text-slate-500"><b>Tel:</b> ${c.phone}</p>` : ''}
+                        ${c.limite > 0 ? `<p class="text-xs text-emerald-600 font-bold mt-2 border-t border-slate-100 pt-2">Límite Crédito: RD$ ${formatMoney(c.limite)}</p>` : ''}
+                    </div>
                     <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80">
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Volumen Compra</p>
                         <p class="text-xl font-black text-slate-900 dark:text-white">RD$ ${formatMoney(totalSpent)}</p>
@@ -907,7 +1071,7 @@
             }).join('');
         }
 
-        // INVENTARIO Y FILTROS
+        // --- FUNCIONES CORE: INVENTARIO ---
         function getStockConsolidado() {
             return state.catalogo.map(prod => {
                 const comprasProd = state.compras.filter(c => c.productoId === prod.id);
@@ -917,18 +1081,14 @@
                 return { ...prod, stock, costoPromedio, costoTotal, precio_base: Number(prod.precio_base || 0) };
             });
         }
-
         function renderInventarioFilters(stockData) {
             const catContainer = document.getElementById('inv-cat-filters');
             const subCatWrap = document.getElementById('inv-subcat-filters-container');
             const subCatContainer = document.getElementById('inv-subcat-filters');
-
             const categories = ['ALL', ...new Set(state.catalogo.map(p => p.categoria).filter(Boolean))];
             if (catContainer) {
                 catContainer.innerHTML = categories.map(cat => `
-                    <button onclick="setInvCatFilter('${cat}')" class="px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${activeCatFilter === cat ? 'bg-slate-900 dark:bg-indigo-600 text-white border-transparent' : 'bg-white dark:bg-[#0b0f19] text-slate-500 border-slate-200 dark:border-slate-800 hover:border-slate-300'}">
-                        ${cat === 'ALL' ? 'Todo' : cat}
-                    </button>`).join('');
+                    <button onclick="setInvCatFilter('${cat}')" class="px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${activeCatFilter === cat ? 'bg-slate-900 dark:bg-indigo-600 text-white border-transparent' : 'bg-white dark:bg-[#0b0f19] text-slate-500 border-slate-200 dark:border-slate-800 hover:border-slate-300'}">${cat === 'ALL' ? 'Todo' : cat}</button>`).join('');
             }
             if (activeCatFilter === 'ALL') { if(subCatWrap) subCatWrap.classList.add('hidden'); activeSubCatFilter = 'ALL'; } 
             else {
@@ -936,33 +1096,26 @@
                 if (subCats.length > 1) { 
                     if(subCatWrap) subCatWrap.classList.remove('hidden');
                     if(subCatContainer) subCatContainer.innerHTML = subCats.map(sub => `
-                        <button onclick="setInvSubCatFilter('${sub}')" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all ${activeSubCatFilter === sub ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800' : 'bg-white dark:bg-[#0b0f19] text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50'}">
-                            ${sub === 'ALL' ? 'Cualquiera' : sub}
-                        </button>`).join('');
+                        <button onclick="setInvSubCatFilter('${sub}')" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all ${activeSubCatFilter === sub ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800' : 'bg-white dark:bg-[#0b0f19] text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50'}">${sub === 'ALL' ? 'Cualquiera' : sub}</button>`).join('');
                 } else { if(subCatWrap) subCatWrap.classList.add('hidden'); activeSubCatFilter = 'ALL'; }
             }
         }
-
         function setInvCatFilter(cat) { activeCatFilter = cat; activeSubCatFilter = 'ALL'; renderInventario(); }
         function setInvSubCatFilter(sub) { activeSubCatFilter = sub; renderInventario(); }
-
         function renderInventario() {
-            const tbody = document.getElementById('inventario-body');
-            let stockConsolidado = getStockConsolidado();
+            const tbody = document.getElementById('inventario-body'); let stockConsolidado = getStockConsolidado();
             renderInventarioFilters(stockConsolidado);
-
             if (activeCatFilter !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.categoria === activeCatFilter);
             if (activeSubCatFilter !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.subcategoria === activeSubCatFilter);
-
             stockConsolidado.sort((a,b) => b.stock - a.stock);
-            const totalStock = stockConsolidado.filter(p=>p.stock>0).length;
+            
+            const totalStock = stockConsolidado.reduce((s,p)=>s+p.stock, 0); 
             const totalCosto = stockConsolidado.reduce((s, p) => s + p.costoTotal, 0);
             const totalPotencial = stockConsolidado.reduce((s, p) => s + (p.stock * p.precio_base), 0);
             
-            document.getElementById('inv-kpi-prods').innerText = totalStock.toLocaleString();
-            document.getElementById('inv-kpi-costo').innerText = `RD$ ${formatMoney(totalCosto)}`;
-            document.getElementById('inv-kpi-potencial').innerText = `RD$ ${formatMoney(totalPotencial)}`;
-
+            if(document.getElementById('inv-kpi-prods')) document.getElementById('inv-kpi-prods').innerText = totalStock.toLocaleString();
+            if(document.getElementById('inv-kpi-costo')) document.getElementById('inv-kpi-costo').innerText = `RD$ ${formatMoney(totalCosto)}`;
+            if(document.getElementById('inv-kpi-potencial')) document.getElementById('inv-kpi-potencial').innerText = `RD$ ${formatMoney(totalPotencial)}`;
             if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('box', 'Almacén Vacío', 'No hay datos para este filtro.', 6);
 
             tbody.innerHTML = stockConsolidado.map(p => `
@@ -977,7 +1130,7 @@
                             ${p.subcategoria ? `<span class="text-[9px] uppercase font-medium tracking-widest text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">${p.subcategoria}</span>` : ''}
                         </div>
                     </td>
-                    <td class="px-4 py-4 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-500 dark:bg-slate-800':'bg-slate-900 dark:bg-white text-white dark:text-slate-900'} px-3 py-1 rounded-lg text-xs font-bold">${p.stock}</span></td>
+                    <td class="px-4 py-4 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-500 dark:bg-slate-800':'bg-slate-900 dark:bg-white text-white dark:text-slate-900'} px-3 py-1 rounded-lg text-xs font-bold">${p.stock} ${p.unidad||'u'}</span></td>
                     <td class="px-4 py-4 text-right font-bold text-rose-500/90 text-sm">${formatMoney(p.costoPromedio)}</td>
                     <td class="px-4 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400 text-sm">${formatMoney(p.precio_base)}</td>
                     <td class="px-6 py-4 text-center"><button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
@@ -985,20 +1138,12 @@
             if(window.lucide) lucide.createIcons();
         }
 
-        // KARDEX
-        function abrirKardexGeneral() {
-            document.getElementById('kardex-modal-title').innerText = `Kardex Global`;
-            document.getElementById('kardex-modal-subtitle').innerText = `Auditoría absoluta de movimientos`;
-            procesarKardex(null);
-        }
+        // --- FUNCIONES CORE: KARDEX ---
+        function abrirKardexGeneral() { document.getElementById('kardex-modal-title').innerText = `Kardex Global`; document.getElementById('kardex-modal-subtitle').innerText = `Auditoría financiera y física absoluta`; procesarKardex(null); }
         function abrirKardex(prodId) {
-            const prod = state.catalogo.find(p => p.id === prodId);
-            if(!prod) return;
-            document.getElementById('kardex-modal-title').innerText = `${prod.nombre}`;
-            document.getElementById('kardex-modal-subtitle').innerText = `SKU: ${prod.id}`;
-            procesarKardex(prodId);
+            const prod = state.catalogo.find(p => p.id === prodId); if(!prod) return;
+            document.getElementById('kardex-modal-title').innerText = `${prod.nombre}`; document.getElementById('kardex-modal-subtitle').innerText = `SKU: ${prod.id}`; procesarKardex(prodId);
         }
-
         function procesarKardex(prodId = null) {
             let comprasTarget = state.compras; let ventasTarget = state.ventas;
             if(prodId) { comprasTarget = comprasTarget.filter(c => c.productoId === prodId); ventasTarget = ventasTarget.filter(v => v.productoId === prodId); }
@@ -1009,9 +1154,7 @@
 
             let saldoFisico = 0, saldoValuado = 0, cppActual = 0; const filas = [];
             movs.forEach(mov => {
-                const isEntrada = mov.tipo === 'ENTRADA';
-                let outTotalCost = 0;
-
+                const isEntrada = mov.tipo === 'ENTRADA'; let outTotalCost = 0;
                 if (isEntrada) { saldoFisico += mov.cant; saldoValuado += (mov.cant * mov.valorU); } 
                 else { saldoFisico -= mov.cant; outTotalCost = mov.costoVenta || 0; saldoValuado -= outTotalCost; }
                 cppActual = saldoFisico > 0 ? (saldoValuado / saldoFisico) : 0;
@@ -1020,45 +1163,37 @@
                 const outCant = !isEntrada ? mov.cant : '-'; const outCUProm = !isEntrada && mov.cant > 0 ? (outTotalCost / mov.cant) : 0; const outCUDraw = !isEntrada ? formatMoney(outCUProm) : '-'; const outTotalDraw = !isEntrada ? formatMoney(outTotalCost) : '-';
 
                 const pName = (state.catalogo.find(p=>p.id===mov.refId)||{}).nombre || 'N/A';
+                let opDesc = isEntrada ? `<span class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Ingreso Almacén</span>` : `<span class="bg-rose-500/10 text-rose-500 border border-rose-500/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Despacho (${mov.client || 'POS'})</span>`;
 
                 filas.unshift(`<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
-                    <td class="p-4 border-r border-slate-100 dark:border-slate-800/60">
-                        <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${mov.fechaStr.split('T')[0].split(',')[0]}</div>
-                        <div class="text-[9px] font-mono text-slate-400 mt-1">${mov.id}</div>
-                        ${!prodId ? `<div class="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate max-w-[150px] mt-1">${pName}</div>` : ''}
+                    <td class="p-4 border-r border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center gap-2 mb-1.5">${opDesc} <span class="text-xs font-black text-slate-800 dark:text-slate-200">${mov.fechaStr.split('T')[0].split(',')[0]}</span></div>
+                        <div class="text-[9px] font-mono text-slate-400 font-bold break-all">${mov.id}</div>
+                        ${!prodId ? `<div class="text-[10px] font-bold text-slate-500 truncate max-w-[150px] mt-1 bg-slate-50 dark:bg-slate-800 inline-block px-1 rounded">${pName}</div>` : ''}
                     </td>
-                    <td class="p-3 text-right text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50/30 dark:bg-emerald-900/5">${inCant}</td>
-                    <td class="p-3 text-right text-emerald-600/70 dark:text-emerald-400/70 bg-emerald-50/30 dark:bg-emerald-900/5">${inCU}</td>
-                    <td class="p-3 text-right font-bold text-emerald-600 dark:text-emerald-400 border-r border-slate-100 dark:border-slate-800/60 bg-emerald-50/30 dark:bg-emerald-900/5">${inTotal}</td>
-                    <td class="p-3 text-right text-rose-500 dark:text-rose-400 font-bold bg-rose-50/30 dark:bg-rose-900/5">${outCant}</td>
-                    <td class="p-3 text-right text-rose-500/70 dark:text-rose-400/70 bg-rose-50/30 dark:bg-rose-900/5">${outCUDraw}</td>
-                    <td class="p-3 text-right font-bold text-rose-500 dark:text-rose-400 border-r border-slate-100 dark:border-slate-800/60 bg-rose-50/30 dark:bg-rose-900/5">${outTotalDraw}</td>
-                    <td class="p-3 text-right font-black text-slate-800 dark:text-white bg-indigo-50/30 dark:bg-indigo-900/10 text-sm">${saldoFisico}</td>
-                    <td class="p-3 text-right text-slate-500 dark:text-slate-400 bg-indigo-50/30 dark:bg-indigo-900/10 text-xs">${formatMoney(cppActual)}</td>
-                    <td class="p-3 text-right font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-900/10 text-sm">${formatMoney(saldoValuado)}</td>
+                    <td class="p-4 text-right text-emerald-600 font-black bg-emerald-50/20 dark:bg-emerald-900/10">${inCant}</td>
+                    <td class="p-4 text-right text-emerald-600/70 bg-emerald-50/20 dark:bg-emerald-900/10">${inCU}</td>
+                    <td class="p-4 text-right font-black text-emerald-600 border-r border-slate-200 dark:border-slate-800 bg-emerald-50/20 dark:bg-emerald-900/10">${inTotal}</td>
+                    <td class="p-4 text-right text-rose-500 font-black bg-rose-50/20 dark:bg-rose-900/10">${outCant}</td>
+                    <td class="p-4 text-right text-rose-500/70 bg-rose-50/20 dark:bg-rose-900/10">${outCUDraw}</td>
+                    <td class="p-4 text-right font-black text-rose-500 border-r border-slate-200 dark:border-slate-800 bg-rose-50/20 dark:bg-rose-900/10">${outTotalDraw}</td>
+                    <td class="p-4 text-right font-black text-slate-800 dark:text-slate-200 bg-indigo-50/20 dark:bg-indigo-900/10 text-base">${saldoFisico}</td>
+                    <td class="p-4 text-right text-slate-500 bg-indigo-50/20 dark:bg-indigo-900/10 text-xs">${formatMoney(cppActual)}</td>
+                    <td class="p-4 text-right font-black text-indigo-600 bg-indigo-50/20 dark:bg-indigo-900/10 text-sm">${formatMoney(saldoValuado)}</td>
                 </tr>`);
             });
-
             document.getElementById('km-body').innerHTML = filas.length ? filas.join('') : emptyStateHTML('ghost', 'Registro Contable Vacío', 'No hay flujo detectado.', 10);
             
-            const modal = document.getElementById('modal-kardex');
-            modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100');
-            document.getElementById('modal-kardex-content').classList.replace('scale-95', 'scale-100');
+            const modal = document.getElementById('modal-kardex'); modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-kardex-content').classList.replace('scale-95', 'scale-100');
         }
+        function cerrarModalKardex() { const modal = document.getElementById('modal-kardex'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-kardex-content').classList.replace('scale-100', 'scale-95'); }
 
-        function cerrarModalKardex() {
-            const modal = document.getElementById('modal-kardex');
-            modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0');
-            document.getElementById('modal-kardex-content').classList.replace('scale-100', 'scale-95');
-        }
-
-        // CATÁLOGO
+        // --- FUNCIONES CORE: CATÁLOGO ---
         function addAtributo() { state.formAtributos.push({ clave: '', valor: '' }); renderAtributosForm(); }
         function removeAtributo(idx) { state.formAtributos.splice(idx, 1); renderAtributosForm(); }
         function updateAtributo(idx, field, val) { state.formAtributos[idx][field] = val; }
         function renderAtributosForm() {
-            const container = document.getElementById('atributos-container');
-            if(!container) return;
+            const container = document.getElementById('atributos-container'); if(!container) return;
             container.innerHTML = state.formAtributos.map((a, i) => `
                 <div class="flex gap-2 items-center">
                     <input type="text" placeholder="Key (Ej: Talla)" class="w-1/2 input-global !p-2.5 !text-xs" value="${a.clave}" oninput="updateAtributo(${i}, 'clave', this.value)">
@@ -1070,22 +1205,19 @@
 
         function handleCrearProducto(e) {
             e.preventDefault();
-            const nombre = document.getElementById('prod-nombre').value.trim();
-            const categoria = document.getElementById('prod-categoria').value.trim();
-            const subcategoria = document.getElementById('prod-subcategoria').value.trim();
-            const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
-            const costoRef = parseFloat(document.getElementById('prod-costo-ref').value) || 0;
-            const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
+            const nombre = document.getElementById('prod-nombre').value.trim(); const categoria = document.getElementById('prod-categoria').value.trim(); const subcategoria = document.getElementById('prod-subcategoria').value.trim(); const precioBase = parseFloat(document.getElementById('prod-precio-base').value); const costoRef = parseFloat(document.getElementById('prod-costo-ref').value) || 0; const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
+            const proveedor = document.getElementById('prod-proveedor').value.trim();
+            const unidad = document.getElementById('prod-unidad').value;
             let atributosValidos = state.formAtributos.filter(a => a.clave.trim() && a.valor.trim());
 
-            const obj = { id: `PRD-${Date.now().toString().slice(-6)}`, nombre, categoria, subcategoria, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: atributosValidos };
+            const obj = { id: `PRD-${Date.now().toString().slice(-6)}`, nombre, categoria, subcategoria, proveedor, unidad, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: atributosValidos };
             state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
             document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogo(); showToast('Ficha técnica insertada con éxito.');
         }
 
         function renderCatalogo() {
             const tbody = document.getElementById('catalogo-body');
-            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel para crear perfiles.', 4);
+            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel para crear perfiles.', 5);
             tbody.innerHTML = state.catalogo.slice().reverse().map(p => `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
                     <td class="px-6 py-4">
@@ -1098,6 +1230,10 @@
                             ${p.subcategoria ? `<span class="bg-transparent text-slate-500 px-1 py-0.5 rounded text-[9px] font-medium border border-slate-200 dark:border-slate-700">${p.subcategoria}</span>` : ''}
                         </div>
                     </td>
+                    <td class="px-4 py-4">
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-400 truncate max-w-[150px]">${p.proveedor || 'No especificado'}</p>
+                        <p class="text-[9px] text-slate-400 mt-0.5 uppercase tracking-widest">UND: ${p.unidad || 'Uds'}</p>
+                    </td>
                     <td class="px-4 py-4 text-right">
                         <p class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">${formatMoney(p.precio_base || 0)}</p>
                         ${p.costo_ref ? `<p class="text-[9px] font-medium text-slate-400 mt-1">Ref: ${formatMoney(p.costo_ref)}</p>` : ''}
@@ -1106,167 +1242,32 @@
                 </tr>`).join('');
         }
 
-        // VENTAS Y METAS
-        let plannerDataLocal = {};
-        
-        function abrirModalPlanner() {
-            document.getElementById('modal-planner').classList.remove('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-0', 'opacity-100');
-            document.getElementById('modal-planner-content').classList.replace('scale-95', 'scale-100');
-            
-            // Llenar Filtros
-            const cats = ['ALL', ...new Set(state.catalogo.map(p => p.categoria).filter(Boolean))];
-            document.getElementById('planner-cat').innerHTML = cats.map(c => `<option value="${c}">${c==='ALL'?'Todas las Categorías':c}</option>`).join('');
-            actualizarFiltrosPlanner();
-        }
-
-        function actualizarFiltrosPlanner() {
-            const cat = document.getElementById('planner-cat').value;
-            const subcats = ['ALL'];
-            if(cat !== 'ALL') { const subSet = new Set(state.catalogo.filter(p => p.categoria === cat && p.subcategoria).map(p => p.subcategoria)); subcats.push(...subSet); }
-            document.getElementById('planner-subcat').innerHTML = subcats.map(c => `<option value="${c}">${c==='ALL'?'Cualquier Subcategoría':c}</option>`).join('');
-            renderListaPlanner();
-        }
-
-        function renderListaPlanner() {
-            const cat = document.getElementById('planner-cat').value;
-            const subcat = document.getElementById('planner-subcat').value;
-            let filtrados = state.catalogo;
-            if(cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
-            if(subcat !== 'ALL') filtrados = filtrados.filter(p => p.subcategoria === subcat);
-
-            const list = document.getElementById('planner-products-list');
-            if(filtrados.length === 0) { list.innerHTML = '<p class="text-xs text-slate-400 p-4 text-center font-bold">No hay productos en esta selección.</p>'; return; }
-
-            list.innerHTML = filtrados.map(p => {
-                const currentGlobal = state.metasGlobales[p.id] || 0;
-                return `
-                <div class="grid grid-cols-12 gap-4 items-center p-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl mb-2">
-                    <div class="col-span-6 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-indigo-400"><i data-lucide="tag" class="w-4 h-4"></i></div>
-                        <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200 line-clamp-1">${p.nombre}</p></div>
-                    </div>
-                    <div class="col-span-3 text-center"><span class="bg-slate-100 dark:bg-slate-900 text-slate-500 font-bold px-2 py-1 rounded text-[10px]">${currentGlobal} u.</span></div>
-                    <div class="col-span-3">
-                        <input type="number" min="0" placeholder="0" class="input-global !px-2 !py-1.5 !text-xs !text-right input-planner" data-pid="${p.id}" value="${plannerDataLocal[p.id] || ''}">
-                    </div>
-                </div>`;
-            }).join('');
-            
-            if(window.lucide) lucide.createIcons();
-            document.querySelectorAll('.input-planner').forEach(inp => { inp.addEventListener('input', (e) => { plannerDataLocal[e.target.dataset.pid] = parseInt(e.target.value) || 0; }); });
-        }
-
-        function aplicarDistribucionMasiva() {
-            const total = parseInt(document.getElementById('planner-mass-qty').value);
-            if(!total || total <= 0) return showToast('Ingresa cantidad total a distribuir.', 'error');
-            const cat = document.getElementById('planner-cat').value; const subcat = document.getElementById('planner-subcat').value;
-            let filtrados = state.catalogo;
-            if(cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
-            if(subcat !== 'ALL') filtrados = filtrados.filter(p => p.subcategoria === subcat);
-            if(filtrados.length === 0) return;
-
-            const baseQty = Math.floor(total / filtrados.length);
-            let extra = total % filtrados.length;
-
-            filtrados.forEach(p => {
-                const addQty = baseQty + (extra > 0 ? 1 : 0);
-                if(extra > 0) extra--;
-                plannerDataLocal[p.id] = addQty;
-            });
-            renderListaPlanner(); document.getElementById('planner-mass-qty').value = ''; showToast('Distribución pareja aplicada.');
-        }
-
-        function guardarMetas() {
-            for(let key in plannerDataLocal) { if(plannerDataLocal[key] <= 0 || isNaN(plannerDataLocal[key])) delete plannerDataLocal[key]; }
-            state.metasGlobales = { ...plannerDataLocal };
-            localStorage.setItem('elbien_metas', JSON.stringify(state.metasGlobales));
-            document.getElementById('modal-planner').classList.add('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-100', 'opacity-0');
-            document.getElementById('modal-planner-content').classList.replace('scale-100', 'scale-95');
-            renderMetas(); showToast('Estrategia de metas fijada.');
-        }
-
-        function renderMetas() {
-            const vFiltered = getFilteredData(state.ventas, 'fecha');
-            let globalTargetUnits = 0; let globalSoldUnits = 0;
-            const productStats = {};
-
-            for (const [prodId, qty] of Object.entries(state.metasGlobales)) {
-                const prod = state.catalogo.find(p => p.id === prodId);
-                if(prod && qty > 0) {
-                    const soldTotal = vFiltered.filter(tx => tx.productoId === prodId).reduce((acc, tx) => acc + tx.cantidad, 0);
-                    productStats[prodId] = { id: prod.id, name: prod.nombre, targetQty: qty, soldQty: soldTotal };
-                    globalTargetUnits += qty; globalSoldUnits += soldTotal;
-                }
-            }
-
-            const globalPct = globalTargetUnits > 0 ? ((globalSoldUnits/globalTargetUnits)*100) : 0;
-            document.getElementById('metas-global-pct').innerHTML = `${globalPct.toFixed(1)}<span class="text-3xl text-slate-400">%</span>`;
-            document.getElementById('metas-global-sold').innerText = globalSoldUnits;
-            document.getElementById('metas-global-target').innerText = globalTargetUnits;
-            document.getElementById('metas-global-bar').style.width = `${Math.min(globalPct, 100)}%`;
-
-            const pGrid = document.getElementById('metas-productos-grid');
-            const arrStats = Object.values(productStats);
-            if(arrStats.length === 0) {
-                pGrid.innerHTML = '<div class="col-span-full card-panel p-10 text-center"><p class="text-slate-400 font-bold">No hay objetivos fijados. Usa el Planner.</p></div>';
-            } else {
-                pGrid.innerHTML = arrStats.map((prod, i) => {
-                    const pct = prod.targetQty > 0 ? (prod.soldQty / prod.targetQty)*100 : 0;
-                    return `
-                    <div class="card-panel p-6 hover-lift animate-in slide-in-from-bottom-4 fade-in" style="animation-delay: ${i*30}ms">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-500 border border-slate-100 dark:border-slate-700"><i data-lucide="target" class="w-5 h-5"></i></div>
-                            <span class="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest border border-indigo-100 dark:border-indigo-500/20">Meta: ${prod.targetQty} u</span>
-                        </div>
-                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3 truncate">${prod.name}</h4>
-                        <div class="flex justify-between items-end mb-2">
-                            <span class="text-xs font-bold text-slate-500">Logradas</span>
-                            <span class="font-black text-base text-slate-900 dark:text-white">${prod.soldQty}</span>
-                        </div>
-                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                            <div class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: ${Math.min(pct, 100)}%"></div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // VENTAS (POS)
+        // --- FUNCIONES CORE: VENTAS ---
         function renderVentasSelect() {
-            const selectProd = document.getElementById('vent-producto');
-            const selectCliente = document.getElementById('vent-cliente');
+            const selectProd = document.getElementById('vent-producto'); const selectCliente = document.getElementById('vent-cliente');
             const stockData = getStockConsolidado().filter(p => p.stock > 0);
-            
             const grouped = stockData.reduce((acc, p) => { const cat = p.categoria || 'Sin Categoría'; if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
             let htmlProd = '<option value="" disabled selected>Buscar artículo en stock...</option>';
             for(const cat in grouped) {
                 htmlProd += `<optgroup label="📦 ${cat.toUpperCase()}">`;
-                grouped[cat].forEach(p => { htmlProd += `<option value="${p.id}">${p.nombre} (Disp: ${p.stock} u.)</option>`; });
+                grouped[cat].forEach(p => { htmlProd += `<option value="${p.id}">${p.nombre} (Disp: ${p.stock} ${p.unidad||'u'})</option>`; });
                 htmlProd += `</optgroup>`;
             }
             if(selectProd) selectProd.innerHTML = htmlProd;
-
-            if(selectCliente) {
-                selectCliente.innerHTML = '<option value="">-- Cliente Casual (Ninguno) --</option>' + state.clientes.map(c => `<option value="${c.id}">${c.nombre} (${c.tipo})</option>`).join('');
-            }
+            if(selectCliente) selectCliente.innerHTML = '<option value="">-- Cliente Casual (Ninguno) --</option>' + state.clientes.map(c => `<option value="${c.id}">${c.nombre} (${c.tipo})</option>`).join('');
         }
-
-        function autoFillPrecioVenta() {
-            const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value);
-            if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base;
-        }
+        function autoFillPrecioVenta() { const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value); if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base; }
         
         function handleVentaSubmit(e) {
             e.preventDefault();
-            const fecha = document.getElementById('vent-fecha').value, prodId = document.getElementById('vent-producto').value, cant = parseInt(document.getElementById('vent-cant').value), precio = parseFloat(document.getElementById('vent-precio').value);
-            const clienteId = document.getElementById('vent-cliente').value;
-            
+            const fecha = document.getElementById('vent-fecha').value, prodId = document.getElementById('vent-producto').value, cant = parseInt(document.getElementById('vent-cant').value), precio = parseFloat(document.getElementById('vent-precio').value), clienteId = document.getElementById('vent-cliente').value;
+            const metodoPago = document.getElementById('vent-metodo-pago').value;
+            const ncf = document.getElementById('vent-ncf').value.trim();
+
             const stockDisp = state.compras.filter(c => c.productoId === prodId).reduce((a, c) => a + c.cantidad_restante, 0);
             if (cant > stockDisp) return showToast(`Stock insuficiente. Disp: ${stockDisp}`, 'error');
 
-            let comprasVirt = JSON.parse(JSON.stringify(state.compras)); 
-            comprasVirt.sort((a, b) => { const d = new Date(a.fecha) - new Date(b.fecha); return d === 0 ? a.id.localeCompare(b.id) : d; });
+            let comprasVirt = JSON.parse(JSON.stringify(state.compras)); comprasVirt.sort((a, b) => { const d = new Date(a.fecha) - new Date(b.fecha); return d === 0 ? a.id.localeCompare(b.id) : d; });
             let qty = cant, costoTotal = 0;
             for (let lote of comprasVirt) {
                 if (lote.productoId === prodId && lote.cantidad_restante > 0) {
@@ -1275,24 +1276,27 @@
                 }
             }
             
-            let clientName = '';
-            if(clienteId) { const c = state.clientes.find(x => x.id === clienteId); if(c) clientName = c.nombre; }
+            let clientName = ''; if(clienteId) { const c = state.clientes.find(x => x.id === clienteId); if(c) clientName = c.nombre; }
 
-            const obj = { id: `VNT-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal, cliente: clientName };
+            const obj = { id: `VNT-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal, cliente: clientName, metodoPago, ncf };
             state.compras = comprasVirt; state.ventas.push(obj); enviarAGoogleSheets("VENTA", obj);
-            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; document.getElementById('vent-cliente').value = ''; navigate('ventas'); showToast('Salida Procesada (FIFO)');
+            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; document.getElementById('vent-cliente').value = ''; document.getElementById('vent-ncf').value = ''; navigate('ventas'); showToast('Salida Fiscal Procesada');
         }
 
         function renderVentas() {
             const tbody = document.getElementById('ventas-body'), data = getFilteredData(state.ventas, 'fecha');
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-cart', 'Caja en Blanco', 'Realiza la primera facturación.', 6);
+            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-cart', 'Caja en Blanco', 'Realiza la primera facturación.', 7);
             tbody.innerHTML = data.slice().reverse().map(v => {
                 const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desc.'};
                 return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
                     <td class="px-6 py-4">
                         <div class="text-[10px] font-mono text-slate-400 mb-0.5">${v.id}</div>
                         <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${v.fecha.split('T')[0].split(',')[0]}</div>
-                        ${v.cliente ? `<div class="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded mt-1 inline-block border border-indigo-100 dark:border-indigo-800">${v.cliente}</div>` : ''}
+                        ${v.ncf ? `<div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">NCF: ${v.ncf}</div>` : ''}
+                    </td>
+                    <td class="px-4 py-4">
+                        <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${v.cliente || 'Casual'}</div>
+                        <div class="text-[9px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded mt-1 inline-block border border-indigo-100 dark:border-indigo-800">${v.metodoPago || 'Efectivo'}</div>
                     </td>
                     <td class="px-4 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm truncate max-w-[200px]">${p.nombre}</td>
                     <td class="px-4 py-4 text-center"><span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg font-bold text-xs">${v.cantidad}</span></td>
@@ -1303,7 +1307,7 @@
             }).join('');
         }
 
-        // FINANZAS
+        // --- FUNCIONES CORE: FINANZAS (EGRESOS) ---
         function setGastoType(type) {
             document.getElementById('egre-tipo-registro').value = type;
             const btnOp = document.getElementById('tab-egreso-operativo'); const btnInv = document.getElementById('tab-egreso-inventario');
@@ -1329,19 +1333,21 @@
         function handleEgresoSubmit(e) {
             e.preventDefault();
             const type = document.getElementById('egre-tipo-registro').value, fecha = document.getElementById('egre-fecha').value;
+            const metodoPago = document.getElementById('egre-metodo-pago').value;
+            const ncf = document.getElementById('egre-ncf').value.trim();
             
             if(type === 'INVENTARIO') {
                 const prodId = document.getElementById('comp-producto').value, cant = parseInt(document.getElementById('comp-cant').value), costoTotal = parseFloat(document.getElementById('egre-monto').value);
                 if(!prodId || isNaN(cant) || cant <= 0) return showToast("Por favor, revisa los datos del lote.", "error");
                 const objComp = { id: `CMP-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: costoTotal / cant };
                 state.compras.push(objComp); enviarAGoogleSheets("COMPRA", objComp);
-                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Compra Inventario: Lote ${cant} uds`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: prodId };
+                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Compra Inventario: Lote ${cant} uds`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: prodId, metodoPago, ncf };
                 state.egresos.push(objEgre); enviarAGoogleSheets("EGRESO", objEgre);
-                document.getElementById('comp-cant').value = ''; document.getElementById('egre-monto').value = ''; showToast('Lote inyectado al Kardex.');
+                document.getElementById('comp-cant').value = ''; document.getElementById('egre-monto').value = ''; document.getElementById('egre-ncf').value = ''; showToast('Lote inyectado al Kardex.');
             } else {
-                const obj = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value };
+                const obj = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value, proveedor: document.getElementById('egre-proveedor').value.trim(), metodoPago, ncf };
                 state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
-                document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; showToast('Asiento contable registrado.');
+                document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; document.getElementById('egre-ncf').value = ''; document.getElementById('egre-proveedor').value = ''; showToast('Asiento contable registrado.');
             }
             renderEgresos();
         }
@@ -1354,22 +1360,137 @@
         function renderEgresos() {
             const tbody = document.getElementById('egresos-body'), data = getFilteredData(state.egresos, 'fecha');
             document.getElementById('egresos-total-mes').innerText = formatMoney(data.reduce((s, e) => s + e.monto, 0));
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 4);
+            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 5);
             tbody.innerHTML = data.slice().reverse().map(e => {
                 const isInv = e.categoria_gasto === 'Inventario';
                 return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
                     <td class="px-6 py-4">
                         <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${e.fecha.split('T')[0]}</div>
                         <div class="text-[9px] font-mono text-slate-400 mt-1">${e.id}</div>
+                        ${e.ncf ? `<div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">NCF: ${e.ncf}</div>` : ''}
                     </td>
-                    <td class="px-4 py-4"><span class="${isInv ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'} px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border">${e.categoria_gasto || 'General'}</span></td>
+                    <td class="px-4 py-4"><span class="${isInv ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'} px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border shadow-sm">${e.categoria_gasto || 'General'}</span></td>
+                    <td class="px-4 py-4">
+                        <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${e.proveedor || '-'}</div>
+                        <div class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded mt-1 inline-block border border-slate-200 dark:border-slate-700">${e.metodoPago || 'Transferencia'}</div>
+                    </td>
                     <td class="px-4 py-4 font-medium text-slate-800 dark:text-slate-200 text-sm whitespace-normal min-w-[200px]">${e.concepto} ${e.producto_id ? `<span class="inline-block text-[9px] text-indigo-500 font-bold ml-1 border border-indigo-200 px-1 rounded">Ref: ${(state.catalogo.find(p=>p.id===e.producto_id)||{}).nombre}</span>` : ''}</td>
                     <td class="px-6 py-4 text-right font-black ${isInv?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'} text-sm">-${formatMoney(e.monto)}</td>
                 </tr>`;
             }).join('');
         }
 
-        // INTELIGENCIA FINANCIERA (DASHBOARD)
+        // --- FUNCIONES CORE: PLANNER DE METAS ---
+        function abrirModalPlanner() {
+            document.getElementById('modal-planner').classList.remove('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-0', 'opacity-100');
+            document.getElementById('modal-planner-content').classList.replace('scale-95', 'scale-100');
+            const cats = ['ALL', ...new Set(state.catalogo.map(p => p.categoria).filter(Boolean))];
+            document.getElementById('planner-cat').innerHTML = cats.map(c => `<option value="${c}">${c==='ALL'?'Todas las Categorías':c}</option>`).join('');
+            actualizarFiltrosPlanner();
+        }
+
+        function actualizarFiltrosPlanner() {
+            const cat = document.getElementById('planner-cat').value;
+            const subcats = ['ALL'];
+            if(cat !== 'ALL') { const subSet = new Set(state.catalogo.filter(p => p.categoria === cat && p.subcategoria).map(p => p.subcategoria)); subcats.push(...subSet); }
+            document.getElementById('planner-subcat').innerHTML = subcats.map(c => `<option value="${c}">${c==='ALL'?'Cualquier Subcategoría':c}</option>`).join('');
+            renderListaPlanner();
+        }
+
+        function renderListaPlanner() {
+            const cat = document.getElementById('planner-cat').value; const subcat = document.getElementById('planner-subcat').value;
+            let filtrados = state.catalogo;
+            if(cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
+            if(subcat !== 'ALL') filtrados = filtrados.filter(p => p.subcategoria === subcat);
+
+            const list = document.getElementById('planner-products-list');
+            if(filtrados.length === 0) { list.innerHTML = '<p class="text-xs text-slate-400 p-4 text-center font-bold">No hay productos en esta selección.</p>'; return; }
+
+            list.innerHTML = filtrados.map(p => {
+                const currentGlobal = state.metasGlobales[p.id] || 0;
+                return `
+                <div class="grid grid-cols-12 gap-4 items-center p-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl mb-2">
+                    <div class="col-span-6 flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-indigo-400"><i data-lucide="tag" class="w-4 h-4"></i></div>
+                        <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200 line-clamp-1">${p.nombre}</p></div>
+                    </div>
+                    <div class="col-span-3 text-center"><span class="bg-slate-100 dark:bg-slate-900 text-slate-500 font-bold px-2 py-1 rounded text-[10px]">${currentGlobal} u.</span></div>
+                    <div class="col-span-3"><input type="number" min="0" placeholder="0" class="input-global !px-2 !py-1.5 !text-xs !text-right input-planner" data-pid="${p.id}" value="${plannerDataLocal[p.id] || ''}"></div>
+                </div>`;
+            }).join('');
+            if(window.lucide) lucide.createIcons();
+            document.querySelectorAll('.input-planner').forEach(inp => { inp.addEventListener('input', (e) => { plannerDataLocal[e.target.dataset.pid] = parseInt(e.target.value) || 0; }); });
+        }
+
+        function aplicarDistribucionMasiva() {
+            const total = parseInt(document.getElementById('planner-mass-qty').value);
+            if(!total || total <= 0) return showToast('Ingresa cantidad total a distribuir.', 'error');
+            const cat = document.getElementById('planner-cat').value; const subcat = document.getElementById('planner-subcat').value;
+            let filtrados = state.catalogo;
+            if(cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
+            if(subcat !== 'ALL') filtrados = filtrados.filter(p => p.subcategoria === subcat);
+            if(filtrados.length === 0) return;
+
+            const baseQty = Math.floor(total / filtrados.length); let extra = total % filtrados.length;
+            filtrados.forEach(p => { const addQty = baseQty + (extra > 0 ? 1 : 0); if(extra > 0) extra--; plannerDataLocal[p.id] = addQty; });
+            renderListaPlanner(); document.getElementById('planner-mass-qty').value = ''; showToast('Distribución pareja aplicada.');
+        }
+
+        function guardarMetas() {
+            for(let key in plannerDataLocal) { if(plannerDataLocal[key] <= 0 || isNaN(plannerDataLocal[key])) delete plannerDataLocal[key]; }
+            state.metasGlobales = { ...plannerDataLocal };
+            localStorage.setItem('elbien_metas', JSON.stringify(state.metasGlobales));
+            document.getElementById('modal-planner').classList.add('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-100', 'opacity-0');
+            document.getElementById('modal-planner-content').classList.replace('scale-100', 'scale-95');
+            renderMetas(); showToast('Estrategia de metas fijada.');
+        }
+
+        function renderMetas() {
+            const vFiltered = getFilteredData(state.ventas, 'fecha');
+            let globalTargetUnits = 0; let globalSoldUnits = 0; const productStats = {};
+
+            for (const [prodId, qty] of Object.entries(state.metasGlobales)) {
+                const prod = state.catalogo.find(p => p.id === prodId);
+                if(prod && qty > 0) {
+                    const soldTotal = vFiltered.filter(tx => tx.productoId === prodId).reduce((acc, tx) => acc + tx.cantidad, 0);
+                    productStats[prodId] = { id: prod.id, name: prod.nombre, targetQty: qty, soldQty: soldTotal };
+                    globalTargetUnits += qty; globalSoldUnits += soldTotal;
+                }
+            }
+
+            const globalPct = globalTargetUnits > 0 ? ((globalSoldUnits/globalTargetUnits)*100) : 0;
+            document.getElementById('metas-global-pct').innerHTML = `${globalPct.toFixed(1)}<span class="text-3xl text-slate-400">%</span>`;
+            document.getElementById('metas-global-sold').innerText = globalSoldUnits;
+            document.getElementById('metas-global-target').innerText = globalTargetUnits;
+            document.getElementById('metas-global-bar').style.width = `${Math.min(globalPct, 100)}%`;
+
+            const pGrid = document.getElementById('metas-productos-grid'); const arrStats = Object.values(productStats);
+            if(arrStats.length === 0) {
+                pGrid.innerHTML = '<div class="col-span-full card-panel p-10 text-center"><p class="text-slate-400 font-bold">No hay objetivos fijados. Usa el Planner.</p></div>';
+            } else {
+                pGrid.innerHTML = arrStats.map((prod, i) => {
+                    const pct = prod.targetQty > 0 ? (prod.soldQty / prod.targetQty)*100 : 0;
+                    return `
+                    <div class="card-panel p-6 hover-lift animate-in slide-in-from-bottom-4 fade-in" style="animation-delay: ${i*30}ms">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-500 border border-slate-100 dark:border-slate-700"><i data-lucide="target" class="w-5 h-5"></i></div>
+                            <span class="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest border border-indigo-100 dark:border-indigo-500/20">Meta: ${prod.targetQty} u</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3 truncate">${prod.name}</h4>
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-xs font-bold text-slate-500">Logradas</span>
+                            <span class="font-black text-base text-slate-900 dark:text-white">${prod.soldQty}</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: ${Math.min(pct, 100)}%"></div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            if(window.lucide) lucide.createIcons();
+        }
+
+        // --- DASHBOARD ANALYTICS ---
         function getFilteredData(arr, dateF) {
             const f = document.getElementById('month-filter').value; if(f === 'ALL') return arr;
             return arr.filter(i => { if(!i[dateF]) return false; const d = i[dateF].split('T')[0].split(',')[0].includes('/') ? i[dateF].split(',')[0].split('/').reverse().join('-') : i[dateF].split('T')[0]; const p = d.split('-'); return (p[0].length===4 ? `${p[0]}-${p[1]}` : `${p[2]}-${p[1]}`) === f; });
@@ -1389,7 +1510,18 @@
             const ing = v.reduce((s, x) => s + (x.cantidad * x.precio), 0), cos = v.reduce((s, x) => s + x.costo_fifo, 0), egr = e.reduce((s, x) => s + x.monto, 0);
             const net = ing - cos - egr;
             
-            // Stats Salud del Negocio
+            // Payment Methods Breakdown (New)
+            const payMethods = { Efectivo: 0, Tarjeta: 0, Transferencia: 0, Otros: 0 };
+            v.forEach(tx => { 
+                if(tx.metodoPago === 'Efectivo') payMethods.Efectivo += (tx.cantidad * tx.precio);
+                else if(tx.metodoPago === 'Tarjeta') payMethods.Tarjeta += (tx.cantidad * tx.precio);
+                else if(tx.metodoPago === 'Transferencia') payMethods.Transferencia += (tx.cantidad * tx.precio);
+                else payMethods.Otros += (tx.cantidad * tx.precio);
+            });
+            document.getElementById('dash-cash').innerText = formatMoney(payMethods.Efectivo);
+            document.getElementById('dash-card').innerText = formatMoney(payMethods.Tarjeta);
+            document.getElementById('dash-transfer').innerText = formatMoney(payMethods.Transferencia);
+
             const roi = cos+egr > 0 ? (net / (cos+egr)) * 100 : 0;
             const grossMargin = ing > 0 ? ((ing - cos) / ing) * 100 : 0;
             const avgTicket = v.length > 0 ? ing / v.length : 0;
@@ -1402,19 +1534,13 @@
             document.getElementById('kpi-absorcion').innerText = absRatio.toFixed(1) + '%';
 
             const cardNeto = document.getElementById('kpi-neto-card');
-            if(net < 0) {
-                cardNeto.className = 'bg-gradient-to-br from-rose-600 to-rose-800 p-6 rounded-3xl border border-rose-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white';
-            } else {
-                cardNeto.className = 'bg-slate-900 dark:bg-indigo-600 p-6 rounded-3xl border border-slate-800 dark:border-indigo-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white';
-            }
+            if(net < 0) { cardNeto.className = 'bg-rose-600 text-white p-6 rounded-3xl border border-rose-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white'; } 
+            else { cardNeto.className = 'bg-slate-900 dark:bg-indigo-600 p-6 rounded-3xl border border-slate-800 dark:border-indigo-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white'; }
 
-            // TRIPLE ANÁLISIS DE RENDIMIENTO
             const prodStats = {};
             v.forEach(tx => {
                 if(!prodStats[tx.productoId]) prodStats[tx.productoId] = { id: tx.productoId, vol: 0, rev: 0, profit: 0 };
-                prodStats[tx.productoId].vol += tx.cantidad;
-                prodStats[tx.productoId].rev += (tx.cantidad * tx.precio);
-                prodStats[tx.productoId].profit += tx.ganancia;
+                prodStats[tx.productoId].vol += tx.cantidad; prodStats[tx.productoId].rev += (tx.cantidad * tx.precio); prodStats[tx.productoId].profit += tx.ganancia;
             });
             
             const renderRank = (arr, valKey, isMoney) => {
@@ -1432,19 +1558,12 @@
                 }).join('');
             };
 
-            const byVol = Object.values(prodStats).sort((a,b)=>b.vol - a.vol).slice(0,5);
-            const byRev = Object.values(prodStats).sort((a,b)=>b.rev - a.rev).slice(0,5);
-            const byProfit = Object.values(prodStats).sort((a,b)=>b.profit - a.profit).slice(0,5);
+            document.getElementById('rank-vol').innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.vol - a.vol).slice(0,5), 'vol', false);
+            document.getElementById('rank-rev').innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.rev - a.rev).slice(0,5), 'rev', true);
+            document.getElementById('rank-profit').innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.profit - a.profit).slice(0,5), 'profit', true);
 
-            document.getElementById('rank-vol').innerHTML = renderRank(byVol, 'vol', false);
-            document.getElementById('rank-rev').innerHTML = renderRank(byRev, 'rev', true);
-            document.getElementById('rank-profit').innerHTML = renderRank(byProfit, 'profit', true);
-
-            // Gráficos (Adaptativos a Dark Mode)
             const isDark = document.documentElement.classList.contains('dark');
-            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-            const textColor = isDark ? '#94a3b8' : '#64748b';
-
+            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'; const textColor = isDark ? '#94a3b8' : '#64748b';
             const cOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 640 ? 'top' : 'bottom', labels: {font:{family:'Inter', size:11}, usePointStyle:true, color: textColor, padding: 20} } } };
             
             if(charts.tend) charts.tend.destroy();
