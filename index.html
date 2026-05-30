@@ -1,899 +1,153 @@
+<!-- ... existing code ... -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nu Glass ERP - Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
-        
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
-            --sidebar-bg: rgba(15, 23, 42, 0.6); /* Dark glass */
-        }
-
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background: #e2e8f0;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,0.05) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.05) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.05) 0, transparent 50%);
-            color: #0f172a; 
-            overflow: hidden; 
-            position: relative;
-        }
-
-        /* Blobs */
-        .blob { position: absolute; border-radius: 50%; filter: blur(90px); z-index: -1; animation: float 25s infinite ease-in-out alternate; opacity: 0.6; }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #c7d2fe; }
-        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #e0e7ff; animation-delay: -5s; }
-        .blob-3 { top: 40%; left: 30%; width: 40vw; height: 40vw; background: #ede9fe; animation-delay: -10s; }
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(3%, 8%) scale(1.05); } 100% { transform: translate(-3%, -3%) scale(0.95); } }
-
-        /* LIQUID GLASS CLASSES */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-        }
-        
-        .dark-glass {
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-right: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .glass-input {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-input:focus { background: rgba(255, 255, 255, 0.95); border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); outline: none; }
-
-        /* Animations */
-        .view-section { display: none; opacity: 0; }
-        .view-section.active { display: block; animation: glassFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes glassFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .hover-lift { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .hover-lift:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1); }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.5); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.8); }
-
-        /* Toggle Switch */
-        .toggle-checkbox:checked { right: 0; border-color: #68D391; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #10b981; }
-    </style>
-    <script>
-        tailwind.config = { theme: { extend: { colors: { brand: { 50: '#eef2ff', 100: '#e0e7ff', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' } } } } }
-    </script>
-</head>
-<body class="h-screen w-screen flex antialiased flex-col lg:flex-row">
-
-    <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
-
-    <!-- OVERLAY CARGA -->
-    <div id="loading-overlay" class="fixed inset-0 glass-panel bg-white/40 z-[100] flex flex-col items-center justify-center text-slate-800 transition-all duration-300 hidden">
-        <div class="glass-panel p-8 rounded-[2rem] flex flex-col items-center animate-pulse border border-white max-w-[85%] text-center">
-            <div class="w-12 h-12 rounded-full border-4 border-brand-200 border-t-brand-600 animate-spin mb-4"></div>
-            <h2 class="text-xl font-black tracking-tight">Sincronizando Nu Glass</h2>
-            <p class="text-slate-500 text-sm mt-1 font-medium">Estableciendo conexión en tiempo real...</p>
-        </div>
-    </div>
-
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[110] flex flex-col gap-3 pointer-events-none"></div>
-
-    <!-- BACKDROP MOBILE SIDEBAR -->
-    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[40] hidden lg:hidden transition-opacity"></div>
-
-    <!-- SIDEBAR DARK GLASS -->
-    <aside id="sidebar" class="w-[280px] dark-glass flex flex-col h-full shrink-0 z-[50] fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
-        <div class="p-8 border-b border-white/10 flex flex-col items-center justify-center text-center relative">
-            <button onclick="toggleSidebar()" class="absolute top-4 right-4 lg:hidden p-2 text-slate-400 hover:text-white bg-white/5 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center shadow-lg mb-4 border border-white/20 backdrop-blur-md">
-                <div class="w-10 h-10 bg-gradient-to-tr from-brand-400 to-brand-600 rounded-xl flex items-center justify-center shadow-inner"><i data-lucide="layers" class="text-white w-6 h-6"></i></div>
+<!-- ... existing code ... -->
+        <!-- Logo -->
+        <div class="p-6 border-b border-slate-800/60 flex items-center gap-3 relative z-10">
+            <div class="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/30">
+                <i data-lucide="zap" class="text-white w-5 h-5"></i>
             </div>
-            <h1 class="text-2xl font-black tracking-tighter text-white leading-none">Nu<span class="text-brand-400 font-light italic">Glass</span></h1>
-            <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5">Inteligencia de Negocio</p>
+            <div>
+                <h1 class="text-xl font-black tracking-tighter text-white leading-none">Nu<span class="text-brand-400">Glass</span></h1>
+                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-0.5">ERP & Finanzas</p>
+            </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1.5 w-full">
-            <div class="text-[10px] font-black text-brand-400 uppercase tracking-widest mb-3 px-4">Gestión Central</div>
-            <button onclick="navigate('inventario')" id="nav-inventario" class="w-full flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 border border-transparent text-slate-300 hover:bg-white/10 hover:text-white font-semibold group relative">
-                <i data-lucide="boxes" class="w-5 h-5 mr-3 text-indigo-400 group-hover:scale-110 transition-transform"></i> Centro de Inventario
-            </button>
-            <button onclick="navigate('catalogo')" id="nav-catalogo" class="w-full flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 border border-transparent text-slate-300 hover:bg-white/10 hover:text-white font-semibold group">
-                <i data-lucide="book-open" class="w-5 h-5 mr-3 text-slate-400 group-hover:scale-110 transition-transform"></i> Catálogo Maestro
-            </button>
-            <button onclick="navigate('kardex')" id="nav-kardex" class="w-full flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 border border-transparent text-slate-300 hover:bg-white/10 hover:text-white font-semibold group">
-                <i data-lucide="activity" class="w-5 h-5 mr-3 text-emerald-400 group-hover:scale-110 transition-transform"></i> Kardex / Movimientos
-            </button>
-
-            <div class="text-[10px] font-black text-brand-400 uppercase tracking-widest mb-3 px-4 mt-6">Operaciones</div>
-            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 border border-transparent text-slate-300 hover:bg-white/10 hover:text-white font-semibold group">
-                <i data-lucide="scan-line" class="w-5 h-5 mr-3 text-brand-400 group-hover:scale-110 transition-transform"></i> Punto de Venta
-            </button>
-            <button onclick="navigate('finanzas')" id="nav-finanzas" class="w-full flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 border border-transparent text-slate-300 hover:bg-white/10 hover:text-white font-semibold group">
-                <i data-lucide="wallet" class="w-5 h-5 mr-3 text-amber-400 group-hover:scale-110 transition-transform"></i> Control de Egresos
-            </button>
-
-            <div class="text-[10px] font-black text-brand-400 uppercase tracking-widest mb-3 px-4 mt-6">Inteligencia</div>
-            <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3.5 rounded-2xl transition-all duration-300 border border-transparent text-slate-300 hover:bg-white/10 hover:text-white font-semibold group">
-                <i data-lucide="pie-chart" class="w-5 h-5 mr-3 text-rose-400 group-hover:scale-110 transition-transform"></i> Dashboard Pro
-            </button>
-        </nav>
-
-        <div class="p-6 border-t border-white/10">
-            <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center py-3 rounded-2xl text-xs font-black tracking-widest text-slate-300 hover:text-white uppercase transition-all">
-                <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Configuración
-            </button>
-        </div>
-    </aside>
-
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative z-10 w-full">
-        
-        <header id="main-header" class="h-20 glass-panel border-b border-t-0 border-r-0 border-l-0 border-white/60 flex items-center justify-between px-6 sm:px-10 shrink-0 sticky top-0 z-30">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="lg:hidden p-2 glass-button rounded-xl text-slate-600"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                <h2 id="page-title" class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">Cargando...</h2>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <div class="flex items-center bg-white/60 backdrop-blur-md rounded-2xl p-1.5 border border-white shadow-sm">
-                    <button onclick="setFiltroTiempo('HOY')" id="filtro-btn-HOY" class="filtro-tiempo-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 transition-all">Hoy</button>
-                    <button onclick="setFiltroTiempo('MES')" id="filtro-btn-MES" class="filtro-tiempo-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-white shadow-sm text-brand-600 transition-all">Mes Actual</button>
-                    <button onclick="setFiltroTiempo('MES_ANT')" id="filtro-btn-MES_ANT" class="filtro-tiempo-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 transition-all hidden sm:block">Mes Ant.</button>
-                    <button onclick="setFiltroTiempo('ALL')" id="filtro-btn-ALL" class="filtro-tiempo-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 transition-all">Todo</button>
-                </div>
-            </div>
-        </header>
-
-        <div class="flex-1 overflow-y-auto h-full p-4 sm:p-8 z-10 scroll-smooth pb-20">
-
-            <div id="view-inventario" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6 sm:space-y-8">
-                    <!-- Resumen Inventario KPIs -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white hover-lift relative overflow-hidden flex flex-col justify-center">
-                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-200/50 rounded-full blur-2xl"></div>
-                            <div class="flex items-center gap-4 relative z-10">
-                                <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center shadow-sm shrink-0"><i data-lucide="boxes" class="text-indigo-600 w-6 h-6"></i></div>
-                                <div><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-tight">Total Catálogo</p><h4 id="inv-kpi-prods" class="text-3xl font-black text-slate-800 leading-none mt-1">0</h4></div>
-                            </div>
-                        </div>
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white hover-lift relative overflow-hidden flex flex-col justify-center">
-                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-200/50 rounded-full blur-2xl"></div>
-                            <div class="flex items-center gap-4 relative z-10">
-                                <div class="w-14 h-14 bg-white/80 rounded-2xl flex items-center justify-center shadow-sm shrink-0"><i data-lucide="scale" class="text-rose-600 w-6 h-6"></i></div>
-                                <div><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-tight">Costo Invertido</p><h4 id="inv-kpi-costo" class="text-3xl font-black text-slate-800 leading-none mt-1">$0.00</h4></div>
-                            </div>
-                        </div>
-                        <div class="bg-gradient-to-br from-brand-500 to-brand-700 p-6 rounded-[2rem] border border-brand-400 hover-lift relative overflow-hidden shadow-xl flex flex-col justify-center">
-                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-2xl"></div>
-                            <div class="flex items-center gap-4 relative z-10">
-                                <div class="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-inner shrink-0 border border-white/30"><i data-lucide="gem" class="text-white w-6 h-6"></i></div>
-                                <div><p class="text-[10px] font-black text-brand-100 uppercase tracking-widest leading-tight">Venta Potencial</p><h4 id="inv-kpi-potencial" class="text-3xl font-black text-white leading-none mt-1">$0.00</h4></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel rounded-[2rem] border border-white shadow-xl overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-white/60 bg-white/40 flex justify-between items-center">
-                            <h3 class="text-lg font-black text-slate-800 flex items-center gap-2"><i data-lucide="database" class="w-5 h-5 text-indigo-500"></i> Existencias y Promedios Ponderados</h3>
-                        </div>
-                        <div class="w-full overflow-x-auto p-4">
-                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
-                                <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white/50 rounded-xl">
-                                    <tr>
-                                        <th class="px-6 py-4 font-black rounded-l-xl">Producto / Categoría</th>
-                                        <th class="px-4 py-4 font-black text-center">Disp. Física</th>
-                                        <th class="px-4 py-4 font-black text-right text-rose-600">Costo Ponderado U.</th>
-                                        <th class="px-4 py-4 font-black text-right text-brand-600">Precio Base U.</th>
-                                        <th class="px-6 py-4 font-black text-right text-emerald-600">Ingreso Potencial</th>
-                                        <th class="px-4 py-4 font-black text-center rounded-r-xl">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventario-body" class="divide-y divide-white/60"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-kardex" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6">
-                    <div class="glass-panel rounded-[2rem] border border-white shadow-xl p-6 sm:p-8 relative overflow-hidden flex flex-col md:flex-row gap-6 items-center justify-between">
-                        <div class="absolute -right-10 -top-10 w-48 h-48 bg-emerald-200/40 rounded-full blur-3xl -z-10"></div>
-                        <div class="flex-1 w-full relative z-10">
-                            <h3 class="text-xl font-black text-slate-800 mb-2 flex items-center gap-2"><i data-lucide="activity" class="text-emerald-500 w-6 h-6"></i> Kardex y Flujo de Movimientos</h3>
-                            <p class="text-xs font-semibold text-slate-500 mb-4">Selecciona un producto para ver su saldo físico, o déjalo vacío para ver el flujo general de la empresa.</p>
-                            <select id="kardex-producto" onchange="renderKardex()" class="w-full max-w-md glass-input rounded-xl px-4 py-3 text-sm font-bold text-slate-800 cursor-pointer shadow-sm"></select>
-                        </div>
-                        <div id="kardex-stock-box" class="bg-slate-900 p-5 rounded-[1.5rem] shadow-xl border border-slate-800 text-center min-w-[200px] w-full md:w-auto relative overflow-hidden hidden transition-all">
-                            <div class="absolute -right-4 -top-4 w-16 h-16 bg-brand-500/20 rounded-full blur-xl"></div>
-                            <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 relative z-10">Stock Físico</p>
-                            <p id="kardex-stock-actual" class="text-4xl font-black text-white relative z-10">0</p>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel rounded-[2rem] border border-white shadow-xl overflow-hidden">
-                        <div class="w-full overflow-x-auto p-4">
-                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[600px]">
-                                <thead class="text-[10px] text-slate-500 uppercase bg-white/50 tracking-widest rounded-xl">
-                                    <tr>
-                                        <th class="px-6 py-4 font-black rounded-l-xl">Fecha</th>
-                                        <th class="px-4 py-4 font-black">Tipo</th>
-                                        <th class="px-6 py-4 font-black">Producto</th>
-                                        <th class="px-4 py-4 font-black text-center">Cant.</th>
-                                        <th class="px-6 py-4 font-black text-right">Valor Unitario</th>
-                                        <th class="px-6 py-4 font-black text-right rounded-r-xl" id="kardex-th-saldo">Saldo Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="kardex-body" class="divide-y divide-white/60"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-finanzas" class="view-section">
-                <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8">
-                    <!-- Centralización: Gastos y Compras en un solo lugar -->
-                    <div class="lg:col-span-5 space-y-6">
-                        <div class="glass-panel rounded-[2rem] border border-white shadow-xl p-6 sm:p-8 relative overflow-hidden">
-                            <h3 class="text-xl font-black text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="arrow-up-right" class="w-6 h-6 text-rose-500"></i> Registrar Salida de Dinero</h3>
-                            <p class="text-xs font-semibold text-slate-500 mb-6">Central de egresos: Gastos operativos o compra de inventario.</p>
-                            
-                            <!-- Toggle Switch -->
-                            <div class="flex p-1 bg-slate-200/50 rounded-xl mb-6 border border-slate-300/50">
-                                <button onclick="setEgresoMode('GASTO')" id="btn-mode-gasto" class="flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg bg-white shadow-sm text-slate-800 transition-all">Gasto Operativo</button>
-                                <button onclick="setEgresoMode('COMPRA')" id="btn-mode-compra" class="flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg text-slate-500 hover:text-slate-700 transition-all">Compra Mercancía</button>
-                            </div>
-
-                            <!-- FORM GASTO OPERATIVO -->
-                            <form id="form-gasto" onsubmit="handleEgresoSubmit(event)" class="space-y-4">
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha de Pago</label><input type="date" id="egre-fecha" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold"></div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Categoría</label>
-                                        <div class="flex gap-1">
-                                            <select id="egre-categoria" required class="w-full glass-input rounded-xl px-2 py-3 text-xs font-bold truncate"></select>
-                                            <button type="button" onclick="nuevaCategoriaGasto()" class="glass-button px-2 rounded-xl text-brand-600 font-bold shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
+        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1 relative z-10">
+<!-- ... existing code ... -->
+                                <form id="form-egreso" onsubmit="handleEgresoSubmit(event)" class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Fecha</label>
+                                            <input type="date" id="egre-fecha" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm text-slate-800 transition-all shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1.5">Monto ($)</label>
+                                            <input type="number" id="egre-monto" min="0.01" step="0.01" required placeholder="0.00" class="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-amber-500 outline-none text-sm text-amber-900 font-bold transition-all shadow-sm">
                                         </div>
                                     </div>
-                                    <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Vincular a Producto (Opc)</label><select id="egre-producto" class="w-full glass-input rounded-xl px-2 py-3 text-xs font-bold truncate"></select></div>
-                                </div>
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto</label><input type="text" id="egre-concepto" required placeholder="Ej: Pago de Luz" class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold"></div>
-                                <div><label class="block text-[10px] font-black text-rose-600 uppercase tracking-widest mb-1.5 ml-1">Monto de Salida ($)</label><input type="number" id="egre-monto" min="0.01" step="0.01" required placeholder="0.00" class="w-full glass-input rounded-xl px-4 py-3 text-lg font-black border-rose-200 focus:border-rose-500 bg-rose-50/50"></div>
-                                <button type="submit" class="w-full bg-slate-900 text-white font-black rounded-xl py-4 mt-2 shadow-xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest text-[11px] flex justify-center items-center gap-2"><i data-lucide="wallet" class="w-4 h-4"></i> Registrar Gasto</button>
-                            </form>
-
-                            <!-- FORM COMPRA INVENTARIO (Oculto por defecto) -->
-                            <form id="form-compra" onsubmit="handleCompraSubmit(event)" class="space-y-4 hidden">
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha Ingreso Lote</label><input type="date" id="comp-fecha" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold"></div>
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Producto del Catálogo</label><select id="comp-producto" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold truncate"></select></div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Cant. Comprada</label><input type="number" id="comp-cant" min="1" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-black text-center"></div>
-                                    <div><label class="block text-[10px] font-black text-rose-600 uppercase tracking-widest mb-1.5 ml-1">Costo Unit. Pagado</label><input type="number" id="comp-costo" min="0.01" step="0.01" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-black border-rose-200 bg-rose-50/50 text-center"></div>
-                                </div>
-                                <button type="submit" class="w-full bg-brand-600 text-white font-black rounded-xl py-4 mt-2 shadow-xl hover:bg-brand-700 transition-all active:scale-95 uppercase tracking-widest text-[11px] flex justify-center items-center gap-2"><i data-lucide="package-plus" class="w-4 h-4"></i> Ingresar Mercancía al Stock</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Tabla Flujo de Salidas -->
-                    <div class="lg:col-span-7">
-                        <div class="glass-panel rounded-[2rem] border border-white shadow-xl overflow-hidden h-full flex flex-col min-h-[400px]">
-                            <div class="px-6 py-5 border-b border-white/60 bg-white/40 flex justify-between items-center">
-                                <h3 class="text-base sm:text-lg font-black text-slate-800">Flujo de Salidas (Gastos y Compras)</h3>
-                            </div>
-                            <div class="w-full overflow-x-auto p-4">
-                                <table class="w-full text-left text-sm whitespace-nowrap min-w-[550px]">
-                                    <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white/50 rounded-xl">
-                                        <tr>
-                                            <th class="px-6 py-4 font-black rounded-l-xl">Fecha</th>
-                                            <th class="px-4 py-4 font-black text-center">Tipo</th>
-                                            <th class="px-4 py-4 font-black w-full">Concepto / Producto</th>
-                                            <th class="px-6 py-4 font-black text-right text-rose-600 rounded-r-xl">Total Salida</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="flujo-salidas-body" class="divide-y divide-white/60"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-ventas" class="view-section">
-                <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8">
-                    <div class="lg:col-span-4 space-y-6">
-                        <div class="glass-panel rounded-[2rem] border border-white shadow-xl p-6 sm:p-8 relative overflow-hidden">
-                            <h3 class="text-xl font-black text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="scan-line" class="w-6 h-6 text-brand-500"></i> Caja Registradora</h3>
-                            <p class="text-xs font-semibold text-slate-500 mb-6">Genera ingresos descontando inventario FIFO.</p>
-                            
-                            <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-4">
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha Emisión</label><input type="date" id="vent-fecha" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold"></div>
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Producto a Vender</label><select id="vent-producto" onchange="autoFillPrecioVenta()" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold truncate"></select></div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Cant. a Descontar</label><input type="number" id="vent-cant" min="1" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-black text-center"></div>
-                                    <div><label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5 ml-1">Cobro Unitario</label><input type="number" id="vent-precio" min="0" step="0.01" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-black border-emerald-200 bg-emerald-50/50 text-center"></div>
-                                </div>
-                                <button type="submit" class="w-full bg-slate-900 text-white font-black rounded-xl py-4 mt-2 shadow-xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest text-[11px] flex justify-center items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Facturar Ingreso</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-8">
-                        <div class="glass-panel rounded-[2rem] border border-white shadow-xl overflow-hidden h-full flex flex-col min-h-[400px]">
-                            <div class="px-6 py-5 border-b border-white/60 bg-white/40 flex justify-between items-center">
-                                <h3 class="text-base sm:text-lg font-black text-slate-800">Historial de Ventas</h3>
-                            </div>
-                            <div class="w-full overflow-x-auto p-4">
-                                <table class="w-full text-left text-sm whitespace-nowrap min-w-[650px]">
-                                    <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white/50 rounded-xl">
-                                        <tr>
-                                            <th class="px-6 py-4 font-black rounded-l-xl">Fecha</th>
-                                            <th class="px-4 py-4 font-black">Producto</th>
-                                            <th class="px-4 py-4 font-black text-center">Cant.</th>
-                                            <th class="px-4 py-4 font-black text-right">Cobrado</th>
-                                            <th class="px-4 py-4 font-black text-right text-rose-500">Costo FIFO</th>
-                                            <th class="px-6 py-4 font-black text-right text-emerald-600 rounded-r-xl">Ganancia</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="ventas-body" class="divide-y divide-white/60"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-catalogo" class="view-section">
-                <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8">
-                    <div class="lg:col-span-4 space-y-6">
-                        <div class="glass-panel rounded-[2rem] border border-white shadow-xl p-6 sm:p-8 relative overflow-hidden">
-                            <h3 class="text-xl font-black text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="book-open" class="w-6 h-6 text-brand-500"></i> Nuevo Producto</h3>
-                            <p class="text-xs font-semibold text-slate-500 mb-6">Añade al directorio y define precio sugerido.</p>
-                            <form id="form-producto" onsubmit="handleCrearProducto(event)" class="space-y-4">
-                                <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Nombre Comercial</label><input type="text" id="prod-nombre" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold"></div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div><label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Categoría</label><input type="text" id="prod-categoria" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-bold"></div>
-                                    <div><label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5 ml-1">Precio Base</label><input type="number" id="prod-precio-base" min="0" step="0.01" required class="w-full glass-input rounded-xl px-4 py-3 text-sm font-black border-emerald-200 bg-emerald-50/50"></div>
-                                </div>
-                                <div class="pt-4 border-t border-white/60 mt-2">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Cualidades (Opc)</label>
-                                        <button type="button" onclick="addAtributo()" class="glass-button text-[10px] text-brand-700 px-3 py-1.5 rounded-lg font-black flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> Campo</button>
+                                    
+                                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-4 shadow-inner">
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nivel del Gasto (Categoría)</label>
+                                            <div class="flex gap-2">
+                                                <select id="egre-categoria" required class="w-full bg-white border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-800 font-bold truncate focus:ring-2 focus:ring-amber-500"></select>
+                                                <button type="button" onclick="nuevaCategoriaGasto()" class="bg-white border border-slate-200 px-3 rounded-xl text-brand-600 font-bold shrink-0 hover:bg-slate-100 transition-colors shadow-sm" title="Añadir Categoría"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Afecta a un producto (Opcional)</label>
+                                            <select id="egre-producto" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-600 font-medium truncate focus:ring-2 focus:ring-amber-500"></select>
+                                            <p class="text-[9px] text-slate-400 mt-1.5 leading-tight">Úsalo para registrar fletes, aduanas, mermas o gastos directos asociados a una mercancía específica.</p>
+                                        </div>
                                     </div>
-                                    <div id="atributos-container" class="space-y-2"></div>
-                                </div>
-                                <button type="submit" class="w-full bg-brand-600 text-white font-black rounded-xl py-4 mt-4 shadow-xl hover:bg-brand-700 transition-all active:scale-95 uppercase tracking-widest text-[11px] flex justify-center items-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Crear Catálogo</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-8">
-                        <div class="glass-panel rounded-[2rem] border border-white shadow-xl overflow-hidden h-full flex flex-col min-h-[400px]">
-                            <div class="px-6 py-5 border-b border-white/60 bg-white/40"><h3 class="text-base sm:text-lg font-black text-slate-800">Directorio Maestro</h3></div>
-                            <div class="w-full overflow-x-auto p-4">
-                                <table class="w-full text-left text-sm whitespace-nowrap min-w-[500px]">
-                                    <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white/50 rounded-xl">
-                                        <tr><th class="px-6 py-4 font-black rounded-l-xl">Producto</th><th class="px-4 py-4 font-black">Categoría</th><th class="px-4 py-4 font-black text-emerald-600">Precio Sugerido</th><th class="px-6 py-4 font-black w-full rounded-r-xl">Cualidades</th></tr>
-                                    </thead>
-                                    <tbody id="catalogo-body" class="divide-y divide-white/60"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div id="view-dashboard" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6">
-                    <!-- Daily Flash Report -->
-                    <div class="glass-panel p-6 rounded-[2rem] border border-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-400/20 rounded-full blur-3xl"></div>
-                        <div>
-                            <p class="text-[10px] font-black text-brand-500 uppercase tracking-widest mb-1">Rendimiento Inmediato</p>
-                            <h3 class="text-xl sm:text-2xl font-black text-slate-800 leading-none">Flash Report: <span id="dash-flash-date">Hoy</span></h3>
-                        </div>
-                        <div class="flex flex-wrap gap-4 w-full md:w-auto">
-                            <div class="bg-white/60 p-4 rounded-2xl border border-white flex-1 min-w-[140px]">
-                                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Ventas del Día</p>
-                                <p id="flash-ventas-hoy" class="text-xl font-black text-brand-600">$0.00</p>
-                            </div>
-                            <div class="bg-white/60 p-4 rounded-2xl border border-white flex-1 min-w-[140px]">
-                                <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Vs Mismo Día (Mes Ant.)</p>
-                                <p id="flash-vs-mes" class="text-xl font-black text-slate-800">0%</p>
-                            </div>
-                        </div>
-                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Concepto / Descripción</label>
+                                        <input type="text" id="egre-concepto" required placeholder="Ej: Empaques personalizados, Publicidad FB..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm text-slate-800 transition-all shadow-sm">
+                                    </div>
+                                    <button type="submit" class="w-full bg-amber-500 text-white font-bold rounded-xl py-3.5 mt-2 shadow-lg shadow-amber-500/20 hover:bg-amber-600 transition-all active:scale-[0.98] flex justify-center items-center gap-2">
+                                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Procesar Egreso
+                                    </button>
+                                </form>
+<!-- ... existing code ... -->
+                                <form id="form-producto" onsubmit="handleCrearProducto(event)" class="space-y-4">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nombre del Artículo</label>
+                                        <input type="text" id="prod-nombre" required placeholder="Ej: Gorra Nike" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-800 transition-all shadow-sm">
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Categoría</label>
+                                            <input type="text" id="prod-categoria" required placeholder="Ej: Accesorios" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-800 transition-all shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1.5">Precio de Venta Base ($)</label>
+                                            <input type="number" id="prod-precio-base" min="0" step="0.01" required placeholder="0.00" class="w-full bg-emerald-50/50 border border-emerald-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-emerald-800 font-bold transition-all shadow-sm">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4 p-3 bg-slate-50 border border-slate-100 rounded-xl mt-2">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Costo Ref. ($) <span class="lowercase font-normal text-slate-400">opc</span></label>
+                                            <input type="number" id="prod-costo-ref" min="0" step="0.01" placeholder="0.00" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-xs text-slate-800 transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Desc. Máx (%) <span class="lowercase font-normal text-slate-400">opc</span></label>
+                                            <input type="number" id="prod-descuento" min="0" max="100" step="0.1" placeholder="Ej: 15" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none text-xs text-slate-800 transition-all">
+                                        </div>
+                                    </div>
 
-                    <!-- KPIs Absolutos del Filtro Seleccionado -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white hover-lift flex flex-col justify-between h-36">
-                            <div class="flex justify-between items-start">
-                                <div><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Ingresos Periodo</p><h4 id="kpi-ingresos" class="text-2xl sm:text-3xl font-black text-slate-800 mt-1">$0.00</h4></div>
-                                <div class="p-2.5 bg-blue-100/60 text-blue-600 rounded-xl"><i data-lucide="trending-up" class="w-5 h-5"></i></div>
-                            </div>
-                        </div>
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white hover-lift flex flex-col justify-between h-36">
-                            <div class="flex justify-between items-start">
-                                <div><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Costo Bienes (FIFO)</p><h4 id="kpi-costos" class="text-2xl sm:text-3xl font-black text-rose-600 mt-1">$0.00</h4></div>
-                                <div class="p-2.5 bg-rose-100/60 text-rose-600 rounded-xl"><i data-lucide="box" class="w-5 h-5"></i></div>
-                            </div>
-                        </div>
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white hover-lift flex flex-col justify-between h-36">
-                            <div class="flex justify-between items-start">
-                                <div><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Gasto Operativo</p><h4 id="kpi-egresos" class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">$0.00</h4></div>
-                                <div class="p-2.5 bg-amber-100/60 text-amber-600 rounded-xl"><i data-lucide="wallet" class="w-5 h-5"></i></div>
-                            </div>
-                        </div>
-                        <div id="kpi-neto-card" class="bg-slate-900 p-6 rounded-[2rem] shadow-2xl hover-lift flex flex-col justify-between h-36 relative overflow-hidden">
-                            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-500/30 rounded-full blur-2xl"></div>
-                            <div class="flex justify-between items-start relative z-10">
-                                <div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Neta Real (ROI: <span id="kpi-roi" class="text-white">0%</span>)</p><h4 id="kpi-neto" class="text-2xl sm:text-3xl font-black text-white mt-1">$0.00</h4></div>
-                                <div class="p-2.5 bg-white/10 text-white rounded-xl backdrop-blur-md border border-white/10"><i data-lucide="dollar-sign" class="w-5 h-5"></i></div>
-                            </div>
-                        </div>
-                    </div>
+                                    <div class="pt-4 border-t border-slate-100 mt-2">
+                                        <div class="flex justify-between items-center mb-3">
+                                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Cualidades Dinámicas</label>
+                                            <button type="button" onclick="addAtributo()" class="text-[10px] bg-indigo-50 text-indigo-700 px-2.5 py-1.5 rounded-lg hover:bg-indigo-100 font-bold flex items-center gap-1 transition-colors"><i data-lucide="plus" class="w-3 h-3"></i> Añadir Campo</button>
+                                        </div>
+                                        <div id="atributos-container" class="space-y-2"></div>
+                                    </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white shadow-xl lg:col-span-2 flex flex-col">
-                            <h3 class="text-sm font-black text-slate-800 mb-6 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-5 h-5 text-brand-500"></i> Flujo Financiero Global</h3>
-                            <div class="relative w-full h-72"><canvas id="chart-tendencias"></canvas></div>
-                        </div>
-                        <div class="glass-panel p-6 rounded-[2rem] border border-white shadow-xl lg:col-span-1 flex flex-col">
-                            <h3 class="text-sm font-black text-slate-800 mb-6 flex items-center gap-2"><i data-lucide="pie-chart" class="w-5 h-5 text-rose-500"></i> Tipos de Salidas (Gastos vs Compras)</h3>
-                            <div class="relative w-full flex-1 min-h-[250px] flex justify-center"><canvas id="chart-gastos"></canvas></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: CONFIGURACIÓN -->
-            <div id="view-instrucciones" class="view-section">
-                <div class="max-w-2xl mx-auto glass-panel p-8 sm:p-12 rounded-[3rem] border border-white shadow-2xl mt-8">
-                    <div class="w-20 h-20 bg-white/60 rounded-full flex items-center justify-center shadow-lg mb-6 border border-white mx-auto"><i data-lucide="settings-2" class="w-10 h-10 text-slate-800"></i></div>
-                    <h2 class="text-2xl font-black text-slate-800 text-center mb-2">Motor Nu Glass (Google DB)</h2>
-                    <p class="text-sm font-semibold text-slate-500 text-center mb-8 px-4">Pega la URL Web App de tu Google Apps Script para activar la centralización.</p>
-                    <div class="flex flex-col gap-4">
-                        <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full glass-input rounded-2xl px-6 py-4 text-slate-700 font-mono text-xs text-center">
-                        <button onclick="guardarUrlConfig()" class="w-full bg-slate-900 text-white font-black rounded-2xl py-4 shadow-xl hover:bg-black transition-all active:scale-[0.98] uppercase tracking-widest text-sm flex justify-center items-center gap-2"><i data-lucide="link" class="w-4 h-4"></i> Conectar Sistema</button>
-                    </div>
-                    <div id="config-status" class="mt-6 text-xs font-black uppercase tracking-widest flex justify-center items-center gap-2 text-slate-400">Desconectado</div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <script>
-        const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
-        
-        let state = { catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [], categoriasGastos: ['Operativo', 'Marketing', 'Logística', 'Nómina'] };
-        let charts = {};
-        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
-        let currentFilter = 'MES'; // Filtro global inicial
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.add('opacity-100'), 10);
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.remove('opacity-100'); setTimeout(() => backdrop.classList.add('hidden'), 300);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('comp-fecha').value = today; document.getElementById('egre-fecha').value = today; document.getElementById('vent-fecha').value = today;
-            addAtributo(); actualizarEstadoConfig(); setFiltroTiempo('MES');
-            
-            if(CONFIG_URL_GOOGLE) { navigate('ventas'); cargarDatosDesdeGoogle(); } 
-            else { navigate('instrucciones'); document.getElementById('loading-overlay').classList.add('hidden'); }
-        });
-
-        function navigate(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            document.querySelectorAll('aside nav button').forEach(el => { el.classList.remove('bg-white/10', 'text-white'); el.classList.add('text-slate-300'); });
-            const activeBtn = document.getElementById('nav-' + viewId);
-            if(activeBtn) { activeBtn.classList.remove('text-slate-300'); activeBtn.classList.add('bg-white/10', 'text-white'); }
-            
-            if(window.innerWidth < 1024 && activeBtn) toggleSidebar(); // auto close on mobile
-            
-            const titles = { 'ventas': 'Punto de Venta', 'dashboard': 'Dashboard de Inteligencia', 'catalogo': 'Catálogo Maestro', 'inventario': 'Centro de Inventario', 'finanzas': 'Control de Egresos', 'kardex': 'Kardex Maestro', 'instrucciones': 'Ajustes' };
-            document.getElementById('page-title').innerText = titles[viewId] || '';
-
-            if(viewId === 'finanzas') { 
-                renderSelectCategoriasGastos(); 
-                document.getElementById('comp-producto').innerHTML = '<option value="">-- Catálogo --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
-                document.getElementById('egre-producto').innerHTML = '<option value="">-- Opcional --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join(''); 
-                renderFlujoSalidas(); 
-            }
-            if(viewId === 'ventas') {
-                const stock = getStockConsolidado().filter(p => p.stock > 0);
-                document.getElementById('vent-producto').innerHTML = '<option value="">-- Selecciona --</option>' + stock.map(p => `<option value="${p.id}">${p.nombre} (Disp: ${p.stock})</option>`).join('');
-                renderVentas();
-            }
-            if(viewId === 'kardex') {
-                document.getElementById('kardex-producto').innerHTML = '<option value="ALL">-- Flujo General de Empresa (Todos los productos) --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
-                renderKardex();
-            }
-            if(viewId === 'dashboard') { setTimeout(renderDashboard, 100); }
-            if(viewId === 'inventario') renderInventario();
-            if(viewId === 'catalogo') renderCatalogo();
-        }
-
-        // Toggles y Filtros
-        function setEgresoMode(mode) {
-            document.getElementById('form-gasto').classList.toggle('hidden', mode !== 'GASTO');
-            document.getElementById('form-compra').classList.toggle('hidden', mode !== 'COMPRA');
-            document.getElementById('btn-mode-gasto').className = mode === 'GASTO' ? "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg bg-white shadow-sm text-slate-800 transition-all" : "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg text-slate-500 hover:text-slate-700 transition-all";
-            document.getElementById('btn-mode-compra').className = mode === 'COMPRA' ? "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg bg-white shadow-sm text-slate-800 transition-all" : "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-lg text-slate-500 hover:text-slate-700 transition-all";
-        }
-
-        function setFiltroTiempo(filterStr) {
-            currentFilter = filterStr;
-            document.querySelectorAll('.filtro-tiempo-btn').forEach(btn => btn.className = "filtro-tiempo-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-800 transition-all hidden sm:block");
-            document.getElementById(`filtro-btn-${filterStr}`).className = "filtro-tiempo-btn px-3 sm:px-4 py-1.5 rounded-xl text-xs font-bold bg-white shadow-sm text-brand-600 transition-all block";
-            // Asegurar que HOY y ALL y MES siempre se vean en mobile
-            document.getElementById('filtro-btn-HOY').classList.remove('hidden'); document.getElementById('filtro-btn-ALL').classList.remove('hidden'); document.getElementById('filtro-btn-MES').classList.remove('hidden');
-            
-            if(document.getElementById('view-ventas').classList.contains('active')) renderVentas();
-            if(document.getElementById('view-finanzas').classList.contains('active')) renderFlujoSalidas();
-            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
-        }
-
-        function getFilteredData(dataArray, dateField) {
-            if (currentFilter === 'ALL') return dataArray;
-            const now = new Date();
-            return dataArray.filter(item => {
-                if(!item[dateField]) return false;
-                const dateObj = new Date(item[dateField].split('T')[0]); // Asumiendo formato YYYY-MM-DD local
-                if(isNaN(dateObj)) return false;
-
-                if (currentFilter === 'HOY') {
-                    return dateObj.getDate() === now.getDate() && dateObj.getMonth() === now.getMonth() && dateObj.getFullYear() === now.getFullYear();
-                } else if (currentFilter === 'MES') {
-                    return dateObj.getMonth() === now.getMonth() && dateObj.getFullYear() === now.getFullYear();
-                } else if (currentFilter === 'MES_ANT') {
-                    let m = now.getMonth() - 1; let y = now.getFullYear(); if(m < 0) { m = 11; y--; }
-                    return dateObj.getMonth() === m && dateObj.getFullYear() === y;
-                }
-                return true;
-            });
-        }
-
-        // Utils
-        const emptyStateHTML = (icon, title, desc, colspan) => `<tr><td colspan="${colspan}"><div class="flex flex-col items-center justify-center py-10 sm:py-16 text-center"><div class="w-16 h-16 bg-white/50 rounded-[1.5rem] flex items-center justify-center mb-4 text-slate-400 border border-white"><i data-lucide="${icon}" class="w-8 h-8"></i></div><p class="text-xs sm:text-sm font-black text-slate-600 uppercase tracking-widest">${title}</p><p class="text-[10px] sm:text-xs font-bold text-slate-400 mt-1">${desc}</p></div></td></tr>`;
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div');
-            const icon = type === 'error' ? 'alert-circle' : (type === 'info' ? 'info' : 'check-circle-2');
-            const colorBg = type === 'error' ? 'bg-rose-100 text-rose-600' : (type === 'info' ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600');
-            toast.className = `glass-panel flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border-white/80 toast-enter w-full sm:w-auto`;
-            toast.innerHTML = `<div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${colorBg}"><i data-lucide="${icon}" class="w-5 h-5"></i></div><p class="font-bold text-sm tracking-tight text-slate-800">${msg}</p>`;
-            container.appendChild(toast); lucide.createIcons({root: toast});
-            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 3500);
-        }
-
-        // Config & DB
-        function guardarUrlConfig() {
-            const url = document.getElementById('config-url-input').value.trim();
-            if(url.startsWith('https://script.google.com/')) { localStorage.setItem('nexusERP_url', url); CONFIG_URL_GOOGLE = url; actualizarEstadoConfig(); showToast('Conexión guardada. Sincronizando...', 'success'); setTimeout(() => window.location.reload(), 1000); } 
-            else showToast('URL inválida', 'error');
-        }
-        function actualizarEstadoConfig() {
-            if(document.getElementById('config-url-input')) document.getElementById('config-url-input').value = CONFIG_URL_GOOGLE;
-            if(CONFIG_URL_GOOGLE) {
-                if(document.getElementById('config-status')) document.getElementById('config-status').innerHTML = `<i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> <span class="text-emerald-600">Online</span>`;
-                document.getElementById('status-indicator-sidebar').innerHTML = `<div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div> Online`; document.getElementById('status-indicator-sidebar').classList.replace('text-slate-500', 'text-emerald-400');
-            }
-            if(window.lucide) lucide.createIcons();
-        }
-        async function cargarDatosDesdeGoogle() {
-            if (!CONFIG_URL_GOOGLE) return;
-            const loader = document.getElementById('loading-overlay'); loader.classList.remove('hidden'); loader.classList.add('flex');
-            try {
-                const response = await fetch(CONFIG_URL_GOOGLE);
-                if(!response.ok) throw new Error('Network error');
-                const data = await response.json();
-                state.catalogo = data.catalogo || []; state.compras = data.compras || []; state.ventas = data.ventas || []; state.egresos = data.egresos || [];
-                if(data.categorias_gastos && data.categorias_gastos.length > 0) state.categoriasGastos = data.categorias_gastos;
-                localStorage.setItem('nexusERP_backup', JSON.stringify(state));
-                renderAll(); showToast('Sincronización Perfecta.');
-            } catch (err) { 
-                console.warn(err); const backup = localStorage.getItem('nexusERP_backup');
-                if (backup) { Object.assign(state, JSON.parse(backup)); renderAll(); showToast('Modo Offline: Datos Locales.', 'info'); } 
-            } finally { loader.classList.add('hidden'); loader.classList.remove('flex'); }
-        }
-        function enviarAGoogleSheets(tipo, payload) {
-            localStorage.setItem('nexusERP_backup', JSON.stringify(state));
-            if (!CONFIG_URL_GOOGLE) return;
-            fetch(CONFIG_URL_GOOGLE, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ tipo, ...payload }) }).catch(e=>console.warn(e));
-        }
-        function renderAll() { renderCatalogo(); renderInventario(); if(document.getElementById('view-ventas').classList.contains('active')) navigate('ventas'); if(document.getElementById('view-finanzas').classList.contains('active')) navigate('finanzas'); if(document.getElementById('view-kardex').classList.contains('active')) navigate('kardex'); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); }
-
-        function getStockConsolidado() {
-            return state.catalogo.map(prod => {
-                const comprasProd = state.compras.filter(c => c.productoId === prod.id);
-                const stock = comprasProd.reduce((acc, c) => acc + c.cantidad_restante, 0);
-                const costoTotal = comprasProd.reduce((acc, c) => acc + (c.cantidad_restante * c.costo), 0);
-                const costoPromedio = stock > 0 ? (costoTotal / stock) : 0;
-                return { ...prod, stock, costoPromedio, costoTotal, precio_base: Number(prod.precio_base || 0) };
-            });
-        }
-
-        function renderInventario() {
-            const tbody = document.getElementById('inventario-body');
-            const stockConsolidado = getStockConsolidado().sort((a,b) => b.stock - a.stock);
-            
-            document.getElementById('inv-kpi-prods').innerText = stockConsolidado.length;
-            document.getElementById('inv-kpi-costo').innerText = formatMoney(stockConsolidado.reduce((s, p) => s + p.costoTotal, 0));
-            document.getElementById('inv-kpi-potencial').innerText = formatMoney(stockConsolidado.reduce((s, p) => s + (p.stock * p.precio_base), 0));
-
-            if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('layers', 'Catálogo Vacío', 'Agrega productos en Catálogo Maestro.', 6);
-
-            tbody.innerHTML = stockConsolidado.map(p => `
-                <tr class="${p.stock===0?'opacity-50 grayscale bg-white/20':'hover:bg-white/50 cursor-pointer'} transition-colors border-b border-white/30" onclick="abrirKardexEspecifico('${p.id}')">
-                    <td class="px-6 py-4">
-                        <p class="font-black text-slate-800 text-sm">${p.nombre}</p>
-                        <p class="text-[10px] uppercase font-bold text-brand-500 tracking-widest">${p.categoria}</p>
-                    </td>
-                    <td class="px-4 py-4 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-400':'bg-slate-900 text-white shadow-md'} px-3 py-1 rounded-xl text-xs font-black">${p.stock}</span></td>
-                    <td class="px-4 py-4 text-right font-black text-rose-500">${formatMoney(p.costoPromedio)}</td>
-                    <td class="px-4 py-4 text-right font-black text-brand-600">${formatMoney(p.precio_base)}</td>
-                    <td class="px-6 py-4 text-right font-black text-emerald-600 bg-emerald-50/20">${formatMoney(p.stock * p.precio_base)}</td>
-                    <td class="px-4 py-4 text-center"><button class="glass-button p-2 rounded-xl text-brand-600 shadow-sm"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
-                </tr>`).join('');
-            lucide.createIcons();
-        }
-
-        function abrirKardexEspecifico(prodId) {
-            navigate('kardex');
-            document.getElementById('kardex-producto').value = prodId;
-            renderKardex();
-        }
-
-        function renderKardex() {
-            const prodId = document.getElementById('kardex-producto').value;
-            const tbody = document.getElementById('kardex-body');
-            const stockBox = document.getElementById('kardex-stock-box');
-            
-            // Recopilar movimientos
-            let comprasTarget = prodId === 'ALL' ? state.compras : state.compras.filter(c => c.productoId === prodId);
-            let ventasTarget = prodId === 'ALL' ? state.ventas : state.ventas.filter(v => v.productoId === prodId);
-            
-            const comprasFormat = comprasTarget.map(c => ({ tipo: 'ENTRADA', fechaStr: c.fecha, cant: c.cantidad_inicial, valorU: c.costo, id: c.id, pId: c.productoId }));
-            const ventasFormat = ventasTarget.map(v => ({ tipo: 'SALIDA', fechaStr: v.fecha, cant: v.cantidad, valorU: v.precio, costoVenta: v.costo_fifo, id: v.id, pId: v.productoId }));
-            
-            let movs = [...comprasFormat, ...ventasFormat].sort((a, b) => { 
-                const d1 = new Date(a.fechaStr.split(',')[0]); const d2 = new Date(b.fechaStr.split(',')[0]); 
-                if (d1.getTime() !== d2.getTime()) return d1 - d2; 
-                if (a.tipo !== b.tipo) return a.tipo === 'ENTRADA' ? -1 : 1; 
-                return a.id.localeCompare(b.id); 
-            });
-
-            if(!movs.length) {
-                stockBox.classList.add('hidden');
-                return tbody.innerHTML = emptyStateHTML('ghost', 'Sin Movimientos', 'No hay entradas o salidas registradas.', 6);
-            }
-
-            let saldoFisico = 0; const filas = [];
-            
-            if(prodId !== 'ALL') {
-                stockBox.classList.remove('hidden');
-                document.getElementById('kardex-th-saldo').innerText = "Saldo Físico";
-                movs.forEach(mov => {
-                    if(mov.tipo === 'ENTRADA') saldoFisico += mov.cant; else saldoFisico -= mov.cant;
-                    const pReal = state.catalogo.find(p => p.id === mov.pId) || {nombre:'-'};
-                    const isE = mov.tipo === 'ENTRADA';
-                    filas.unshift(`<tr class="hover:bg-white/60 transition-colors border-b border-white/30">
-                        <td class="px-6 py-4 text-slate-500 font-bold text-xs">${mov.fechaStr.split('T')[0]}</td>
-                        <td class="px-4 py-4"><span class="${isE?'bg-emerald-100 text-emerald-700 border-emerald-200':'bg-rose-100 text-rose-700 border-rose-200'} border px-2 py-1 rounded-lg text-[9px] font-black tracking-widest">${mov.tipo}</span></td>
-                        <td class="px-6 py-4 font-black text-slate-800 text-xs">${pReal.nombre}</td>
-                        <td class="px-4 py-4 text-center font-black ${isE?'text-emerald-600':'text-rose-500'} text-sm">${isE?'+':'-'}${mov.cant}</td>
-                        <td class="px-6 py-4 text-right font-bold text-slate-600 text-xs">${formatMoney(mov.valorU)}</td>
-                        <td class="px-6 py-4 text-right font-black text-slate-900 text-sm bg-white/40">${saldoFisico}</td>
-                    </tr>`);
-                });
-                document.getElementById('kardex-stock-actual').innerText = saldoFisico;
-            } else {
-                stockBox.classList.add('hidden');
-                document.getElementById('kardex-th-saldo').innerText = "Valor Total Mov.";
-                // Flujo General (No calculamos saldo físico global, solo mostramos el movimiento total de la fila)
-                movs.forEach(mov => {
-                    const pReal = state.catalogo.find(p => p.id === mov.pId) || {nombre:'-'};
-                    const isE = mov.tipo === 'ENTRADA';
-                    filas.unshift(`<tr class="hover:bg-white/60 transition-colors border-b border-white/30">
-                        <td class="px-6 py-4 text-slate-500 font-bold text-xs">${mov.fechaStr.split('T')[0]}</td>
-                        <td class="px-4 py-4"><span class="${isE?'bg-emerald-100 text-emerald-700 border-emerald-200':'bg-rose-100 text-rose-700 border-rose-200'} border px-2 py-1 rounded-lg text-[9px] font-black tracking-widest">${mov.tipo}</span></td>
-                        <td class="px-6 py-4 font-black text-slate-800 text-xs">${pReal.nombre}</td>
-                        <td class="px-4 py-4 text-center font-black ${isE?'text-emerald-600':'text-rose-500'} text-sm">${isE?'+':'-'}${mov.cant}</td>
-                        <td class="px-6 py-4 text-right font-bold text-slate-600 text-xs">${formatMoney(mov.valorU)}</td>
-                        <td class="px-6 py-4 text-right font-black ${isE?'text-emerald-600':'text-brand-600'} text-sm bg-white/40">${formatMoney(mov.cant * mov.valorU)}</td>
-                    </tr>`);
-                });
-            }
-            tbody.innerHTML = filas.join('');
-        }
-
-        function addAtributo() { state.formAtributos.push({ clave: '', valor: '' }); renderAtributosForm(); }
-        function renderAtributosForm() {
-            document.getElementById('atributos-container').innerHTML = state.formAtributos.map((a, i) => `
-                <div class="flex gap-2 items-center">
-                    <input type="text" placeholder="Talla" class="w-1/2 glass-input rounded-xl px-4 py-2 text-xs font-bold" value="${a.clave}" oninput="state.formAtributos[${i}].clave=this.value">
-                    <input type="text" placeholder="XL" class="w-1/2 glass-input rounded-xl px-4 py-2 text-xs font-bold" value="${a.valor}" oninput="state.formAtributos[${i}].valor=this.value">
-                </div>`).join('');
-        }
+                                    <button type="submit" class="w-full bg-indigo-600 text-white font-bold rounded-xl py-3.5 mt-2 shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Guardar en Catálogo</button>
+                                </form>
+<!-- ... existing code ... -->
         function handleCrearProducto(e) {
             e.preventDefault();
-            const obj = { id: `PROD-${Date.now()}`, nombre: document.getElementById('prod-nombre').value.trim(), categoria: document.getElementById('prod-categoria').value.trim(), atributos: state.formAtributos.filter(a => a.clave.trim() && a.valor.trim()), precio_base: parseFloat(document.getElementById('prod-precio-base').value) };
-            state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
-            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogo(); showToast('Producto registrado.');
+            const nombre = document.getElementById('prod-nombre').value.trim();
+            const categoria = document.getElementById('prod-categoria').value.trim();
+            const precioBase = document.getElementById('prod-precio-base') ? parseFloat(document.getElementById('prod-precio-base').value) : 0;
+            const costoRef = document.getElementById('prod-costo-ref') ? document.getElementById('prod-costo-ref').value : '';
+            const descMax = document.getElementById('prod-descuento') ? document.getElementById('prod-descuento').value : '';
+            
+            let atributosValidos = state.formAtributos.filter(a => a.clave.trim() && a.valor.trim());
+            
+            // Inyectamos el costo y descuento como cualidades dinámicas para la BD sin alterar la estructura
+            if(costoRef) atributosValidos.unshift({ clave: 'Costo Ref.', valor: `$${costoRef}` });
+            if(descMax) atributosValidos.unshift({ clave: 'Desc. Max.', valor: `${descMax}%` });
+
+            const obj = { 
+                id: `PROD-${Date.now()}`, 
+                nombre: nombre, 
+                categoria: categoria, 
+                atributos: atributosValidos,
+                precio_base: precioBase
+            };
+            
+            state.catalogo.push(obj); 
+            enviarAGoogleSheets("CATALOGO", obj);
+            document.getElementById('form-producto').reset(); 
+            state.formAtributos = [{clave:'', valor:''}]; 
+            renderAtributosForm(); 
+            renderCatalogo(); 
+            showToast('Producto añadido al catálogo Nu Glass.');
         }
+
         function renderCatalogo() {
-            const tbody = document.getElementById('catalogo-body');
-            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Agrega tu primer producto.', 4);
-            tbody.innerHTML = state.catalogo.slice().reverse().map(p => `<tr class="hover:bg-white/40 transition-colors border-b border-white/30">
-                <td class="px-6 py-4 font-black text-slate-800 text-sm">${p.nombre}</td>
-                <td class="px-4 py-4"><span class="bg-indigo-100/60 text-indigo-700 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">${p.categoria}</span></td>
-                <td class="px-4 py-4 font-black text-emerald-600 text-sm">${formatMoney(p.precio_base || 0)}</td>
-                <td class="px-6 py-4 whitespace-normal text-xs font-bold text-slate-500">${p.atributos.length ? p.atributos.map(a => `<span class="mr-2 inline-block bg-white border border-slate-200 px-2 py-0.5 rounded-md shadow-sm mb-1"><b>${a.clave}:</b> ${a.valor}</span>`).join('') : '-'}</td>
-            </tr>`).join('');
-        }
-
-        // Ventas (FIFO Mantenido intacto)
-        function autoFillPrecioVenta() {
-            const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value);
-            if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base;
-        }
-        function handleVentaSubmit(e) {
-            e.preventDefault();
-            const fecha = document.getElementById('vent-fecha').value, prodId = document.getElementById('vent-producto').value, cant = parseInt(document.getElementById('vent-cant').value), precio = parseFloat(document.getElementById('vent-precio').value);
-            const stockDisp = state.compras.filter(c => c.productoId === prodId).reduce((a, c) => a + c.cantidad_restante, 0);
-            if (cant > stockDisp) return showToast(`Stock insuficiente. Disp: ${stockDisp}`, 'error');
-
-            let comprasVirt = JSON.parse(JSON.stringify(state.compras)); 
-            comprasVirt.sort((a, b) => { const d = new Date(a.fecha) - new Date(b.fecha); return d === 0 ? a.id.localeCompare(b.id) : d; });
-            let qty = cant, costoTotal = 0;
-            for (let lote of comprasVirt) {
-                if (lote.productoId === prodId && lote.cantidad_restante > 0) {
-                    if (lote.cantidad_restante >= qty) { lote.cantidad_restante -= qty; costoTotal += qty * lote.costo; qty = 0; break; } 
-                    else { costoTotal += lote.cantidad_restante * lote.costo; qty -= lote.cantidad_restante; lote.cantidad_restante = 0; }
-                }
-            }
-            const obj = { id: `VENT-${Date.now()}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal };
-            state.compras = comprasVirt; state.ventas.push(obj); enviarAGoogleSheets("VENTA", obj);
-            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; navigate('ventas'); showToast('Salida Procesada (FIFO Activo)');
-        }
-        function renderVentas() {
-            const tbody = document.getElementById('ventas-body'), data = getFilteredData(state.ventas, 'fecha');
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('scan', 'Caja en Cero', 'Aún no hay facturas en este periodo.', 6);
-            tbody.innerHTML = data.slice().reverse().map(v => {
-                const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desc.'};
-                return `<tr class="hover:bg-white/40 transition-colors border-b border-white/30">
-                    <td class="px-6 py-4 text-slate-500 font-bold text-[10px] sm:text-xs">${v.fecha.split('T')[0]}</td>
-                    <td class="px-4 py-4 font-black text-slate-800 text-xs sm:text-sm">${p.nombre}</td>
-                    <td class="px-4 py-4 text-center font-black text-slate-600 text-sm bg-white/30">${v.cantidad}</td>
-                    <td class="px-4 py-4 text-right font-black text-slate-800 text-sm">${formatMoney(v.cantidad * v.precio)}</td>
-                    <td class="px-4 py-4 text-right font-bold text-rose-500 text-xs">${formatMoney(v.costo_fifo)}</td>
-                    <td class="px-6 py-4 text-right font-black text-emerald-600 bg-emerald-50/40 text-sm">${formatMoney(v.ganancia)}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function renderSelectCategoriasGastos() { document.getElementById('egre-categoria').innerHTML = state.categoriasGastos.map(c => `<option value="${c}">${c}</option>`).join(''); }
-        function nuevaCategoriaGasto() {
-            const cat = prompt("Nueva categoría (Ej: Transporte):");
-            if(cat && cat.trim()) { state.categoriasGastos.push(cat.trim()); renderSelectCategoriasGastos(); document.getElementById('egre-categoria').value = cat.trim(); enviarAGoogleSheets("NUEVA_CATEGORIA_GASTO", { nombre: cat.trim() }); showToast("Categoría añadida."); }
-        }
+<!-- ... existing code ... -->
+        // Egresos
         function handleEgresoSubmit(e) {
             e.preventDefault();
-            const obj = { id: `EGRE-${Date.now()}`, fecha: document.getElementById('egre-fecha').value, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value };
-            state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
-            document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; renderFlujoSalidas(); showToast('Gasto Registrado.');
-        }
-        function handleCompraSubmit(e) {
-            e.preventDefault(); const cant = parseInt(document.getElementById('comp-cant').value);
-            const obj = { id: `COMP-${Date.now()}`, fecha: document.getElementById('comp-fecha').value, productoId: document.getElementById('comp-producto').value, cantidad_inicial: cant, cantidad_restante: cant, costo: parseFloat(document.getElementById('comp-costo').value) };
-            state.compras.push(obj); enviarAGoogleSheets("COMPRA", obj);
-            document.getElementById('comp-cant').value = ''; document.getElementById('comp-costo').value = ''; renderFlujoSalidas(); showToast('Compra al Inventario Registrada.');
-        }
-        function renderFlujoSalidas() {
-            const tbody = document.getElementById('flujo-salidas-body');
-            const dataEgresos = getFilteredData(state.egresos, 'fecha').map(e => ({ tipo: 'GASTO OP.', fecha: e.fecha, info: e.concepto + (e.producto_id ? ` (Ref: ${(state.catalogo.find(p=>p.id===e.producto_id)||{}).nombre})` : ''), monto: e.monto, id: e.id }));
-            const dataCompras = getFilteredData(state.compras, 'fecha').map(c => ({ tipo: 'INVENTARIO', fecha: c.fecha, info: `${c.cantidad_inicial}x ${(state.catalogo.find(p=>p.id===c.productoId)||{}).nombre}`, monto: c.cantidad_inicial * c.costo, id: c.id }));
-            
-            let flujo = [...dataEgresos, ...dataCompras].sort((a,b) => new Date(a.fecha) - new Date(b.fecha) || a.id.localeCompare(b.id));
-            
-            if(!flujo.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Balance Limpio', 'No hay salidas reportadas.', 4);
-            tbody.innerHTML = flujo.slice().reverse().map(f => `
-                <tr class="hover:bg-white/40 transition-colors border-b border-white/20">
-                    <td class="px-6 py-4 text-slate-500 font-bold text-xs">${f.fecha.split('T')[0]}</td>
-                    <td class="px-4 py-4 text-center"><span class="${f.tipo==='INVENTARIO'?'bg-emerald-100/60 text-emerald-700':'bg-amber-100/60 text-amber-700'} px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-white/50">${f.tipo}</span></td>
-                    <td class="px-4 py-4 font-black text-slate-800 text-sm whitespace-normal min-w-[200px]">${f.info}</td>
-                    <td class="px-6 py-4 text-right font-black text-rose-600 bg-rose-50/30 text-sm">-${formatMoney(f.monto)}</td>
-                </tr>`).join('');
+            const productoId = document.getElementById('egre-producto') ? document.getElementById('egre-producto').value : '';
+            const obj = { 
+                id: `EGRE-${Date.now()}`, 
+                fecha: document.getElementById('egre-fecha').value, 
+                concepto: document.getElementById('egre-concepto').value.trim(), 
+                monto: parseFloat(document.getElementById('egre-monto').value),
+                categoria_gasto: document.getElementById('egre-categoria').value,
+                producto_id: productoId
+            };
+            state.egresos.push(obj); 
+            enviarAGoogleSheets("EGRESO", obj);
+            document.getElementById('egre-concepto').value = ''; 
+            document.getElementById('egre-monto').value = '';
+            if(document.getElementById('egre-producto')) document.getElementById('egre-producto').value = '';
+            renderEgresos(); 
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); 
+            showToast('Gasto operativo registrado.');
         }
 
-        function getSalesOnDateRange(ventasArray, daysAgoStr) {
-            const target = new Date();
-            if(daysAgoStr === 'YESTERDAY') target.setDate(target.getDate() - 1);
-            else if(daysAgoStr === 'LAST_WEEK') target.setDate(target.getDate() - 7);
-            else if(daysAgoStr === 'LAST_MONTH') target.setMonth(target.getMonth() - 1);
-            // else HOY (Default)
-
-            const y = target.getFullYear(), m = String(target.getMonth() + 1).padStart(2, '0'), d = String(target.getDate()).padStart(2, '0');
-            const targetFormat = `${y}-${m}-${d}`;
-            
-            return ventasArray.filter(v => { const vf = v.fecha.split('T')[0]; return vf === targetFormat || vf.includes(`${d}/${m}/${y}`); }).reduce((s, v) => s + (v.cantidad * v.precio), 0);
-        }
-
-        function renderDashboard() {
-            const v = getFilteredData(state.ventas, 'fecha'), e = getFilteredData(state.egresos, 'fecha');
-            const ing = v.reduce((s, x) => s + (x.cantidad * x.precio), 0), cos = v.reduce((s, x) => s + x.costo_fifo, 0), egr = e.reduce((s, x) => s + x.monto, 0);
-            const net = ing - cos - egr; const roi = cos+egr > 0 ? (net / (cos+egr)) * 100 : 0;
-
-            document.getElementById('kpi-ingresos').innerText = formatMoney(ing); document.getElementById('kpi-costos').innerText = formatMoney(cos); document.getElementById('kpi-egresos').innerText = formatMoney(egr); document.getElementById('kpi-neto').innerText = formatMoney(net);
-            document.getElementById('kpi-roi').innerText = roi.toFixed(1) + '%';
-            
-            // Daily Flash Math
-            const salesToday = getSalesOnDateRange(state.ventas, 'TODAY');
-            const salesLastMonth = getSalesOnDateRange(state.ventas, 'LAST_MONTH');
-            document.getElementById('flash-ventas-hoy').innerText = formatMoney(salesToday);
-            
-            let compStr = "0%"; let colorC = "text-slate-400";
-            if (salesLastMonth > 0) {
-                const growth = ((salesToday - salesLastMonth) / salesLastMonth) * 100;
-                compStr = (growth >= 0 ? "+" : "") + growth.toFixed(1) + "%";
-                colorC = growth >= 0 ? "text-emerald-500" : "text-rose-500";
-            } else if (salesToday > 0 && salesLastMonth === 0) { compStr = "100%+"; colorC = "text-emerald-500"; }
-            
-            document.getElementById('flash-vs-mes').innerText = compStr;
-            document.getElementById('flash-vs-mes').className = `text-xl font-black ${colorC}`;
-
-            // Colors
-            const cardNeto = document.getElementById('kpi-neto-card');
-            if(net < 0) cardNeto.className = 'bg-gradient-to-br from-rose-800 to-rose-950 p-6 rounded-[2rem] shadow-2xl hover-lift flex flex-col justify-between h-36 relative overflow-hidden';
-            else cardNeto.className = 'bg-slate-900 p-6 rounded-[2rem] shadow-2xl hover-lift flex flex-col justify-between h-36 relative overflow-hidden';
-
-            const cOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: {font:{family:'Outfit', size:10, weight:'bold'}, usePointStyle:true, padding: 15} } } };
-            
-            // Bar Chart
-            if(charts.tend) charts.tend.destroy();
-            charts.tend = new Chart(document.getElementById('chart-tendencias'), {
-                type: 'bar', data: { labels: ['Flujo Financiero'], datasets: [ { label: 'Ingresos Brutos', data: [ing], backgroundColor: '#4f46e5', borderRadius: 8 }, { label: 'Costos Stock', data: [cos], backgroundColor: '#f43f5e', borderRadius: 8 }, { label: 'Gastos Op.', data: [egr], backgroundColor: '#f59e0b', borderRadius: 8 }, { label: 'Neta Real', data: [net], backgroundColor: net>=0?'#10b981':'#9f1239', borderRadius: 8 } ] },
-                options: { ...cOpts, scales: { y: { grid: {color:'rgba(255,255,255,0.4)'}, ticks:{font:{family:'Outfit', size: 10}} }, x: { grid:{display:false} } } }
-            });
-
-            // Polar Chart (Gastos y Compras Combinados)
-            const gastosDesglose = { 'Costo Stock (Compras)': cos }; e.forEach(x => { const cg = x.categoria_gasto || 'Op. General'; gastosDesglose[cg] = (gastosDesglose[cg] || 0) + x.monto; });
-            if(charts.gas) charts.gas.destroy();
-            charts.gas = new Chart(document.getElementById('chart-gastos'), {
-                type: 'polarArea', data: { labels: Object.keys(gastosDesglose), datasets: [{ data: Object.values(gastosDesglose), backgroundColor: ['#f43f5e', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'], borderWidth: 2, borderColor: '#fff' }] },
-                options: { ...cOpts, scales: { r: { ticks: {display: false}, grid: {color: 'rgba(255,255,255,0.6)'} } } }
-            });
-        }
-    </script>
-</body>
-</html>
+        function renderEgresos() {
+<!-- ... existing code ... -->
