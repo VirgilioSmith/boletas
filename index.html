@@ -48,7 +48,7 @@
 <body class="h-screen w-screen flex antialiased selection:bg-brand-500 selection:text-white">
 
     <!-- OVERLAY CARGA -->
-    <div id="loading-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] flex flex-col items-center justify-center text-white transition-all duration-300">
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[100] flex flex-col items-center justify-center text-white transition-all duration-300 hidden">
         <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center max-w-sm w-full text-slate-800 transform scale-100 animate-pulse">
             <i data-lucide="loader-2" class="w-10 h-10 animate-spin text-brand-600 mb-4"></i>
             <h2 class="text-lg font-bold tracking-tight">Sincronizando Sistema</h2>
@@ -574,8 +574,8 @@
         let state = { catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [] };
         let charts = {};
 
-        // Configuración URL
-        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
+        // Configuración URL (Precargada con tu URL oficial)
+        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "https://script.google.com/macros/s/AKfycby-0Ao0lGDL-Eq_EApMP0ntbMws0nU8ko-AfBTc7i0PxfofOoKA12m5I-BcaDRAsP8k/exec";
 
         // Inicializar UI
         document.addEventListener('DOMContentLoaded', () => {
@@ -616,6 +616,11 @@
             const activeBtn = document.getElementById('nav-' + viewId);
             if(activeBtn) {
                 activeBtn.classList.remove('text-slate-300', 'border-transparent');
+                activeBtn.classList.add('bg-brand-500/10', 'text-brand-400', 'border-l-2', 'border-brand-500');
+                const iconContainer = activeBtn.querySelector('div');
+                if(iconContainer) iconContainer.classList.replace('bg-slate-800', 'bg-brand-500');
+            }
+            
             const titles = { 'ventas': 'Punto de Venta', 'dashboard': 'Dashboard Estadístico Pro', 'catalogo': 'Catálogo Maestro', 'compras': 'Gestión de Entradas', 'finanzas': 'Registro de Egresos', 'instrucciones': 'Ajustes', 'kardex': 'Kardex de Inventario' };
             document.getElementById('page-title').innerText = titles[viewId] || '';
 
@@ -695,15 +700,37 @@
             try {
                 const response = await fetch(CONFIG_URL_GOOGLE);
                 const data = await response.json();
-                state.catalogo = data.catalogo || []; state.compras = data.compras || []; state.ventas = data.ventas || []; state.egresos = data.egresos || [];
-                updateMonthFilterOptions(); renderAll(); showToast('Datos sincronizados correctamente.');
-            } catch (err) { console.error(err); showToast('Error al conectar con la base de datos.', 'error'); } 
-            finally { loader.classList.add('hidden'); loader.classList.remove('flex'); }
+                state.catalogo = data.catalogo || []; 
+                state.compras = data.compras || []; 
+                state.ventas = data.ventas || []; 
+                state.egresos = data.egresos || [];
+                updateMonthFilterOptions(); 
+                renderAll(); 
+                showToast('Datos sincronizados correctamente.');
+            } catch (err) { 
+                console.error(err); 
+                showToast('Error al conectar con la base de datos.', 'error'); 
+            } finally { 
+                loader.classList.add('hidden'); 
+                loader.classList.remove('flex'); 
+            }
         }
 
         function enviarAGoogleSheets(tipo, payload) {
             if (!CONFIG_URL_GOOGLE) return;
-            fetch(CONFIG_URL_GOOGLE, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ tipo, ...payload }) }).catch(e => console.error(e));
+            // Evasión estricta de CORS usando text/plain
+            fetch(CONFIG_URL_GOOGLE, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify({ tipo, ...payload }) 
+            }).catch(e => console.error(e));
+        }
+
+        function renderAll() {
+            renderCatalogo(); renderCompras(); renderVentas(); renderEgresos();
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
+            if(document.getElementById('view-kardex').classList.contains('active')) renderKardexDetalle();
         }
 
         // -------------------------------------------------------------------------
@@ -756,10 +783,14 @@
             }
 
             const ventaObj = { id: `VENT-${Date.now()}`, fecha, productoId, cantidad, precio, costo_fifo: costoTotalFIFO, ganancia: (cantidad * precio) - costoTotalFIFO };
-            state.compras = comprasVirt; state.ventas.push(ventaObj); enviarAGoogleSheets("VENTA", ventaObj);
+            state.compras = comprasVirt; 
+            state.ventas.push(ventaObj); 
+            enviarAGoogleSheets("VENTA", ventaObj);
             
-            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = '';
-            navigate('ventas'); showToast('Venta registrada con éxito aplicando FIFO.');
+            document.getElementById('vent-cant').value = ''; 
+            document.getElementById('vent-precio').value = '';
+            navigate('ventas'); 
+            showToast('Venta registrada con éxito aplicando FIFO.');
         }
 
         function renderVentas() {
@@ -797,8 +828,13 @@
         function handleCrearProducto(e) {
             e.preventDefault();
             const obj = { id: `PROD-${Date.now()}`, nombre: document.getElementById('prod-nombre').value.trim(), categoria: document.getElementById('prod-categoria').value.trim(), atributos: state.formAtributos.filter(a => a.clave.trim() && a.valor.trim()) };
-            state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
-            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogo(); showToast('Producto añadido.');
+            state.catalogo.push(obj); 
+            enviarAGoogleSheets("CATALOGO", obj);
+            document.getElementById('form-producto').reset(); 
+            state.formAtributos = [{clave:'', valor:''}]; 
+            renderAtributosForm(); 
+            renderCatalogo(); 
+            showToast('Producto añadido.');
         }
 
         function renderCatalogo() {
@@ -817,8 +853,12 @@
             e.preventDefault();
             const cant = parseInt(document.getElementById('comp-cant').value);
             const obj = { id: `COMP-${Date.now()}`, fecha: document.getElementById('comp-fecha').value, productoId: document.getElementById('comp-producto').value, cantidad_inicial: cant, cantidad_restante: cant, costo: parseFloat(document.getElementById('comp-costo').value) };
-            state.compras.push(obj); enviarAGoogleSheets("COMPRA", obj);
-            document.getElementById('comp-cant').value = ''; document.getElementById('comp-costo').value = ''; renderCompras(); showToast('Entrada registrada.');
+            state.compras.push(obj); 
+            enviarAGoogleSheets("COMPRA", obj);
+            document.getElementById('comp-cant').value = ''; 
+            document.getElementById('comp-costo').value = ''; 
+            renderCompras(); 
+            showToast('Entrada registrada.');
         }
 
         function renderCompras() {
@@ -842,9 +882,13 @@
         function handleEgresoSubmit(e) {
             e.preventDefault();
             const obj = { id: `EGRE-${Date.now()}`, fecha: document.getElementById('egre-fecha').value, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value) };
-            state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
-            document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = '';
-            renderEgresos(); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); showToast('Gasto registrado.');
+            state.egresos.push(obj); 
+            enviarAGoogleSheets("EGRESO", obj);
+            document.getElementById('egre-concepto').value = ''; 
+            document.getElementById('egre-monto').value = '';
+            renderEgresos(); 
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); 
+            showToast('Gasto registrado.');
         }
 
         function renderEgresos() {
