@@ -8,187 +8,225 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
         
         body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc; /* Slate 50 ultra limpio */
+            font-family: 'Outfit', sans-serif; 
+            background-color: #f1f5f9; 
             color: #0f172a; 
             overflow: hidden; 
         }
 
-        /* Utilidades de Diseño Limpio */
-        .card-clean {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.2s ease;
-        }
+        /* Scrollbars Customizados */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
+
+        /* Animaciones Base */
+        .view-section { display: none; opacity: 0; }
+        .view-section.active { display: block; animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         
-        .input-clean {
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeOut { to { opacity: 0; transform: translateY(20px); pointer-events: none; } }
+
+        .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .toast-exit { animation: fadeOut 0.3s forwards; }
+
+        /* Inputs Premium */
+        .input-premium {
+            width: 100%;
+            padding: 1rem 1.25rem;
             background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.75rem;
-            transition: all 0.2s ease;
-        }
-        .input-clean:focus {
-            background-color: #ffffff;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(226, 232, 240, 0.6);
+            border-radius: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
             outline: none;
         }
+        .input-premium:focus {
+            background-color: #ffffff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
 
-        /* Animaciones */
-        .view-section { display: none; opacity: 0; }
-        .view-section.active { display: block; animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08); }
-
-        /* Scrollbars Minimalistas */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Toasts */
-        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes slideOutDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
-        .toast-enter { animation: slideInUp 0.3s forwards; }
-        .toast-exit { animation: slideOutDown 0.3s forwards; }
+        .btn-premium {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 1.25rem;
+            font-weight: 900;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-premium:active { transform: scale(0.98); }
+        .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1); }
     </style>
-    <script>
-        tailwind.config = { theme: { extend: { colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' } } } } }
-    </script>
 </head>
-<body class="h-screen w-screen flex flex-col lg:flex-row antialiased selection:bg-brand-500 selection:text-white">
+<body class="h-screen w-screen relative selection:bg-indigo-200 antialiased flex text-slate-800">
+
+    <!-- FONDOS ABSTRACTOS -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#f1f5f9]">
+        <div class="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-500/10 rounded-full blur-[120px] mix-blend-multiply"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-violet-400/10 rounded-full blur-[100px] mix-blend-multiply"></div>
+    </div>
 
     <!-- OVERLAY CARGA -->
-    <div id="loading-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-slate-900 transition-all duration-300 hidden">
-        <div class="bg-white p-8 rounded-2xl flex flex-col items-center max-w-sm w-[90%] shadow-2xl">
-            <i data-lucide="loader-2" class="w-10 h-10 animate-spin text-brand-600 mb-4"></i>
-            <h2 class="text-xl font-bold tracking-tight">Conectando...</h2>
-            <p class="text-slate-500 text-sm mt-1">Sincronizando Nu Glass</p>
+    <div id="loading-overlay" class="fixed inset-0 bg-white/60 backdrop-blur-xl z-[100] flex flex-col items-center justify-center text-slate-900 transition-all duration-300 hidden">
+        <div class="bg-white p-10 rounded-[2.5rem] flex flex-col items-center max-w-sm w-[90%] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] border border-slate-100">
+            <div class="w-16 h-16 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin mb-6"></div>
+            <h2 class="text-2xl font-black tracking-tight">Sincronizando...</h2>
+            <p class="text-slate-500 font-bold mt-2 text-center uppercase tracking-widest text-[10px]">Nu Glass Cloud</p>
         </div>
     </div>
 
     <!-- TOASTS CONTAINER -->
-    <div id="toast-container" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-6 z-[110] flex flex-col gap-3 w-[90%] sm:w-auto pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:right-8 z-[110] flex flex-col gap-3 w-[90%] sm:w-auto pointer-events-none"></div>
 
     <!-- BACKDROP MOBILE SIDEBAR -->
-    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[40] hidden lg:hidden transition-opacity"></div>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[40] hidden lg:hidden transition-opacity opacity-0"></div>
 
-    <!-- SIDEBAR BLANCO Y LIMPIO -->
-    <aside id="sidebar" class="w-[260px] bg-white border-r border-slate-200 flex flex-col h-full shrink-0 shadow-sm z-[50] fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+    <!-- SIDEBAR FLOTANTE (ESTILO REACT) -->
+    <aside id="sidebar" class="fixed lg:left-6 lg:top-6 lg:bottom-6 lg:w-[320px] w-[280px] h-full lg:h-auto bg-white/80 backdrop-blur-3xl border border-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] lg:rounded-[2.5rem] z-[50] flex flex-col overflow-hidden transition-all duration-500 ease-in-out transform -translate-x-full lg:translate-x-0 inset-y-0 left-0">
         
         <!-- Logo -->
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-md shadow-brand-500/20">
-                    <i data-lucide="layers" class="text-white w-5 h-5"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-black tracking-tight text-slate-900 leading-none">Nu<span class="text-brand-600 font-light">Glass</span></h1>
-                    <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-1">Workspace</p>
-                </div>
+        <div class="p-8 flex items-center gap-4 border-b border-slate-100 relative">
+            <button onclick="toggleSidebar()" class="lg:hidden absolute top-6 right-6 p-2 bg-slate-100 rounded-xl text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl text-white flex items-center justify-center font-black shadow-lg shadow-indigo-500/30">
+                <i data-lucide="sparkles" class="w-6 h-6"></i>
             </div>
-            <button onclick="toggleSidebar()" class="lg:hidden p-2 text-slate-400 hover:text-slate-700 bg-slate-50 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div>
+                <span className="font-black text-2xl text-slate-800 tracking-tight block leading-none">Nu<span class="font-light">Glass.</span></span>
+                <span class="text-[9px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded mt-1.5 inline-block">Suite Directiva</span>
+            </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1 w-full">
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-3">📦 Control Central</div>
-            <button onclick="navigate('inventario')" id="nav-inventario" class="w-full flex items-center px-3 py-2.5 rounded-lg transition-colors border border-transparent text-slate-600 hover:bg-slate-50 font-medium group">
-                <i data-lucide="box" class="w-4 h-4 mr-3 text-brand-500 group-hover:scale-110 transition-transform"></i> Inventario & Kardex
+        <nav class="flex-1 px-6 space-y-2 overflow-y-auto mt-8 custom-scrollbar relative z-10 w-full">
+            <button onclick="navigate('inventario')" id="nav-inventario" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-white">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-100 scale-100"></div>
+                <i data-lucide="box" class="relative z-10 w-5 h-5 text-indigo-400 transition-transform duration-300 group-hover:scale-110"></i>
+                <span class="relative z-10">Gestión de Activos</span>
             </button>
-            <button onclick="navigate('catalogo')" id="nav-catalogo" class="w-full flex items-center px-3 py-2.5 rounded-lg transition-colors border border-transparent text-slate-600 hover:bg-slate-50 font-medium group">
-                <i data-lucide="tags" class="w-4 h-4 mr-3 text-slate-400 group-hover:scale-110 transition-transform"></i> Maestro de Productos
-            </button>
-
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-3 mt-6">🔄 Operaciones</div>
-            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center px-3 py-2.5 rounded-lg transition-colors border border-transparent text-slate-600 hover:bg-slate-50 font-medium group">
-                <i data-lucide="shopping-cart" class="w-4 h-4 mr-3 text-emerald-500 group-hover:scale-110 transition-transform"></i> Punto de Venta (Salidas)
-            </button>
-            <button onclick="navigate('finanzas')" id="nav-finanzas" class="w-full flex items-center px-3 py-2.5 rounded-lg transition-colors border border-transparent text-slate-600 hover:bg-slate-50 font-medium group">
-                <i data-lucide="wallet" class="w-4 h-4 mr-3 text-amber-500 group-hover:scale-110 transition-transform"></i> Compras & Egresos
+            
+            <button onclick="navigate('catalogo')" id="nav-catalogo" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+                <i data-lucide="tags" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
+                <span class="relative z-10">Directorio Maestro</span>
             </button>
 
-            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 px-3 mt-6">📊 Inteligencia</div>
-            <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center px-3 py-2.5 rounded-lg transition-colors border border-transparent text-slate-600 hover:bg-slate-50 font-medium group">
-                <i data-lucide="bar-chart-2" class="w-4 h-4 mr-3 text-brand-500 group-hover:scale-110 transition-transform"></i> Dashboard Analítico
+            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+                <i data-lucide="shopping-cart" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
+                <span class="relative z-10">Terminal de Ventas</span>
+            </button>
+
+            <button onclick="navigate('finanzas')" id="nav-finanzas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+                <i data-lucide="wallet" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
+                <span class="relative z-10">Libro Contable</span>
+            </button>
+
+            <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+                <i data-lucide="pie-chart" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
+                <span class="relative z-10">Inteligencia Fin.</span>
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-100 bg-slate-50/50">
-            <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full flex items-center justify-center py-2.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-brand-600 hover:bg-white border border-slate-200 transition-colors bg-white">
-                <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Configuración BD
+        <div class="p-6 shrink-0 mt-auto border-t border-slate-100 relative z-10">
+            <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 p-4 rounded-2xl border border-slate-200 transition-colors text-slate-600 hover:text-indigo-600">
+                <div class="w-10 h-10 rounded-[1rem] bg-indigo-100 text-indigo-700 flex items-center justify-center font-black border border-indigo-200"><i data-lucide="database" class="w-5 h-5"></i></div>
+                <div class="flex-1 min-w-0 text-left"><p class="text-sm font-black truncate">Base de Datos</p><p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5" id="config-status-sidebar">Conectar / Ajustes</p></div>
             </button>
         </div>
     </aside>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative z-10 w-full bg-slate-50">
+    <main class="flex-1 flex flex-col h-full relative transition-all duration-500 w-full lg:pl-[360px] z-10">
         
-        <!-- HEADER LIMPIO -->
-        <header id="main-header" class="h-16 sm:h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 sm:px-10 shrink-0 sticky top-0 z-30">
+        <!-- HEADER FLOTANTE -->
+        <header class="absolute top-0 lg:top-6 left-0 lg:left-6 right-0 lg:right-6 lg:ml-[340px] rounded-none lg:rounded-[2rem] bg-white/80 border-b lg:border border-white shadow-sm backdrop-blur-2xl h-20 flex items-center justify-between px-8 z-40">
             <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="lg:hidden p-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100"><i data-lucide="menu" class="w-5 h-5"></i></button>
-                <h2 id="page-title" class="text-xl font-bold text-slate-800 tracking-tight">Cargando...</h2>
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-slate-800 bg-slate-100 rounded-xl"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                <div class="font-black text-xl text-slate-800 tracking-tight flex items-center gap-3">
+                    <span id="header-icon" class="text-indigo-500 hidden sm:block"><i data-lucide="activity" class="w-6 h-6"></i></span>
+                    <span id="page-title">Cargando...</span>
+                </div>
             </div>
-            
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 border border-slate-200">
-                    <i data-lucide="calendar" class="w-4 h-4 text-brand-500"></i>
-                    <select id="month-filter" onchange="handleMonthChange()" class="bg-transparent text-xs sm:text-sm font-semibold text-slate-700 outline-none cursor-pointer border-none pr-1">
+            <div class="flex items-center">
+                <div class="flex items-center gap-2 bg-slate-50/80 rounded-xl px-4 py-2 border border-slate-200/60 shadow-inner">
+                    <i data-lucide="calendar" class="w-4 h-4 text-indigo-500"></i>
+                    <select id="month-filter" onchange="handleMonthChange()" class="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer border-none appearance-none pr-2">
                         <option value="ALL">Todo el tiempo</option>
                     </select>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
                 </div>
             </div>
         </header>
 
         <!-- VIEWS CONTAINER -->
-        <div class="flex-1 overflow-y-auto h-full p-4 sm:p-8 z-10 scroll-smooth">
+        <div class="flex-1 overflow-auto custom-scrollbar scroll-smooth w-full pt-24 lg:pt-32 px-4 lg:px-6 pb-10 relative z-0">
 
             <!-- ========================================== -->
             <!-- VIEW: INVENTARIO CENTRAL                   -->
             <!-- ========================================== -->
             <div id="view-inventario" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6">
+                <div class="max-w-7xl mx-auto space-y-8">
                     
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Gestión de Activos</h2>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Control valorizado del inventario físico y proyección financiera.</p>
+                        </div>
+                        <button onclick="abrirKardexGeneral()" class="bg-slate-900 text-white px-8 py-4 rounded-[1.25rem] font-black shadow-xl shadow-slate-900/20 hover:bg-black hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3">
+                            <i data-lucide="list" class="w-5 h-5 text-indigo-400"></i> Auditoría Kardex Global
+                        </button>
+                    </div>
+
                     <!-- KPIs -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-                        <div class="card-clean p-6 flex items-center gap-4 hover-lift">
-                            <div class="w-12 h-12 rounded-full bg-brand-50 flex items-center justify-center shrink-0 border border-brand-100"><i data-lucide="box" class="text-brand-600 w-6 h-6"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Artículos</p><h4 id="inv-kpi-prods" class="text-2xl font-black text-slate-800 leading-none mt-1">0</h4></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-white flex flex-col justify-center relative overflow-hidden group hover-lift">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-indigo-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="box" class="w-4 h-4 text-indigo-500"></i> Unidades Físicas</p>
+                                <p id="inv-kpi-prods" class="text-4xl font-black text-slate-800 tracking-tight">0</p>
+                            </div>
                         </div>
-                        <div class="card-clean p-6 flex items-center gap-4 hover-lift">
-                            <div class="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center shrink-0 border border-rose-100"><i data-lucide="dollar-sign" class="text-rose-600 w-6 h-6"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Valorización (Costo)</p><h4 id="inv-kpi-costo" class="text-2xl font-black text-slate-800 leading-none mt-1">$0.00</h4></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-white flex flex-col justify-center relative overflow-hidden group hover-lift">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-rose-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="dollar-sign" class="w-4 h-4 text-rose-500"></i> Capital Invertido</p>
+                                <p id="inv-kpi-costo" class="text-3xl font-black text-slate-800 tracking-tight">RD$ 0.00</p>
+                            </div>
                         </div>
-                        <div class="card-clean p-6 flex items-center gap-4 hover-lift bg-slate-900 border-slate-800">
-                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="gem" class="text-white w-6 h-6"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Proyección Ventas</p><h4 id="inv-kpi-potencial" class="text-2xl font-black text-white leading-none mt-1">$0.00</h4></div>
+                        <div class="bg-[#0f172a] p-8 rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(79,70,229,0.3)] flex flex-col justify-center relative overflow-hidden border border-slate-800 hover-lift">
+                            <div class="absolute right-[-10%] top-[-10%] w-40 h-40 bg-indigo-500/20 rounded-full blur-[40px] z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-white"></i> Proyección Ventas</p>
+                                <p id="inv-kpi-potencial" class="text-3xl font-black text-white tracking-tighter">RD$ 0.00</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Tabla Inventario -->
-                    <div class="card-clean overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">Control de Stock y Costos Promedio</h3>
-                            <button onclick="abrirKardexGeneral()" class="bg-white border border-slate-200 shadow-sm px-4 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2">
-                                <i data-lucide="list" class="w-4 h-4 text-slate-500"></i> Ver Kardex General
-                            </button>
+                    <div class="bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col">
+                        <div class="px-8 py-6 border-b border-slate-100 bg-white/50">
+                            <h3 class="font-black text-2xl text-slate-800 tracking-tight flex items-center gap-3"><i data-lucide="layers" class="text-indigo-600 w-6 h-6"></i> Directorio y Costos Promedio</h3>
                         </div>
-                        <div class="w-full overflow-x-auto">
-                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[750px]">
-                                <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white border-b border-slate-200">
+                        <div class="w-full overflow-x-auto p-4 sm:p-6 custom-scrollbar">
+                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
+                                <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-slate-50/80">
                                     <tr>
-                                        <th class="px-6 py-4 font-bold">Producto</th>
-                                        <th class="px-4 py-4 font-bold">Jerarquía</th>
-                                        <th class="px-4 py-4 font-bold text-center">Stock Real</th>
-                                        <th class="px-4 py-4 font-bold text-right text-slate-600">Costo Prom.</th>
-                                        <th class="px-4 py-4 font-bold text-right text-brand-600">Precio Sugerido</th>
-                                        <th class="px-6 py-4 font-bold text-center">Auditar (Kardex)</th>
+                                        <th class="px-6 py-4 font-black rounded-l-[1rem]">Producto / Referencia</th>
+                                        <th class="px-4 py-4 font-black">Segmentación</th>
+                                        <th class="px-4 py-4 font-black text-center">Stock Físico</th>
+                                        <th class="px-4 py-4 font-black text-right text-rose-500">Costo Pond. (CPP)</th>
+                                        <th class="px-4 py-4 font-black text-right text-indigo-600">Precio Venta (PVP)</th>
+                                        <th class="px-6 py-4 font-black text-center rounded-r-[1rem]">Auditar</th>
                                     </tr>
                                 </thead>
                                 <tbody id="inventario-body" class="divide-y divide-slate-100"></tbody>
@@ -202,79 +240,90 @@
             <!-- VIEW: CATÁLOGO                             -->
             <!-- ========================================== -->
             <div id="view-catalogo" class="view-section">
-                <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-6 sm:gap-8">
-                    <!-- Formulario Nuevo -->
-                    <div class="lg:col-span-4 space-y-6">
-                        <div class="card-clean p-6 sm:p-8">
-                            <h3 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="plus-square" class="w-5 h-5 text-brand-500"></i> Crear Producto</h3>
-                            <p class="text-xs text-slate-500 mb-6">Completa la ficha técnica para el inventario.</p>
-                            
-                            <form id="form-producto" onsubmit="handleCrearProducto(event)" class="space-y-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Nombre Comercial</label>
-                                    <input type="text" id="prod-nombre" required placeholder="Ej: Zapatillas Running" class="w-full input-clean px-4 py-2.5 text-sm font-medium">
-                                </div>
-                                
-                                <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Categoría</label>
-                                        <input type="text" id="prod-categoria" required placeholder="Ej: Calzado" class="w-full input-clean px-3 py-2 text-xs font-medium">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Subcategoría</label>
-                                        <input type="text" id="prod-subcategoria" placeholder="Ej: Deportivo" class="w-full input-clean px-3 py-2 text-xs font-medium">
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 mt-2">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Precio de Venta Sugerido ($)</label>
-                                        <input type="number" id="prod-precio-base" min="0" step="0.01" required placeholder="0.00" class="w-full input-clean px-4 py-2.5 text-sm font-bold border-emerald-200 focus:border-emerald-500 bg-white">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3 mt-1">
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Costo Ref. ($)</label>
-                                            <input type="number" id="prod-costo-ref" min="0" step="0.01" placeholder="0.00" class="w-full input-clean px-3 py-2 text-xs font-medium">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Desc. Max (%)</label>
-                                            <input type="number" id="prod-descuento" min="0" max="100" step="0.1" placeholder="Ej: 15" class="w-full input-clean px-3 py-2 text-xs font-medium">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pt-4 border-t border-slate-200 mt-2">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cualidades (Talla, Color...)</label>
-                                        <button type="button" onclick="addAtributo()" class="bg-slate-100 text-[10px] text-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-200 transition-colors flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> Añadir</button>
-                                    </div>
-                                    <div id="atributos-container" class="space-y-2"></div>
-                                </div>
-
-                                <button type="submit" class="w-full bg-brand-600 text-white font-bold rounded-xl py-3 mt-4 shadow-sm hover:bg-brand-700 transition-colors flex items-center justify-center gap-2 text-sm"><i data-lucide="save" class="w-4 h-4"></i> Guardar en Ficha</button>
-                            </form>
+                <div class="max-w-7xl mx-auto space-y-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Directorio Maestro</h2>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Creación de perfiles de productos, precios y reglas de negocio.</p>
                         </div>
                     </div>
-                    
-                    <!-- Tabla -->
-                    <div class="lg:col-span-8">
-                        <div class="card-clean overflow-hidden h-full flex flex-col min-h-[400px]">
-                            <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
-                                <h3 class="text-base font-bold text-slate-800">Directorio de Artículos</h3>
+
+                    <div class="grid lg:grid-cols-12 gap-8">
+                        <!-- Formulario Nuevo -->
+                        <div class="lg:col-span-5 space-y-6">
+                            <div class="bg-white/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-white p-8 md:p-10 relative overflow-hidden group">
+                                <div class="absolute right-[-10%] top-[-10%] w-40 h-40 bg-indigo-50 rounded-full blur-2xl z-0"></div>
+                                <div class="relative z-10">
+                                    <h3 class="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3"><div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100"><i data-lucide="plus-square" class="w-5 h-5"></i></div> Alta Ficha Técnica</h3>
+                                    <p class="text-xs font-bold text-slate-500 mb-8">Define los parámetros de comercialización.</p>
+                                    
+                                    <form id="form-producto" onsubmit="handleCrearProducto(event)" class="space-y-6">
+                                        <div>
+                                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Nombre Comercial</label>
+                                            <input type="text" id="prod-nombre" required placeholder="Ej: Zapatillas Running Elite" class="input-premium">
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-[1.5rem] border border-slate-100 shadow-inner">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Categoría</label>
+                                                <input type="text" id="prod-categoria" required placeholder="Calzado" class="input-premium !p-3 !text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 ml-1">Subcategoría</label>
+                                                <input type="text" id="prod-subcategoria" placeholder="Deportivo" class="input-premium !p-3 !text-sm">
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-slate-50 rounded-[1.5rem] border border-slate-100 p-4 shadow-inner space-y-4">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2 ml-1">Precio Venta (PVP Base)</label>
+                                                <input type="number" id="prod-precio-base" min="0" step="0.01" required placeholder="0.00" class="input-premium !text-emerald-600 !text-xl !border-emerald-200 focus:!border-emerald-500 focus:!ring-emerald-500">
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Costo Ref.</label>
+                                                    <input type="number" id="prod-costo-ref" min="0" step="0.01" placeholder="0.00" class="input-premium !p-3 !text-sm">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Desc. Max (%)</label>
+                                                    <input type="number" id="prod-descuento" min="0" max="100" step="0.1" placeholder="Ej: 15" class="input-premium !p-3 !text-sm">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-6 border-t border-slate-200/60">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Cualidades (Talla, Color)</label>
+                                                <button type="button" onclick="addAtributo()" class="bg-indigo-50 text-[10px] text-indigo-600 px-3 py-1.5 rounded-lg font-black hover:bg-indigo-100 transition-colors flex items-center gap-1 border border-indigo-100 shadow-sm"><i data-lucide="plus" class="w-3 h-3"></i> Campo</button>
+                                            </div>
+                                            <div id="atributos-container" class="space-y-3"></div>
+                                        </div>
+
+                                        <button type="submit" class="btn-premium bg-slate-900 text-white hover:bg-black mt-4 shadow-xl shadow-slate-900/20 flex items-center justify-center gap-2"><i data-lucide="save" class="w-5 h-5"></i> Registrar Perfil</button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="w-full overflow-x-auto">
-                                <table class="w-full text-left text-sm whitespace-nowrap min-w-[650px]">
-                                    <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white border-b border-slate-200">
-                                        <tr>
-                                            <th class="px-6 py-4 font-bold">Identificador / Nombre</th>
-                                            <th class="px-4 py-4 font-bold">Jerarquía</th>
-                                            <th class="px-4 py-4 font-bold text-right text-emerald-600">Precio Sug.</th>
-                                            <th class="px-4 py-4 font-bold text-center">Desc. Máx</th>
-                                            <th class="px-6 py-4 font-bold">Cualidades</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="catalogo-body" class="divide-y divide-slate-100"></tbody>
-                                </table>
+                        </div>
+                        
+                        <!-- Tabla -->
+                        <div class="lg:col-span-7">
+                            <div class="bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col h-[800px]">
+                                <div class="px-8 py-6 border-b border-slate-100 bg-white/50 shrink-0">
+                                    <h3 class="font-black text-2xl text-slate-800 tracking-tight flex items-center gap-3"><i data-lucide="database" class="text-indigo-600 w-6 h-6"></i> Directorio General</h3>
+                                </div>
+                                <div class="w-full flex-1 overflow-auto custom-scrollbar p-6">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                                        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50/80 sticky top-0 z-10 backdrop-blur-md">
+                                            <tr>
+                                                <th class="px-6 py-4 font-black rounded-l-[1rem]">Comercial / SKU</th>
+                                                <th class="px-4 py-4 font-black">Familia</th>
+                                                <th class="px-4 py-4 font-black text-right text-emerald-500">Valor PVP</th>
+                                                <th class="px-6 py-4 font-black w-full rounded-r-[1rem]">Especificaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="catalogo-body" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -285,59 +334,69 @@
             <!-- VIEW: VENTAS (SALIDAS / POS)               -->
             <!-- ========================================== -->
             <div id="view-ventas" class="view-section">
-                <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-6 sm:gap-8">
-                    <!-- Formulario -->
-                    <div class="lg:col-span-4 space-y-6">
-                        <div class="card-clean p-6 sm:p-8">
-                            <h3 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="shopping-cart" class="w-5 h-5 text-emerald-500"></i> Procesar Salida</h3>
-                            <p class="text-xs text-slate-500 mb-6">Factura y descuenta del inventario (Método FIFO).</p>
-                            
-                            <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Fecha Emisión</label>
-                                    <input type="date" id="vent-fecha" required class="w-full input-clean px-4 py-2.5 text-sm font-medium">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Seleccionar Producto</label>
-                                    <select id="vent-producto" onchange="autoFillPrecioVenta()" required class="w-full input-clean px-4 py-2.5 text-sm font-medium truncate"></select>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Cantidad</label>
-                                        <input type="number" id="vent-cant" min="1" required class="w-full input-clean px-4 py-2.5 text-sm font-bold text-center">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Cobro Unit. ($)</label>
-                                        <input type="number" id="vent-precio" min="0" step="0.01" required class="w-full input-clean px-4 py-2.5 text-sm font-bold text-center border-emerald-200">
-                                    </div>
-                                </div>
-                                <button type="submit" class="w-full bg-slate-900 text-white font-bold rounded-xl py-3.5 mt-2 shadow-sm hover:bg-slate-800 transition-colors flex justify-center items-center gap-2 text-sm">
-                                    <i data-lucide="check" class="w-4 h-4"></i> Confirmar Transacción
-                                </button>
-                            </form>
+                <div class="max-w-7xl mx-auto space-y-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Terminal de Ventas</h2>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Registro de facturación y descarga automática de inventario FIFO.</p>
                         </div>
                     </div>
 
-                    <!-- Tabla -->
-                    <div class="lg:col-span-8">
-                        <div class="card-clean overflow-hidden h-full flex flex-col min-h-[400px]">
-                            <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center">
-                                <h3 class="text-base font-bold text-slate-800">Historial de Ventas</h3>
+                    <div class="grid lg:grid-cols-12 gap-8">
+                        <!-- Formulario -->
+                        <div class="lg:col-span-4 space-y-6">
+                            <div class="bg-[#0f172a] text-white backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border border-slate-800 p-8 md:p-10 relative overflow-hidden group">
+                                <div class="absolute right-[-10%] top-[-10%] w-40 h-40 bg-indigo-500/20 rounded-full blur-[40px] z-0"></div>
+                                <div class="relative z-10">
+                                    <h3 class="text-2xl font-black text-white mb-2 flex items-center gap-3"><div class="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-xl border border-indigo-500/30"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div> POS Caja</h3>
+                                    <p class="text-xs font-bold text-slate-400 mb-8">Procesamiento de orden de salida.</p>
+                                    
+                                    <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-6">
+                                        <div>
+                                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Fecha Emisión</label>
+                                            <input type="date" id="vent-fecha" required class="input-premium !bg-[#020617] !border-white/10 !text-white focus:!border-indigo-500 shadow-inner">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Buscar Producto</label>
+                                            <select id="vent-producto" onchange="autoFillPrecioVenta()" required class="input-premium !bg-[#020617] !border-white/10 !text-white focus:!border-indigo-500 shadow-inner appearance-none truncate"></select>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Unidades</label>
+                                                <input type="number" id="vent-cant" min="1" required placeholder="0" class="input-premium !bg-[#020617] !border-white/10 !text-white focus:!border-indigo-500 shadow-inner text-center !text-xl">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 ml-1">Precio Cobrado</label>
+                                                <input type="number" id="vent-precio" min="0" step="0.01" required placeholder="0.00" class="input-premium !bg-indigo-500/10 !border-indigo-500/30 !text-indigo-200 focus:!border-indigo-500 shadow-inner text-center !text-xl">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-premium bg-indigo-600 text-white hover:bg-indigo-500 mt-6 shadow-[0_0_30px_rgba(79,70,229,0.3)] border border-indigo-400 flex items-center justify-center gap-2"><i data-lucide="check-square" class="w-5 h-5"></i> Aprobar Transacción</button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="w-full overflow-x-auto">
-                                <table class="w-full text-left text-sm whitespace-nowrap min-w-[650px]">
-                                    <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white border-b border-slate-200">
-                                        <tr>
-                                            <th class="px-6 py-4 font-bold">Fecha</th>
-                                            <th class="px-4 py-4 font-bold">Producto</th>
-                                            <th class="px-4 py-4 font-bold text-center">Cant.</th>
-                                            <th class="px-4 py-4 font-bold text-right">Total Facturado</th>
-                                            <th class="px-4 py-4 font-bold text-right text-rose-500">Costo (FIFO)</th>
-                                            <th class="px-6 py-4 font-bold text-right text-emerald-600">Margen Neto</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="ventas-body" class="divide-y divide-slate-100"></tbody>
-                                </table>
+                        </div>
+
+                        <!-- Tabla -->
+                        <div class="lg:col-span-8">
+                            <div class="bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col h-full min-h-[600px]">
+                                <div class="px-8 py-6 border-b border-slate-100 bg-white/50 shrink-0">
+                                    <h3 class="font-black text-2xl text-slate-800 tracking-tight flex items-center gap-3"><i data-lucide="history" class="text-indigo-600 w-6 h-6"></i> Flujo de Ventas Realizadas</h3>
+                                </div>
+                                <div class="w-full flex-1 overflow-auto custom-scrollbar p-6">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[750px]">
+                                        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50/80 sticky top-0 z-10 backdrop-blur-md">
+                                            <tr>
+                                                <th class="px-6 py-4 font-black rounded-l-[1rem]">Ticket / Fecha</th>
+                                                <th class="px-4 py-4 font-black">Descripción Artículo</th>
+                                                <th class="px-4 py-4 font-black text-center">Vol.</th>
+                                                <th class="px-4 py-4 font-black text-right">Monto Bruto</th>
+                                                <th class="px-4 py-4 font-black text-right text-rose-500">Costo (FIFO)</th>
+                                                <th class="px-6 py-4 font-black text-right text-emerald-500 rounded-r-[1rem]">Margen Utilidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ventas-body" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -348,93 +407,105 @@
             <!-- VIEW: FINANZAS (COMPRAS Y EGRESOS)         -->
             <!-- ========================================== -->
             <div id="view-finanzas" class="view-section">
-                <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-6 sm:gap-8">
-                    <!-- Formulario Centralizado -->
-                    <div class="lg:col-span-4 space-y-6">
-                        <div class="card-clean p-6 sm:p-8 relative overflow-hidden">
-                            <h3 class="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2"><i data-lucide="wallet" class="w-5 h-5 text-amber-500"></i> Registro de Salidas</h3>
-                            <p class="text-[11px] font-semibold text-slate-500 mb-6">Centraliza compras de inventario y gastos operativos.</p>
-                            
-                            <!-- Toggle Tipo Gasto -->
-                            <div class="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 mb-6">
-                                <button type="button" id="tab-egreso-inventario" onclick="setGastoType('INVENTARIO')" class="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all shadow-sm bg-white text-emerald-600">Compra Mercancía</button>
-                                <button type="button" id="tab-egreso-operativo" onclick="setGastoType('OPERATIVO')" class="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-500 hover:text-slate-700">Gasto General</button>
-                            </div>
-
-                            <form id="form-egreso" onsubmit="handleEgresoSubmit(event)" class="space-y-4">
-                                <input type="hidden" id="egre-tipo-registro" value="INVENTARIO">
-                                
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Fecha</label>
-                                        <input type="date" id="egre-fecha" required class="w-full input-clean px-4 py-2.5 text-sm font-medium">
-                                    </div>
-                                    <div>
-                                        <label id="lbl-egre-monto" class="block text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1">Total Pagado ($)</label>
-                                        <input type="number" id="egre-monto" min="0.01" step="0.01" required placeholder="0.00" class="w-full input-clean px-4 py-2.5 text-sm font-bold text-center border-amber-200 focus:border-amber-500">
-                                    </div>
-                                </div>
-                                
-                                <!-- BLOQUE INVENTARIO -->
-                                <div id="bloque-gasto-inventario" class="space-y-4 p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1">Producto que ingresa</label>
-                                        <select id="comp-producto" class="w-full input-clean border-emerald-200 px-3 py-2.5 text-xs font-medium truncate"></select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1">Cantidad Física (Unidades)</label>
-                                        <input type="number" id="comp-cant" min="1" placeholder="Ej: 50" class="w-full input-clean border-emerald-200 px-4 py-2.5 text-sm font-bold">
-                                    </div>
-                                </div>
-
-                                <!-- BLOQUE OPERATIVO -->
-                                <div id="bloque-gasto-operativo" class="space-y-4 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Categoría del Gasto</label>
-                                        <div class="flex gap-2">
-                                            <select id="egre-categoria" class="w-full input-clean px-3 py-2.5 text-xs font-medium truncate"></select>
-                                            <button type="button" onclick="nuevaCategoriaGasto()" class="bg-white border border-slate-200 px-3 rounded-lg text-brand-600 hover:bg-slate-50 transition-colors shrink-0" title="Añadir"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Producto Vinculado (Opcional)</label>
-                                        <select id="egre-producto" class="w-full input-clean px-3 py-2.5 text-xs font-medium truncate"></select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Concepto o Detalle</label>
-                                        <input type="text" id="egre-concepto" placeholder="Ej: Pago de envío internacional" class="w-full input-clean px-4 py-2.5 text-sm font-medium">
-                                    </div>
-                                </div>
-
-                                <button type="submit" id="btn-submit-egreso" class="w-full bg-emerald-600 text-white font-bold rounded-xl py-3.5 mt-4 shadow-sm hover:bg-emerald-700 transition-colors flex justify-center items-center gap-2 text-sm">
-                                    <i data-lucide="download" class="w-4 h-4"></i> Registrar Compra de Stock
-                                </button>
-                            </form>
+                <div class="max-w-7xl mx-auto space-y-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Libro Contable</h2>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Gestión unificada de egresos, gastos operativos y compra de mercancía.</p>
                         </div>
                     </div>
 
-                    <!-- Tabla Centralizada -->
-                    <div class="lg:col-span-8">
-                        <div class="card-clean overflow-hidden h-full flex flex-col min-h-[400px]">
-                            <div class="px-6 py-5 border-b border-slate-200 bg-slate-50/50 flex justify-between items-center gap-4">
-                                <h3 class="text-base font-bold text-slate-800">Libro Mayor de Salidas</h3>
-                                <div class="text-right">
-                                    <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Flujo de Salida</p>
-                                    <p id="egresos-total-mes" class="text-lg font-black text-rose-600 leading-none mt-0.5">$0.00</p>
+                    <div class="grid lg:grid-cols-12 gap-8">
+                        <!-- Formulario Centralizado -->
+                        <div class="lg:col-span-4 space-y-6">
+                            <div class="bg-white/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-white p-8 md:p-10 relative overflow-hidden">
+                                <div class="absolute right-[-10%] top-[-10%] w-40 h-40 bg-amber-50 rounded-full blur-2xl z-0"></div>
+                                <div class="relative z-10">
+                                    <h3 class="text-2xl font-black text-slate-800 mb-2 flex items-center gap-3"><div class="p-2.5 bg-amber-50 text-amber-500 rounded-xl border border-amber-100"><i data-lucide="wallet" class="w-5 h-5"></i></div> Asiento Gasto</h3>
+                                    <p class="text-xs font-bold text-slate-500 mb-6">Autoriza una nueva salida de capital.</p>
+                                    
+                                    <!-- Toggle Tipo Gasto Premium -->
+                                    <div class="flex bg-slate-100 p-1.5 rounded-[1.25rem] border border-slate-200 mb-8 shadow-inner">
+                                        <button type="button" id="tab-egreso-inventario" onclick="setGastoType('INVENTARIO')" class="flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md bg-white text-emerald-600 border border-slate-200/60 scale-[1.02]">Compra Mercancía</button>
+                                        <button type="button" id="tab-egreso-operativo" onclick="setGastoType('OPERATIVO')" class="flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700">Gasto Operativo</button>
+                                    </div>
+
+                                    <form id="form-egreso" onsubmit="handleEgresoSubmit(event)" class="space-y-6">
+                                        <input type="hidden" id="egre-tipo-registro" value="INVENTARIO">
+                                        
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Fecha</label>
+                                                <input type="date" id="egre-fecha" required class="input-premium !px-3">
+                                            </div>
+                                            <div>
+                                                <label id="lbl-egre-monto" class="block text-[10px] font-black text-rose-500 uppercase tracking-widest mb-2 ml-1">Monto Salida ($)</label>
+                                                <input type="number" id="egre-monto" min="0.01" step="0.01" required placeholder="0.00" class="input-premium !border-rose-200 focus:!border-rose-500 !bg-rose-50/30 !text-rose-700 !text-xl text-center">
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- BLOQUE INVENTARIO -->
+                                        <div id="bloque-gasto-inventario" class="space-y-5 p-5 bg-emerald-50/50 border border-emerald-100 rounded-[1.5rem] shadow-inner">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 ml-1 flex items-center gap-1"><i data-lucide="package" class="w-3 h-3"></i> Lote Entrante</label>
+                                                <select id="comp-producto" class="input-premium !border-emerald-200 focus:!border-emerald-500 !bg-white truncate appearance-none"></select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 ml-1 flex items-center gap-1"><i data-lucide="hash" class="w-3 h-3"></i> Unidades Físicas</label>
+                                                <input type="number" id="comp-cant" min="1" placeholder="Ej: 50" class="input-premium !border-emerald-200 focus:!border-emerald-500 !bg-white text-center !text-xl">
+                                            </div>
+                                        </div>
+
+                                        <!-- BLOQUE OPERATIVO -->
+                                        <div id="bloque-gasto-operativo" class="space-y-5 p-5 bg-slate-50 border border-slate-200 rounded-[1.5rem] shadow-inner hidden">
+                                            <div>
+                                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Plan de Cuentas (Categoría)</label>
+                                                <div class="flex gap-2">
+                                                    <select id="egre-categoria" class="input-premium !bg-white truncate appearance-none"></select>
+                                                    <button type="button" onclick="nuevaCategoriaGasto()" class="bg-white border border-slate-200 px-4 rounded-xl text-indigo-600 hover:bg-slate-50 transition-colors shrink-0 shadow-sm" title="Añadir"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Asociar a Producto (Opc)</label>
+                                                <select id="egre-producto" class="input-premium !bg-white truncate appearance-none"></select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Concepto Detallado</label>
+                                                <input type="text" id="egre-concepto" placeholder="Justificación del gasto..." class="input-premium !bg-white">
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" id="btn-submit-egreso" class="btn-premium bg-emerald-600 text-white hover:bg-emerald-500 mt-6 shadow-[0_0_30px_rgba(16,185,129,0.3)] border border-emerald-400 flex justify-center items-center gap-2">
+                                            <i data-lucide="download" class="w-5 h-5"></i> Aprobar Adquisición
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="w-full overflow-x-auto">
-                                <table class="w-full text-left text-sm whitespace-nowrap min-w-[650px]">
-                                    <thead class="text-[10px] text-slate-500 uppercase tracking-widest bg-white border-b border-slate-200">
-                                        <tr>
-                                            <th class="px-6 py-4 font-bold">Fecha</th>
-                                            <th class="px-4 py-4 font-bold">Categoría</th>
-                                            <th class="px-4 py-4 font-bold w-full">Detalle de Salida</th>
-                                            <th class="px-6 py-4 font-bold text-right text-rose-500">Monto</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="egresos-body" class="divide-y divide-slate-100"></tbody>
-                                </table>
+                        </div>
+
+                        <!-- Tabla Centralizada -->
+                        <div class="lg:col-span-8">
+                            <div class="bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col h-full min-h-[600px]">
+                                <div class="px-8 py-6 border-b border-slate-100 bg-white/50 flex justify-between items-center gap-4 shrink-0">
+                                    <h3 class="font-black text-2xl text-slate-800 tracking-tight flex items-center gap-3"><i data-lucide="file-text" class="text-rose-500 w-6 h-6"></i> Mayor de Egresos</h3>
+                                    <div class="text-right">
+                                        <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest">Fuga de Capital (Mes)</p>
+                                        <p id="egresos-total-mes" class="text-2xl font-black text-rose-500 leading-none mt-1 drop-shadow-sm">$0.00</p>
+                                    </div>
+                                </div>
+                                <div class="w-full flex-1 overflow-auto custom-scrollbar p-6">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                                        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50/80 sticky top-0 z-10 backdrop-blur-md">
+                                            <tr>
+                                                <th class="px-6 py-4 font-black rounded-l-[1rem]">Registro</th>
+                                                <th class="px-4 py-4 font-black">Cuenta / Tipo</th>
+                                                <th class="px-4 py-4 font-black w-full">Concepto Contable</th>
+                                                <th class="px-6 py-4 font-black text-right text-rose-500 rounded-r-[1rem]">Salida (RD$)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="egresos-body" class="divide-y divide-slate-100"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -445,62 +516,83 @@
             <!-- VIEW: DASHBOARD (FLASH & ANALYTICS)        -->
             <!-- ========================================== -->
             <div id="view-dashboard" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6">
+                <div class="max-w-7xl mx-auto space-y-8">
                     
+                    <div class="flex flex-col gap-2 mb-2 border-b border-slate-200/60 pb-6">
+                        <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Inteligencia Financiera</h2>
+                        <p class="text-slate-500 font-bold text-sm mt-1 max-w-2xl">Métricas avanzadas, absorción de capital y márgenes calculados en tiempo real.</p>
+                    </div>
+
                     <!-- Flash Metrics -->
-                    <div class="card-clean p-6 bg-slate-900 border-slate-800 text-white relative overflow-hidden">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-500/20 rounded-full blur-3xl"></div>
-                        <div class="flex items-center gap-2 mb-5 relative z-10">
-                            <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
-                            <h3 class="text-sm font-bold text-white uppercase tracking-widest">Métricas Rápidas (Ventas)</h3>
+                    <div class="bg-[#0f172a] text-white rounded-[3rem] shadow-[0_20px_50px_-12px_rgba(79,70,229,0.3)] border border-slate-800 p-8 md:p-10 relative overflow-hidden group">
+                        <div class="absolute right-[-10%] top-[-20%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[100px] z-0 group-hover:bg-indigo-500/30 transition-all duration-1000 pointer-events-none"></div>
+                        <div class="relative z-10 flex items-center gap-3 mb-8">
+                            <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl border border-amber-500/30"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                            <h3 class="text-sm font-black text-white uppercase tracking-widest">Radar de Ventas (Flash)</h3>
                         </div>
-                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
-                            <div class="bg-slate-800/50 border border-slate-700 p-4 rounded-xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Hoy</p>
-                                <h4 id="flash-hoy" class="text-xl font-black text-brand-400">$0.00</h4>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                            <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem] hover:border-indigo-500/30 transition-colors">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Ingreso Hoy</p>
+                                <h4 id="flash-hoy" class="text-2xl md:text-3xl font-black text-indigo-400 tracking-tight">$0.00</h4>
                             </div>
-                            <div class="bg-slate-800/50 border border-slate-700 p-4 rounded-xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ayer</p>
-                                <h4 id="flash-ayer" class="text-lg font-bold text-slate-300">$0.00</h4>
-                                <p id="flash-diff-ayer" class="text-[10px] font-bold mt-1">-</p>
+                            <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem] hover:border-slate-500/50 transition-colors">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Ayer</p>
+                                <h4 id="flash-ayer" class="text-xl font-bold text-slate-300">$0.00</h4>
+                                <p id="flash-diff-ayer" class="text-[10px] font-black mt-2 inline-block px-2 py-1 rounded-md bg-slate-800 border border-slate-700">-</p>
                             </div>
-                            <div class="bg-slate-800/50 border border-slate-700 p-4 rounded-xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Hace 7 Días</p>
-                                <h4 id="flash-semana" class="text-lg font-bold text-slate-300">$0.00</h4>
-                                <p id="flash-diff-semana" class="text-[10px] font-bold mt-1">-</p>
+                            <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem] hover:border-slate-500/50 transition-colors">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Semana Anterior</p>
+                                <h4 id="flash-semana" class="text-xl font-bold text-slate-300">$0.00</h4>
+                                <p id="flash-diff-semana" class="text-[10px] font-black mt-2 inline-block px-2 py-1 rounded-md bg-slate-800 border border-slate-700">-</p>
                             </div>
-                            <div class="bg-slate-800/50 border border-slate-700 p-4 rounded-xl">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Mismo Día (Mes Ant)</p>
-                                <h4 id="flash-mes" class="text-lg font-bold text-slate-300">$0.00</h4>
-                                <p id="flash-diff-mes" class="text-[10px] font-bold mt-1">-</p>
+                            <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem] hover:border-slate-500/50 transition-colors">
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Mes Anterior (Mismo Día)</p>
+                                <h4 id="flash-mes" class="text-xl font-bold text-slate-300">$0.00</h4>
+                                <p id="flash-diff-mes" class="text-[10px] font-black mt-2 inline-block px-2 py-1 rounded-md bg-slate-800 border border-slate-700">-</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- KPIs Periodo -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                        <div class="card-clean p-6 flex flex-col justify-between h-32 hover-lift">
-                            <div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ingresos Brutos</p><h4 id="kpi-ingresos" class="text-2xl font-black text-slate-800 mt-1">$0.00</h4></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><TrendUp size={16} className="text-emerald-500"/> Ingresos Brutos</p>
+                                <h4 id="kpi-ingresos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
+                            </div>
                         </div>
-                        <div class="card-clean p-6 flex flex-col justify-between h-32 hover-lift">
-                            <div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Costo (Bienes Vendidos)</p><h4 id="kpi-costos" class="text-2xl font-black text-rose-600 mt-1">$0.00</h4></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-rose-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><Box size={16} className="text-rose-500"/> Costo Mercancía</p>
+                                <h4 id="kpi-costos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
+                            </div>
                         </div>
-                        <div class="card-clean p-6 flex flex-col justify-between h-32 hover-lift">
-                            <div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Egresos Operativos</p><h4 id="kpi-egresos" class="text-2xl font-black text-amber-600 mt-1">$0.00</h4></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><Wallet size={16} className="text-amber-500"/> Gastos Operativos</p>
+                                <h4 id="kpi-egresos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
+                            </div>
                         </div>
-                        <div id="kpi-neto-card" class="bg-brand-600 text-white p-6 rounded-[1rem] shadow-lg flex flex-col justify-between h-32 hover-lift">
-                            <div><p class="text-[10px] font-bold text-brand-200 uppercase tracking-widest">Utilidad Neta (ROI: <span id="kpi-roi">0%</span>)</p><h4 id="kpi-neto" class="text-2xl font-black text-white mt-1">$0.00</h4></div>
+                        <div id="kpi-neto-card" class="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-[2.5rem] shadow-xl shadow-indigo-600/30 border border-indigo-400/30 flex flex-col justify-between h-40 hover-lift relative overflow-hidden">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-2"><Gem size={16}/> Utilidad Neta (ROI: <span id="kpi-roi">0%</span>)</p>
+                                <h4 id="kpi-neto" class="text-3xl font-black text-white mt-1 tracking-tighter">$0.00</h4>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Gráficos -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="card-clean p-6 lg:col-span-2 flex flex-col min-h-[350px]">
-                            <h3 class="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 text-brand-500"></i> P&L Global</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white lg:col-span-2 flex flex-col min-h-[400px]">
+                            <h3 class="text-base font-black text-slate-800 mb-8 flex items-center gap-3"><i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-500"></i> P&L Global Histórico</h3>
                             <div class="relative w-full flex-1"><canvas id="chart-tendencias"></canvas></div>
                         </div>
-                        <div class="card-clean p-6 lg:col-span-1 flex flex-col min-h-[350px]">
-                            <h3 class="text-sm font-bold text-slate-800 mb-6 flex items-center gap-2"><i data-lucide="pie-chart" class="w-4 h-4 text-amber-500"></i> Análisis de Gastos</h3>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white lg:col-span-1 flex flex-col min-h-[400px]">
+                            <h3 class="text-base font-black text-slate-800 mb-8 flex items-center gap-3"><i data-lucide="pie-chart" class="w-5 h-5 text-amber-500"></i> Fugas de Capital</h3>
                             <div class="relative w-full flex-1 flex justify-center"><canvas id="chart-gastos"></canvas></div>
                         </div>
                     </div>
@@ -509,55 +601,82 @@
 
             <!-- VIEW: CONFIGURACIÓN -->
             <div id="view-instrucciones" class="view-section">
-                <div class="max-w-2xl mx-auto card-clean p-8 sm:p-10 mt-10">
-                    <div class="w-16 h-16 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center mb-6 mx-auto"><i data-lucide="database" class="w-8 h-8 text-slate-700"></i></div>
-                    <h2 class="text-xl font-black text-slate-800 text-center mb-2">Conexión Backend</h2>
-                    <p class="text-sm text-slate-500 text-center mb-8 px-4">Pega la URL de tu nuevo despliegue de Google Apps Script.</p>
-                    <div class="flex flex-col gap-4">
-                        <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="w-full input-clean px-4 py-3 text-slate-700 font-mono text-xs text-center">
-                        <button onclick="guardarUrlConfig()" class="w-full bg-brand-600 text-white font-bold rounded-xl py-3.5 hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 text-sm"><i data-lucide="link" class="w-4 h-4"></i> Guardar y Conectar</button>
+                <div class="max-w-3xl mx-auto bg-white/90 backdrop-blur-3xl p-10 md:p-14 rounded-[3rem] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-white mt-10 relative overflow-hidden group">
+                    <div class="absolute right-[-10%] top-[-10%] w-64 h-64 bg-slate-100 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 bg-slate-900 rounded-[1.5rem] flex items-center justify-center mb-8 mx-auto shadow-xl shadow-slate-900/20"><i data-lucide="database" class="w-10 h-10 text-white"></i></div>
+                        <h2 class="text-3xl font-black text-slate-900 text-center tracking-tight mb-3">Motor Backend</h2>
+                        <p class="text-sm font-bold text-slate-500 text-center mb-10 px-4 max-w-lg mx-auto">Sincroniza la aplicación con tu archivo de Google Sheets pegando la URL Web App.</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">Endpoint URL (Exec)</label>
+                                <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="input-premium !text-center !font-mono !text-xs !py-5 shadow-inner">
+                            </div>
+                            <button onclick="guardarUrlConfig()" class="btn-premium bg-indigo-600 text-white hover:bg-indigo-500 shadow-[0_0_30px_rgba(79,70,229,0.3)] border border-indigo-400 flex justify-center items-center gap-3 py-5"><i data-lucide="link" class="w-5 h-5"></i> Establecer Conexión Segura</button>
+                        </div>
+                        
+                        <div class="mt-8 pt-8 border-t border-slate-100 text-center">
+                            <div id="config-status" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-400 shadow-sm">
+                                <span class="w-2 h-2 rounded-full bg-slate-300"></span> Desconectado
+                            </div>
+                        </div>
                     </div>
-                    <div id="config-status" class="mt-6 text-[10px] font-bold uppercase tracking-widest flex justify-center items-center gap-2 text-slate-400">Desconectado</div>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- MODAL KARDEX (Limpio y Centrado) -->
-    <div id="modal-kardex" class="fixed inset-0 z-[70] bg-slate-900/40 backdrop-blur-sm flex justify-center items-center opacity-0 pointer-events-none transition-opacity duration-200 p-4">
-        <div class="bg-white w-full max-w-4xl h-[90vh] sm:h-[85vh] rounded-2xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-200 overflow-hidden" id="modal-kardex-content">
-            <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50 shrink-0">
-                <div>
-                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-2"><i data-lucide="list" class="text-brand-600 w-5 h-5"></i> <span id="kardex-modal-title">Kardex General</span></h3>
-                    <p id="kardex-modal-subtitle" class="text-xs font-semibold text-slate-500 mt-1">Historial de Movimientos</p>
+    <!-- MODAL KARDEX PREMIUM (SaaS Level) -->
+    <div id="modal-kardex" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalKardex()"></div>
+        <div class="relative w-full max-w-5xl bg-white/95 border border-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] backdrop-blur-3xl rounded-[2.5rem] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-[90vh]" id="modal-kardex-content">
+            <div class="px-8 py-6 border-b border-slate-200/50 flex justify-between items-center bg-white/80 sticky top-0 z-10 shrink-0">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 rounded-2xl bg-indigo-50 border border-indigo-100 shadow-inner text-indigo-600"><i data-lucide="activity" class="w-6 h-6"></i></div>
+                    <div>
+                        <h3 class="font-black text-2xl tracking-tight text-slate-900 leading-none" id="kardex-modal-title">Kardex General</h3>
+                        <p id="kardex-modal-subtitle" class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Auditoría de Movimientos</p>
+                    </div>
                 </div>
-                <button onclick="cerrarModalKardex()" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="cerrarModalKardex()" class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all bg-slate-50 border border-slate-100"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-6 bg-white relative">
+            <div class="flex-1 overflow-y-auto p-8 bg-slate-50/50 custom-scrollbar relative">
                 <!-- Resumen Cajas Kardex -->
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="border border-slate-200 rounded-xl p-4 text-center bg-slate-50"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Entradas</p><p id="km-entradas" class="text-2xl font-black text-emerald-600">0</p></div>
-                    <div class="border border-slate-200 rounded-xl p-4 text-center bg-slate-50"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Salidas</p><p id="km-salidas" class="text-2xl font-black text-rose-500">0</p></div>
-                    <div class="border border-brand-200 rounded-xl p-4 text-center bg-brand-50 shadow-sm"><p class="text-[10px] font-bold text-brand-600 uppercase tracking-widest mb-1">Stock Físico</p><p id="km-stock" class="text-3xl font-black text-brand-700">0</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white rounded-[1.5rem] border border-slate-200 p-6 flex items-center gap-5 shadow-sm hover-lift">
+                        <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center border border-emerald-100"><i data-lucide="arrow-down-to-line" class="w-6 h-6"></i></div>
+                        <div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Entradas</p><p id="km-entradas" class="text-3xl font-black text-slate-800 tracking-tight">0</p></div>
+                    </div>
+                    <div class="bg-white rounded-[1.5rem] border border-slate-200 p-6 flex items-center gap-5 shadow-sm hover-lift">
+                        <div class="w-14 h-14 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center border border-rose-100"><i data-lucide="arrow-up-from-line" class="w-6 h-6"></i></div>
+                        <div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Salidas</p><p id="km-salidas" class="text-3xl font-black text-slate-800 tracking-tight">0</p></div>
+                    </div>
+                    <div class="bg-slate-900 rounded-[1.5rem] border border-slate-800 p-6 flex items-center gap-5 shadow-xl shadow-slate-900/20 hover-lift relative overflow-hidden">
+                        <div class="absolute right-[-10%] top-[-10%] w-24 h-24 bg-indigo-500/30 rounded-full blur-2xl"></div>
+                        <div class="w-14 h-14 bg-white/10 text-white rounded-2xl flex items-center justify-center border border-white/20 relative z-10"><i data-lucide="layers" class="w-6 h-6"></i></div>
+                        <div class="relative z-10"><p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Stock Físico</p><p id="km-stock" class="text-3xl font-black text-white tracking-tight">0</p></div>
+                    </div>
                 </div>
                 
                 <!-- Tabla Kardex -->
-                <div class="border border-slate-200 rounded-xl overflow-hidden">
-                    <div class="w-full overflow-x-auto">
-                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[600px]">
-                            <thead class="text-[10px] text-slate-500 uppercase bg-slate-50 tracking-widest border-b border-slate-200">
+                <div class="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50"><h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Asientos Contables (FIFO)</h4></div>
+                    <div class="w-full overflow-x-auto p-2">
+                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[700px]">
+                            <thead class="text-[9px] text-slate-400 uppercase tracking-widest bg-white border-b border-slate-100">
                                 <tr>
-                                    <th class="px-6 py-4 font-bold">Fecha</th>
-                                    <th class="px-4 py-4 font-bold">Movimiento</th>
-                                    <th class="px-4 py-4 font-bold">Referencia</th>
-                                    <th class="px-4 py-4 font-bold text-center">Cant.</th>
-                                    <th class="px-4 py-4 font-bold text-right">Valor Unit.</th>
-                                    <th class="px-6 py-4 font-bold text-right">Saldo</th>
+                                    <th class="px-6 py-4 font-black">Ref. y Fecha</th>
+                                    <th class="px-4 py-4 font-black">Operación</th>
+                                    <th class="px-4 py-4 font-black">Descripción</th>
+                                    <th class="px-4 py-4 font-black text-center">Unidades</th>
+                                    <th class="px-4 py-4 font-black text-right">Valor P.U.</th>
+                                    <th class="px-6 py-4 font-black text-right">Saldo Físico</th>
                                 </tr>
                             </thead>
-                            <tbody id="km-body" class="divide-y divide-slate-100"></tbody>
+                            <tbody id="km-body" class="divide-y divide-slate-50/80"></tbody>
                         </table>
                     </div>
                 </div>
@@ -578,10 +697,10 @@
             const backdrop = document.getElementById('sidebar-backdrop');
             if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+                backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
             } else {
                 sidebar.classList.add('-translate-x-full');
-                backdrop.classList.remove('opacity-100'); setTimeout(() => backdrop.classList.add('hidden'), 300);
+                backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300);
             }
         }
 
@@ -602,24 +721,35 @@
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
             
-            document.querySelectorAll('aside nav button').forEach(el => { el.classList.remove('bg-slate-50', 'text-brand-600'); el.classList.add('text-slate-600', 'border-transparent'); });
+            // Lógica Menú Lateral React-Style
+            document.querySelectorAll('aside nav button').forEach(el => { 
+                el.classList.remove('text-white'); el.classList.add('text-slate-500', 'hover:bg-slate-50', 'hover:text-slate-900'); 
+                const bg = el.querySelector('.nav-bg'); if(bg) { bg.classList.remove('opacity-100', 'scale-100'); bg.classList.add('opacity-0', 'scale-95'); }
+                const icon = el.querySelector('i'); if(icon) icon.classList.remove('text-indigo-400');
+            });
             const activeBtn = document.getElementById('nav-' + viewId);
-            if(activeBtn) { activeBtn.classList.remove('text-slate-600', 'border-transparent'); activeBtn.classList.add('bg-slate-50', 'text-brand-600'); }
+            if(activeBtn) { 
+                activeBtn.classList.remove('text-slate-500', 'hover:bg-slate-50', 'hover:text-slate-900'); activeBtn.classList.add('text-white'); 
+                const bg = activeBtn.querySelector('.nav-bg'); if(bg) { bg.classList.remove('opacity-0', 'scale-95'); bg.classList.add('opacity-100', 'scale-100'); }
+                const icon = activeBtn.querySelector('i'); if(icon) icon.classList.add('text-indigo-400');
+            }
             
             if(window.innerWidth < 1024) toggleSidebar();
             
-            const titles = { 'ventas': 'Punto de Venta', 'dashboard': 'Dashboard Analítico', 'catalogo': 'Catálogo', 'finanzas': 'Registro de Compras y Egresos', 'instrucciones': 'Ajustes', 'inventario': 'Control de Inventario' };
+            const titles = { 'ventas': 'Terminal de Ventas', 'dashboard': 'Inteligencia Financiera', 'catalogo': 'Directorio Maestro', 'finanzas': 'Libro Contable', 'instrucciones': 'Configuración Core', 'inventario': 'Gestión de Activos' };
             document.getElementById('page-title').innerText = titles[viewId] || '';
+            const icons = { 'ventas': 'shopping-cart', 'dashboard': 'pie-chart', 'catalogo': 'tags', 'finanzas': 'wallet', 'instrucciones': 'settings', 'inventario': 'layers' };
+            const hIcon = document.getElementById('header-icon'); if(hIcon) { hIcon.innerHTML = `<i data-lucide="${icons[viewId]||'activity'}" class="w-6 h-6"></i>`; lucide.createIcons(); }
 
             if(viewId === 'ventas') {
                 const stock = getStockConsolidado().filter(p => p.stock > 0);
-                document.getElementById('vent-producto').innerHTML = '<option value="">-- Elija producto con stock --</option>' + stock.map(p => `<option value="${p.id}">${p.nombre} (Disp: ${p.stock})</option>`).join('');
+                document.getElementById('vent-producto').innerHTML = '<option value="" disabled selected>Elegir producto en stock...</option>' + stock.map(p => `<option value="${p.id}">${p.nombre} (Disp: ${p.stock} u)</option>`).join('');
                 renderVentas();
             }
             if(viewId === 'finanzas') { 
                 renderSelectCategoriasGastos(); 
-                document.getElementById('egre-producto').innerHTML = '<option value="">-- Ninguno / Gasto General --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join(''); 
-                document.getElementById('comp-producto').innerHTML = '<option value="">-- Elija producto --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+                document.getElementById('egre-producto').innerHTML = '<option value="" disabled selected>-- Sin asociar --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join(''); 
+                document.getElementById('comp-producto').innerHTML = '<option value="" disabled selected>Buscar catálogo...</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
                 renderEgresos(); 
             }
             if(viewId === 'dashboard') { setTimeout(renderDashboard, 100); }
@@ -631,25 +761,27 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const isErr = type === 'error'; const isInfo = type === 'info';
-            const icon = isErr ? 'alert-circle' : (isInfo ? 'info' : 'check-circle-2');
-            const colorBg = isErr ? 'bg-rose-50 text-rose-600 border-rose-200' : (isInfo ? 'bg-blue-50 text-blue-600 border-blue-200' : 'bg-white text-slate-800 border-slate-200');
-            toast.className = `flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg border toast-enter w-full sm:w-auto ${colorBg}`;
-            toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 shrink-0 ${isErr?'text-rose-500':(isInfo?'text-blue-500':'text-emerald-500')}"></i><p class="font-bold text-sm leading-tight">${msg}</p>`;
+            const icon = isErr ? 'alert-triangle' : (isInfo ? 'info' : 'check-circle-2');
+            const colorBg = isErr ? 'bg-rose-600' : (isInfo ? 'bg-blue-600' : 'bg-slate-900');
+            toast.className = `flex items-center gap-4 px-6 py-4 rounded-2xl shadow-xl shadow-slate-900/10 border border-white/20 text-white toast-enter w-full sm:w-auto ${colorBg}`;
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 shrink-0 ${isErr?'text-rose-200':(isInfo?'text-blue-200':'text-indigo-400')}"></i><p class="font-bold text-sm tracking-wide">${msg}</p>`;
             container.appendChild(toast); lucide.createIcons({root: toast});
             setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 4000);
         }
         
-        const emptyStateHTML = (icon, title, desc, colspan) => `<tr><td colspan="${colspan}"><div class="flex flex-col items-center justify-center py-12 text-center"><div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3 text-slate-400 border border-slate-200"><i data-lucide="${icon}" class="w-6 h-6"></i></div><p class="text-sm font-bold text-slate-600">${title}</p><p class="text-xs text-slate-400 mt-1">${desc}</p></div></td></tr>`;
+        const emptyStateHTML = (icon, title, desc, colspan) => `<tr><td colspan="${colspan}"><div class="flex flex-col items-center justify-center py-16 text-center"><div class="w-16 h-16 bg-slate-50 rounded-[1.25rem] flex items-center justify-center mb-4 text-slate-400 border border-slate-100 shadow-inner"><i data-lucide="${icon}" class="w-8 h-8"></i></div><p class="text-sm font-black text-slate-700 tracking-tight">${title}</p><p class="text-xs font-bold text-slate-400 mt-1">${desc}</p></div></td></tr>`;
 
         // DB Fetch
         function guardarUrlConfig() {
             const url = document.getElementById('config-url-input').value.trim();
             if(url.startsWith('https://script.google.com/')) { localStorage.setItem('nexusERP_url', url); CONFIG_URL_GOOGLE = url; actualizarEstadoConfig(); showToast('Conexión guardada. Sincronizando...', 'success'); setTimeout(() => window.location.reload(), 1000); } 
-            else showToast('URL inválida', 'error');
+            else showToast('URL inválida. Revisa el endpoint.', 'error');
         }
         function actualizarEstadoConfig() {
             if(document.getElementById('config-url-input')) document.getElementById('config-url-input').value = CONFIG_URL_GOOGLE;
-            if(CONFIG_URL_GOOGLE && document.getElementById('config-status')) document.getElementById('config-status').innerHTML = `<i data-lucide="check" class="text-emerald-500 w-4 h-4"></i> <span class="text-emerald-600">Online</span>`;
+            const htmlOnline = `<div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div> <span class="text-emerald-600">Online</span>`;
+            if(CONFIG_URL_GOOGLE && document.getElementById('config-status')) document.getElementById('config-status').innerHTML = htmlOnline;
+            if(CONFIG_URL_GOOGLE && document.getElementById('config-status-sidebar')) document.getElementById('config-status-sidebar').innerHTML = `<span class="text-emerald-500">Conectado (Cloud)</span>`;
             if(window.lucide) lucide.createIcons();
         }
         async function cargarDatosDesdeGoogle() {
@@ -662,12 +794,12 @@
                 state.catalogo = data.catalogo || []; state.compras = data.compras || []; state.ventas = data.ventas || []; state.egresos = data.egresos || [];
                 if(data.categorias_gastos && data.categorias_gastos.length > 0) state.categoriasGastos = data.categorias_gastos;
                 localStorage.setItem('nexusERP_backup', JSON.stringify(state));
-                updateMonthFilterOptions(); renderAll(); showToast('Sincronizado con Google Sheets.');
+                updateMonthFilterOptions(); renderAll(); showToast('Directiva Sincronizada.');
             } catch (err) { 
                 console.warn("Aviso Cloud:", err);
                 const backup = localStorage.getItem('nexusERP_backup');
-                if (backup) { Object.assign(state, JSON.parse(backup)); updateMonthFilterOptions(); renderAll(); showToast('Modo Offline Activo.', 'info'); } 
-                else showToast('Error de conexión. Verifica la URL.', 'error');
+                if (backup) { Object.assign(state, JSON.parse(backup)); updateMonthFilterOptions(); renderAll(); showToast('Modo Offline Activo. (Backup Local)', 'info'); } 
+                else showToast('Fallo crítico de conexión al servidor.', 'error');
             } finally { loader.classList.add('hidden'); loader.classList.remove('flex'); }
         }
         function enviarAGoogleSheets(tipo, payload) {
@@ -700,42 +832,44 @@
             document.getElementById('inv-kpi-costo').innerText = formatMoney(totalCosto);
             document.getElementById('inv-kpi-potencial').innerText = formatMoney(totalPotencial);
 
-            if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('box', 'Inventario Vacío', 'Los productos aparecerán aquí.', 6);
+            if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('box', 'Almacén Vacío', 'Registra productos en el maestro.', 6);
 
             tbody.innerHTML = stockConsolidado.map(p => `
-                <tr class="${p.stock===0?'bg-slate-50 opacity-60 grayscale':'hover:bg-slate-50 cursor-pointer'} transition-colors border-b border-slate-100" ${p.stock>0 ? `onclick="abrirKardex('${p.id}')"` : `onclick="abrirKardex('${p.id}')"`}>
-                    <td class="px-6 py-4 font-bold text-slate-800 text-sm truncate max-w-[200px]">${p.nombre}</td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-1">
-                            <span class="text-[9px] uppercase font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded border border-brand-100">${p.categoria}</span>
-                            ${p.subcategoria ? `<span class="text-[9px] uppercase font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">${p.subcategoria}</span>` : ''}
+                <tr class="${p.stock===0?'bg-slate-50 opacity-60 grayscale':'hover:bg-slate-50/50 cursor-pointer'} transition-colors border-b border-slate-100 group" ${p.stock>0 ? `onclick="abrirKardex('${p.id}')"` : `onclick="abrirKardex('${p.id}')"`}>
+                    <td class="px-6 py-5">
+                        <p class="font-black text-slate-800 text-sm truncate max-w-[250px] group-hover:text-indigo-600 transition-colors">${p.nombre}</p>
+                        <p class="text-[9px] font-bold text-slate-400 font-mono tracking-widest mt-0.5">${p.id}</p>
+                    </td>
+                    <td class="px-4 py-5">
+                        <div class="flex items-center gap-1.5 flex-wrap max-w-[150px]">
+                            <span class="text-[9px] uppercase font-black tracking-widest text-indigo-700 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100">${p.categoria}</span>
+                            ${p.subcategoria ? `<span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-200">${p.subcategoria}</span>` : ''}
                         </div>
                     </td>
-                    <td class="px-4 py-4 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-500':'bg-slate-800 text-white'} px-3 py-1 rounded-lg text-xs font-bold">${p.stock}</span></td>
-                    <td class="px-4 py-4 text-right font-bold text-slate-600 text-sm">${formatMoney(p.costoPromedio)}</td>
-                    <td class="px-4 py-4 text-right font-bold text-brand-600 text-sm">${formatMoney(p.precio_base)}</td>
-                    <td class="px-6 py-4 text-center"><button class="bg-white border border-slate-200 shadow-sm p-1.5 rounded-lg text-slate-500 hover:text-brand-600 transition-colors"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
+                    <td class="px-4 py-5 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-500':'bg-slate-900 text-white shadow-md'} px-4 py-1.5 rounded-xl text-xs font-black">${p.stock}</span></td>
+                    <td class="px-4 py-5 text-right font-black text-rose-500/90 text-sm">${formatMoney(p.costoPromedio)}</td>
+                    <td class="px-4 py-5 text-right font-black text-emerald-600 text-sm">${formatMoney(p.precio_base)}</td>
+                    <td class="px-6 py-5 text-center"><button class="bg-white border border-slate-200 shadow-sm p-2 rounded-xl text-slate-400 hover:text-indigo-600 hover:border-indigo-200 transition-all"><i data-lucide="file-text" class="w-4 h-4"></i></button></td>
                 </tr>`).join('');
             lucide.createIcons();
         }
 
-        // KARDEX
+        // KARDEX (NIVEL BANCARIO)
         function abrirKardexGeneral() {
-            document.getElementById('kardex-modal-title').innerText = `Kardex General`;
-            document.getElementById('kardex-modal-subtitle').innerText = `Historial de todos los artículos`;
+            document.getElementById('kardex-modal-title').innerText = `Kardex Analítico General`;
+            document.getElementById('kardex-modal-subtitle').innerText = `Auditoría global de entradas y salidas`;
             procesarKardex(null);
         }
         function abrirKardex(prodId) {
             const prod = state.catalogo.find(p => p.id === prodId);
             if(!prod) return;
             document.getElementById('kardex-modal-title').innerText = `${prod.nombre}`;
-            document.getElementById('kardex-modal-subtitle').innerText = `P. Venta: ${formatMoney(prod.precio_base || 0)}`;
+            document.getElementById('kardex-modal-subtitle').innerText = `PVP Base: ${formatMoney(prod.precio_base || 0)} | Ref: ${prod.id}`;
             procesarKardex(prodId);
         }
 
         function procesarKardex(prodId = null) {
-            let comprasTarget = state.compras;
-            let ventasTarget = state.ventas;
+            let comprasTarget = state.compras; let ventasTarget = state.ventas;
             if(prodId) { comprasTarget = comprasTarget.filter(c => c.productoId === prodId); ventasTarget = ventasTarget.filter(v => v.productoId === prodId); }
 
             const comprasProd = comprasTarget.map(c => ({ tipo: 'ENTRADA', fechaStr: c.fecha, cant: c.cantidad_inicial, valorU: c.costo, id: c.id, refId: c.productoId }));
@@ -746,22 +880,25 @@
             movs.forEach(mov => {
                 if(mov.tipo === 'ENTRADA') { saldo += mov.cant; entTot += mov.cant; } else { saldo -= mov.cant; salTot += mov.cant; }
                 const isEntrada = mov.tipo === 'ENTRADA';
-                const badge = isEntrada ? '<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-bold text-[9px] uppercase">ENTRADA</span>' : '<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200 font-bold text-[9px] uppercase">SALIDA</span>';
-                const prodRef = prodId ? '' : `<p class="text-[10px] text-slate-500 truncate max-w-[150px] mt-0.5">${(state.catalogo.find(p=>p.id===mov.refId)||{}).nombre || 'N/A'}</p>`;
+                const badge = isEntrada ? '<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.8)]"></div><span class="text-emerald-700 font-black text-[9px] uppercase tracking-widest">Ingreso</span></div>' : '<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_5px_rgba(244,63,94,0.8)]"></div><span class="text-rose-700 font-black text-[9px] uppercase tracking-widest">Egreso</span></div>';
+                const prodRef = prodId ? '' : `<p class="text-[10px] text-slate-500 font-bold truncate max-w-[150px] mt-1">${(state.catalogo.find(p=>p.id===mov.refId)||{}).nombre || 'N/A'}</p>`;
 
-                filas.unshift(`<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                    <td class="px-6 py-4 text-slate-500 text-xs font-medium">${mov.fechaStr.split('T')[0].split(',')[0]}</td>
+                filas.unshift(`<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100/60">
+                    <td class="px-6 py-4">
+                        <div class="text-xs font-black text-slate-700">${mov.fechaStr.split('T')[0].split(',')[0]}</div>
+                        <div class="text-[9px] font-mono text-slate-400 mt-1">${mov.id}</div>
+                    </td>
                     <td class="px-4 py-4">${badge}</td>
-                    <td class="px-4 py-4"><span class="text-slate-400 font-mono text-[9px]">${mov.id}</span>${prodRef}</td>
-                    <td class="px-4 py-4 text-center font-bold ${isEntrada?'text-emerald-600':'text-slate-800'} text-sm">${isEntrada?'+':'-'}${mov.cant}</td>
-                    <td class="px-4 py-4 text-right text-xs font-medium text-slate-500">${formatMoney(mov.valorU)}</td>
-                    <td class="px-6 py-4 text-right font-bold text-slate-800 text-sm">${prodId ? saldo : '-'}</td>
+                    <td class="px-4 py-4">${prodId ? `<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ref Directa</span>` : prodRef}</td>
+                    <td class="px-4 py-4 text-center"><span class="px-3 py-1 rounded-lg text-sm font-black ${isEntrada?'bg-emerald-50 text-emerald-600':'bg-rose-50 text-rose-600'}">${isEntrada?'+':'-'}${mov.cant}</span></td>
+                    <td class="px-4 py-4 text-right text-xs font-bold text-slate-500">${formatMoney(mov.valorU)}</td>
+                    <td class="px-6 py-4 text-right font-black text-slate-900 text-lg">${prodId ? saldo : '-'}</td>
                 </tr>`);
             });
 
             document.getElementById('km-entradas').innerText = entTot; document.getElementById('km-salidas').innerText = salTot; 
             document.getElementById('km-stock').innerText = prodId ? saldo : '-';
-            document.getElementById('km-body').innerHTML = filas.length ? filas.join('') : emptyStateHTML('list', 'Sin Movimientos', 'Kardex limpio.', 6);
+            document.getElementById('km-body').innerHTML = filas.length ? filas.join('') : emptyStateHTML('ghost', 'Registro en Cero', 'Aún no hay transacciones para este activo.', 6);
             
             const modal = document.getElementById('modal-kardex');
             modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100');
@@ -780,10 +917,10 @@
         function updateAtributo(idx, field, val) { state.formAtributos[idx][field] = val; }
         function renderAtributosForm() {
             document.getElementById('atributos-container').innerHTML = state.formAtributos.map((a, i) => `
-                <div class="flex gap-2 items-center">
-                    <input type="text" placeholder="Atributo (Talla)" class="w-1/2 input-clean px-3 py-2 text-xs" value="${a.clave}" oninput="updateAtributo(${i}, 'clave', this.value)">
-                    <input type="text" placeholder="Valor (M)" class="w-1/2 input-clean px-3 py-2 text-xs" value="${a.valor}" oninput="updateAtributo(${i}, 'valor', this.value)">
-                    <button type="button" onclick="removeAtributo(${i})" class="text-slate-400 hover:text-rose-500 p-1"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <div class="flex gap-3 items-center">
+                    <input type="text" placeholder="Key (Ej: Talla)" class="w-1/2 input-premium !p-3 !text-xs !bg-white" value="${a.clave}" oninput="updateAtributo(${i}, 'clave', this.value)">
+                    <input type="text" placeholder="Valor (Ej: M)" class="w-1/2 input-premium !p-3 !text-xs !bg-white" value="${a.valor}" oninput="updateAtributo(${i}, 'valor', this.value)">
+                    <button type="button" onclick="removeAtributo(${i})" class="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-2 rounded-xl transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>`).join('');
             lucide.createIcons();
         }
@@ -798,29 +935,32 @@
             const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
             let atributosValidos = state.formAtributos.filter(a => a.clave.trim() && a.valor.trim());
 
-            const obj = { id: `PROD-${Date.now()}`, nombre: nombre, categoria: categoria, subcategoria: subcategoria, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: atributosValidos };
+            const obj = { id: `PRD-${Date.now().toString().slice(-6)}`, nombre: nombre, categoria: categoria, subcategoria: subcategoria, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: atributosValidos };
             state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
-            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogo(); showToast('Ficha creada.');
+            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogo(); showToast('Ficha técnica insertada con éxito.');
         }
 
         function renderCatalogo() {
             const tbody = document.getElementById('catalogo-body');
-            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Crea artículos a la izquierda.', 5);
+            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel izquierdo para crear perfiles.', 5);
             tbody.innerHTML = state.catalogo.slice().reverse().map(p => `
-                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                    <td class="px-6 py-4 font-bold text-slate-800 text-sm">${p.nombre}<br><span class="text-[9px] text-slate-400 font-mono">${p.id}</span></td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-1">
-                            <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[9px] font-bold uppercase border border-slate-200">${p.categoria}</span>
-                            ${p.subcategoria ? `<span class="bg-white text-slate-500 px-2 py-0.5 rounded text-[9px] font-bold uppercase border border-slate-200">${p.subcategoria}</span>` : ''}
+                <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
+                    <td class="px-6 py-5">
+                        <p class="font-black text-slate-800 text-sm">${p.nombre}</p>
+                        <p class="text-[9px] text-slate-400 font-mono font-bold mt-1">${p.id}</p>
+                    </td>
+                    <td class="px-4 py-5">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border border-indigo-100">${p.categoria}</span>
+                            ${p.subcategoria ? `<span class="bg-white text-slate-500 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border border-slate-200 shadow-sm">${p.subcategoria}</span>` : ''}
                         </div>
                     </td>
-                    <td class="px-4 py-4 text-right">
-                        <p class="font-bold text-emerald-600 text-sm">${formatMoney(p.precio_base || 0)}</p>
-                        ${p.costo_ref ? `<p class="text-[10px] text-slate-400">Ref: ${formatMoney(p.costo_ref)}</p>` : ''}
+                    <td class="px-4 py-5 text-right">
+                        <p class="font-black text-emerald-600 text-base">${formatMoney(p.precio_base || 0)}</p>
+                        ${p.costo_ref ? `<p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Ref: ${formatMoney(p.costo_ref)}</p>` : ''}
                     </td>
-                    <td class="px-4 py-4 text-center font-bold text-slate-600 text-xs">${p.descuento_max ? p.descuento_max + '%' : '-'}</td>
-                    <td class="px-6 py-4 whitespace-normal text-xs font-medium text-slate-500">${p.atributos.length ? p.atributos.map(a => `<span class="mr-1 inline-block bg-white px-1.5 py-0.5 rounded border border-slate-200 mb-1"><b>${a.clave}:</b> ${a.valor}</span>`).join('') : '-'}</td>
+                    <td class="px-4 py-5 text-center"><span class="font-black text-slate-600 text-xs bg-slate-100 px-3 py-1.5 rounded-lg">${p.descuento_max ? p.descuento_max + '%' : '-'}</span></td>
+                    <td class="px-6 py-5 whitespace-normal text-xs font-medium text-slate-500 max-w-[200px] leading-relaxed">${p.atributos.length ? p.atributos.map(a => `<span class="mr-1.5 inline-block bg-white px-2 py-1 rounded-md border border-slate-200 mb-1 shadow-sm"><b>${a.clave}:</b> ${a.valor}</span>`).join('') : '-'}</td>
                 </tr>`).join('');
         }
 
@@ -832,17 +972,17 @@
             const btnSub = document.getElementById('btn-submit-egreso'); const lblMon = document.getElementById('lbl-egre-monto');
 
             if(type === 'OPERATIVO') {
-                btnOp.className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all shadow-sm bg-white text-amber-600";
-                btnInv.className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-500 hover:bg-white/50";
+                btnOp.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md bg-white text-amber-600 border border-slate-200/60 scale-[1.02]";
+                btnInv.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700";
                 blkOp.classList.remove('hidden'); blkInv.classList.add('hidden');
-                btnSub.className = "w-full bg-amber-500 text-white font-bold rounded-xl py-3.5 mt-4 shadow-sm hover:bg-amber-600 transition-colors flex justify-center items-center gap-2 text-sm";
-                btnSub.innerHTML = '<i data-lucide="arrow-up-right" class="w-4 h-4"></i> Registrar Salida de Dinero'; lblMon.innerHTML = 'Monto Salida ($)';
+                btnSub.className = "btn-premium bg-amber-500 text-white hover:bg-amber-600 mt-6 shadow-[0_0_30px_rgba(245,158,11,0.3)] border border-amber-400 flex justify-center items-center gap-2";
+                btnSub.innerHTML = '<i data-lucide="arrow-up-right" class="w-5 h-5"></i> Procesar Gasto Operativo'; lblMon.innerHTML = 'Monto Salida ($)';
             } else {
-                btnInv.className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all shadow-sm bg-white text-emerald-600";
-                btnOp.className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-500 hover:bg-white/50";
+                btnInv.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md bg-white text-emerald-600 border border-slate-200/60 scale-[1.02]";
+                btnOp.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700";
                 blkInv.classList.remove('hidden'); blkOp.classList.add('hidden');
-                btnSub.className = "w-full bg-emerald-600 text-white font-bold rounded-xl py-3.5 mt-4 shadow-sm hover:bg-emerald-700 transition-colors flex justify-center items-center gap-2 text-sm";
-                btnSub.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> Ingresar Mercancía (Inventario)'; lblMon.innerHTML = 'Costo Total Pagado ($)';
+                btnSub.className = "btn-premium bg-emerald-600 text-white hover:bg-emerald-500 mt-6 shadow-[0_0_30px_rgba(16,185,129,0.3)] border border-emerald-400 flex justify-center items-center gap-2";
+                btnSub.innerHTML = '<i data-lucide="download" class="w-5 h-5"></i> Autorizar Compra de Stock'; lblMon.innerHTML = 'Costo Total de Factura ($)';
             }
             lucide.createIcons();
         }
@@ -853,41 +993,44 @@
             
             if(type === 'INVENTARIO') {
                 const prodId = document.getElementById('comp-producto').value, cant = parseInt(document.getElementById('comp-cant').value), costoTotal = parseFloat(document.getElementById('egre-monto').value);
-                if(!prodId || isNaN(cant) || cant <= 0) return showToast("Faltan datos de inventario.", "error");
-                const objComp = { id: `COMP-${Date.now()}`, fecha, productoId: prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: costoTotal / cant };
+                if(!prodId || isNaN(cant) || cant <= 0) return showToast("Por favor, revisa los datos del lote.", "error");
+                const objComp = { id: `CMP-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: costoTotal / cant };
                 state.compras.push(objComp); enviarAGoogleSheets("COMPRA", objComp);
-                const objEgre = { id: `EGRE-${Date.now()}`, fecha, concepto: `Compra: Lote ${cant} uds.`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: prodId };
+                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Adquisición Inventario (Lote: ${cant} uds)`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: prodId };
                 state.egresos.push(objEgre); enviarAGoogleSheets("EGRESO", objEgre);
-                document.getElementById('comp-cant').value = ''; document.getElementById('egre-monto').value = ''; showToast('Lote y Gasto registrados.');
+                document.getElementById('comp-cant').value = ''; document.getElementById('egre-monto').value = ''; showToast('Lote inyectado al Kardex.');
             } else {
-                const obj = { id: `EGRE-${Date.now()}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value };
+                const obj = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value };
                 state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
-                document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; showToast('Gasto operativo registrado.');
+                document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; showToast('Asiento contable registrado.');
             }
             renderEgresos();
         }
 
         function renderSelectCategoriasGastos() { document.getElementById('egre-categoria').innerHTML = state.categoriasGastos.map(c => `<option value="${c}">${c}</option>`).join(''); }
         function nuevaCategoriaGasto() {
-            const cat = prompt("Ingrese nueva categoría:");
-            if(cat && cat.trim() !== '') { state.categoriasGastos.push(cat.trim()); renderSelectCategoriasGastos(); document.getElementById('egre-categoria').value = cat.trim(); enviarAGoogleSheets("NUEVA_CATEGORIA_GASTO", { nombre: cat.trim() }); showToast("Categoría añadida."); }
+            const cat = prompt("Nombre de la nueva cuenta contable:");
+            if(cat && cat.trim() !== '') { state.categoriasGastos.push(cat.trim()); renderSelectCategoriasGastos(); document.getElementById('egre-categoria').value = cat.trim(); enviarAGoogleSheets("NUEVA_CATEGORIA_GASTO", { nombre: cat.trim() }); showToast("Cuenta creada en el plan."); }
         }
         function renderEgresos() {
             const tbody = document.getElementById('egresos-body'), data = getFilteredData(state.egresos, 'fecha');
             document.getElementById('egresos-total-mes').innerText = formatMoney(data.reduce((s, e) => s + e.monto, 0));
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Libro Mayor Vacío', 'Los gastos se reflejan aquí.', 4);
+            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 4);
             tbody.innerHTML = data.slice().reverse().map(e => {
                 const isInv = e.categoria_gasto === 'Inventario';
                 return `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                    <td class="px-6 py-4 text-slate-500 font-medium text-xs">${e.fecha.split('T')[0]}</td>
-                    <td class="px-4 py-4"><span class="${isInv ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'} px-2 py-0.5 rounded text-[9px] font-bold uppercase border">${e.categoria_gasto || 'General'}</span></td>
-                    <td class="px-4 py-4 font-bold text-slate-800 text-sm whitespace-normal min-w-[200px]">${e.concepto} ${e.producto_id ? `<span class="inline-block text-[10px] text-slate-400 font-medium ml-1">(Ref: ${(state.catalogo.find(p=>p.id===e.producto_id)||{}).nombre})</span>` : ''}</td>
-                    <td class="px-6 py-4 text-right font-bold ${isInv?'text-emerald-600':'text-amber-600'} text-sm">-${formatMoney(e.monto)}</td>
+                    <td class="px-6 py-5">
+                        <div class="text-xs font-black text-slate-700">${e.fecha.split('T')[0]}</div>
+                        <div class="text-[9px] font-mono text-slate-400 mt-1">${e.id}</div>
+                    </td>
+                    <td class="px-4 py-5"><span class="${isInv ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'} px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border shadow-sm">${e.categoria_gasto || 'General'}</span></td>
+                    <td class="px-4 py-5 font-bold text-slate-800 text-sm whitespace-normal min-w-[200px] leading-snug">${e.concepto} ${e.producto_id ? `<span class="inline-block text-[10px] text-indigo-500 font-black mt-1 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 block w-max">REF: ${(state.catalogo.find(p=>p.id===e.producto_id)||{}).nombre}</span>` : ''}</td>
+                    <td class="px-6 py-5 text-right font-black ${isInv?'text-emerald-600':'text-rose-600'} text-base">-${formatMoney(e.monto)}</td>
                 </tr>`;
             }).join('');
         }
 
-        // VENTAS
+        // VENTAS (POS)
         function autoFillPrecioVenta() {
             const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value);
             if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base;
@@ -896,7 +1039,7 @@
             e.preventDefault();
             const fecha = document.getElementById('vent-fecha').value, prodId = document.getElementById('vent-producto').value, cant = parseInt(document.getElementById('vent-cant').value), precio = parseFloat(document.getElementById('vent-precio').value);
             const stockDisp = state.compras.filter(c => c.productoId === prodId).reduce((a, c) => a + c.cantidad_restante, 0);
-            if (cant > stockDisp) return showToast(`Stock insuficiente. Disp: ${stockDisp}`, 'error');
+            if (cant > stockDisp) return showToast(`Stock en rojo. Máximo disponible: ${stockDisp} u.`, 'error');
 
             let comprasVirt = JSON.parse(JSON.stringify(state.compras)); 
             comprasVirt.sort((a, b) => { const d = new Date(a.fecha) - new Date(b.fecha); return d === 0 ? a.id.localeCompare(b.id) : d; });
@@ -907,22 +1050,25 @@
                     else { costoTotal += lote.cantidad_restante * lote.costo; qty -= lote.cantidad_restante; lote.cantidad_restante = 0; }
                 }
             }
-            const obj = { id: `VENT-${Date.now()}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal };
+            const obj = { id: `VNT-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal };
             state.compras = comprasVirt; state.ventas.push(obj); enviarAGoogleSheets("VENTA", obj);
-            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; navigate('ventas'); showToast('Venta Exitosa.');
+            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; navigate('ventas'); showToast('Facturación Procesada (FIFO)');
         }
         function renderVentas() {
             const tbody = document.getElementById('ventas-body'), data = getFilteredData(state.ventas, 'fecha');
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-cart', 'Sin Ventas', 'Aún no hay facturas.', 6);
+            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-bag', 'Caja en Blanco', 'Realiza la primera facturación.', 6);
             tbody.innerHTML = data.slice().reverse().map(v => {
                 const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desc.'};
                 return `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100">
-                    <td class="px-6 py-4 text-slate-500 font-medium text-xs">${v.fecha.split('T')[0].split(',')[0]}</td>
-                    <td class="px-4 py-4 font-bold text-slate-800 text-sm truncate max-w-[200px]">${p.nombre}</td>
-                    <td class="px-4 py-4 text-center font-bold text-slate-600 text-sm">${v.cantidad}</td>
-                    <td class="px-4 py-4 text-right font-bold text-slate-800 text-sm">${formatMoney(v.cantidad * v.precio)}</td>
-                    <td class="px-4 py-4 text-right font-medium text-rose-500 text-xs">${formatMoney(v.costo_fifo)}</td>
-                    <td class="px-6 py-4 text-right font-black text-emerald-600 text-sm">${formatMoney(v.ganancia)}</td>
+                    <td class="px-6 py-5">
+                        <div class="text-xs font-black text-slate-700">${v.fecha.split('T')[0].split(',')[0]}</div>
+                        <div class="text-[9px] font-mono text-slate-400 mt-1">${v.id}</div>
+                    </td>
+                    <td class="px-4 py-5 font-black text-slate-800 text-sm truncate max-w-[250px]">${p.nombre}</td>
+                    <td class="px-4 py-5 text-center"><span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg font-black text-xs">${v.cantidad} u</span></td>
+                    <td class="px-4 py-5 text-right font-black text-slate-800 text-base">${formatMoney(v.cantidad * v.precio)}</td>
+                    <td class="px-4 py-5 text-right font-bold text-rose-500 text-xs bg-rose-50/30">${formatMoney(v.costo_fifo)}</td>
+                    <td class="px-6 py-5 text-right font-black text-emerald-600 text-base bg-emerald-50/20">${formatMoney(v.ganancia)}</td>
                 </tr>`;
             }).join('');
         }
@@ -937,7 +1083,7 @@
             [...state.compras, ...state.ventas, ...state.egresos].forEach(i => { if(!i.fecha) return; const d = i.fecha.split('T')[0].split(',')[0].includes('/') ? i.fecha.split(',')[0].split('/').reverse().join('-') : i.fecha.split('T')[0]; const p = d.split('-'); if(p.length >= 2) ms.add(p[0].length===4 ? `${p[0]}-${p[1]}` : `${p[2]}-${p[1]}`); });
             const curr = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`; ms.add(curr);
             const sorted = Array.from(ms).sort().reverse();
-            select.innerHTML = '<option value="ALL">Todo el tiempo</option>' + sorted.map(ym => `<option value="${ym}">${new Date(ym.split('-')[0], parseInt(ym.split('-')[1])-1).toLocaleString('es-ES', {month: 'long'}).toUpperCase()} ${ym.split('-')[0]}</option>`).join('');
+            select.innerHTML = '<option value="ALL">Histórico Global</option>' + sorted.map(ym => `<option value="${ym}">${new Date(ym.split('-')[0], parseInt(ym.split('-')[1])-1).toLocaleString('es-ES', {month: 'long'}).toUpperCase()} ${ym.split('-')[0]}</option>`).join('');
             select.value = sorted.includes(select.value) ? select.value : curr;
         }
         function handleMonthChange() { renderVentas(); renderEgresos(); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); }
@@ -958,10 +1104,10 @@
 
             const renderDiff = (elId, val, base) => {
                 const el = document.getElementById(elId);
-                if(base === 0) { el.innerText = val > 0 ? '+100%' : '-'; el.className = val > 0 ? 'text-[10px] font-bold mt-1 text-emerald-500' : 'text-[10px] font-bold mt-1 text-slate-400'; return; }
+                if(base === 0) { el.innerText = val > 0 ? '+100%' : '-'; el.className = val > 0 ? 'text-[10px] font-black mt-2 text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded-md inline-block' : 'text-[10px] font-black mt-2 text-slate-500 bg-slate-800 px-2 py-1 rounded-md inline-block'; return; }
                 const diff = ((val - base) / base) * 100;
                 el.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
-                el.className = diff > 0 ? 'text-[10px] font-bold mt-1 text-emerald-500' : (diff < 0 ? 'text-[10px] font-bold mt-1 text-rose-500' : 'text-[10px] font-bold mt-1 text-slate-400');
+                el.className = diff > 0 ? 'text-[10px] font-black mt-2 text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded-md inline-block' : (diff < 0 ? 'text-[10px] font-black mt-2 text-rose-400 bg-rose-900/30 px-2 py-1 rounded-md inline-block' : 'text-[10px] font-black mt-2 text-slate-500 bg-slate-800 px-2 py-1 rounded-md inline-block');
             };
             renderDiff('flash-diff-ayer', vHoy, vAyer); renderDiff('flash-diff-semana', vHoy, vSem); renderDiff('flash-diff-mes', vHoy, vMes);
 
@@ -974,21 +1120,21 @@
             document.getElementById('kpi-roi').innerText = roi.toFixed(1) + '%';
             
             const cardNeto = document.getElementById('kpi-neto-card');
-            cardNeto.className = net < 0 ? 'bg-rose-600 text-white p-6 rounded-[1rem] shadow-lg flex flex-col justify-between h-32 hover-lift' : 'bg-brand-600 text-white p-6 rounded-[1rem] shadow-lg flex flex-col justify-between h-32 hover-lift';
+            cardNeto.className = net < 0 ? 'bg-gradient-to-br from-rose-600 to-rose-800 p-8 rounded-[2.5rem] shadow-xl shadow-rose-600/30 border border-rose-400/30 flex flex-col justify-between h-40 hover-lift relative overflow-hidden' : 'bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-[2.5rem] shadow-xl shadow-indigo-600/30 border border-indigo-400/30 flex flex-col justify-between h-40 hover-lift relative overflow-hidden';
 
-            const cOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 640 ? 'top' : 'bottom', labels: {font:{family:'Inter', size:11}, usePointStyle:true, padding: 15} } } };
+            const cOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 640 ? 'top' : 'bottom', labels: {font:{family:'Outfit', size:12, weight:'bold'}, usePointStyle:true, padding: 20} } } };
             
             if(charts.tend) charts.tend.destroy();
             charts.tend = new Chart(document.getElementById('chart-tendencias'), {
-                type: 'bar', data: { labels: ['Estado de Resultados'], datasets: [ { label: 'Ingresos', data: [ing], backgroundColor: '#3b82f6', borderRadius: 4 }, { label: 'Costo', data: [cos], backgroundColor: '#f43f5e', borderRadius: 4 }, { label: 'Gastos Op.', data: [egr], backgroundColor: '#f59e0b', borderRadius: 4 }, { label: 'Ganancia Neta', data: [net], backgroundColor: net>=0?'#10b981':'#9f1239', borderRadius: 4 } ] },
+                type: 'bar', data: { labels: ['Estado de Resultados'], datasets: [ { label: 'Ingresos', data: [ing], backgroundColor: '#4f46e5', borderRadius: 8 }, { label: 'Costo', data: [cos], backgroundColor: '#f43f5e', borderRadius: 8 }, { label: 'Gastos Op.', data: [egr], backgroundColor: '#f59e0b', borderRadius: 8 }, { label: 'Ganancia Neta', data: [net], backgroundColor: net>=0?'#10b981':'#9f1239', borderRadius: 8 } ] },
                 options: { ...cOpts, scales: { y: { grid: {color:'#f1f5f9'}, border:{display:false} }, x: { grid:{display:false}, border:{display:false} } } }
             });
 
             const catEgr = {}; e.forEach(x => { const cg = x.categoria_gasto || 'General'; catEgr[cg] = (catEgr[cg] || 0) + x.monto; });
             if(charts.gas) charts.gas.destroy();
             charts.gas = new Chart(document.getElementById('chart-gastos'), {
-                type: 'doughnut', data: { labels: Object.keys(catEgr), datasets: [{ data: Object.values(catEgr), backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#f43f5e', '#8b5cf6'], borderWidth: 2, borderColor: '#fff' }] },
-                options: { ...cOpts, cutout: '70%' }
+                type: 'doughnut', data: { labels: Object.keys(catEgr), datasets: [{ data: Object.values(catEgr), backgroundColor: ['#f59e0b', '#4f46e5', '#10b981', '#f43f5e', '#8b5cf6'], borderWidth: 3, borderColor: '#fff' }] },
+                options: { ...cOpts, cutout: '75%' }
             });
         }
     </script>
