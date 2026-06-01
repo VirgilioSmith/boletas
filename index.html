@@ -96,7 +96,7 @@
                 <i data-lucide="pie-chart" class="w-4 h-4 group-hover:scale-110 transition-transform"></i> Analítica Global
             </button>
             <button onclick="navigate('metas')" id="nav-metas" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all group text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <i data-lucide="target" class="w-4 h-4 group-hover:scale-110 transition-transform"></i> Estrategia & Metas
+                <i data-lucide="target" class="w-4 h-4 group-hover:scale-110 transition-transform"></i> Planner Objetivos
             </button>
 
             <div class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3 px-2 mt-6">🔄 Operaciones & CRM</div>
@@ -142,7 +142,7 @@
                     <span id="page-title">Cargando...</span>
                 </div>
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#020617] rounded-xl px-3 py-1.5 lg:px-4 lg:py-2 border border-slate-200 dark:border-slate-800 shadow-sm">
                     <i data-lucide="calendar" class="w-4 h-4 text-indigo-500"></i>
                     <select id="month-filter" onchange="handleMonthChange()" class="bg-transparent text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer border-none appearance-none pr-4">
@@ -154,48 +154,6 @@
         </header>
 
         <div class="flex-1 overflow-auto custom-scrollbar scroll-smooth w-full p-4 lg:p-8 relative z-0">
-
-            <!-- ========================================== -->
-            <!-- VIEW: ESTRATEGIA Y METAS (NUEVO)           -->
-            <!-- ========================================== -->
-            <div id="view-metas" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Estrategia & Metas</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Control corporativo de objetivos de venta por producto.</p>
-                        </div>
-                        <button onclick="abrirModalPlanner()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
-                            <i data-lucide="target" class="w-4 h-4"></i> Planner de Metas
-                        </button>
-                    </div>
-
-                    <!-- Avance Global -->
-                    <div class="card-panel p-8 md:p-12 relative overflow-hidden bg-slate-900 dark:bg-[#0b0f19] text-white border-0">
-                        <div class="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[80px] z-0 pointer-events-none"></div>
-                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <div class="flex-1 w-full">
-                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="target" class="w-4 h-4"></i> Avance Global del Catálogo</p>
-                                <div class="flex items-end gap-4 mb-6">
-                                    <p class="text-6xl md:text-7xl font-black tracking-tighter drop-shadow-lg" id="metas-global-pct">0<span class="text-3xl text-slate-400">%</span></p>
-                                    <div class="pb-2">
-                                        <p class="font-bold text-lg text-slate-200"><span id="metas-global-sold">0</span> <span class="text-xs text-slate-400">vendidas</span></p>
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Meta Acum: <span id="metas-global-target">0</span> uds.</p>
-                                    </div>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
-                                    <div id="metas-global-bar" class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="metas-productos-grid">
-                        <!-- Llenado por JS -->
-                    </div>
-                </div>
-            </div>
 
             <!-- ========================================== -->
             <!-- VIEW: DASHBOARD (TRIPLE ANÁLISIS)          -->
@@ -267,7 +225,6 @@
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-[#0b0f19]">
                             
-                            <!-- Col 1: Por Volumen -->
                             <div class="p-6">
                                 <div class="flex items-center gap-2 mb-4">
                                     <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="layers" class="w-4 h-4"></i></div>
@@ -276,7 +233,6 @@
                                 <div id="rank-vol" class="space-y-4"></div>
                             </div>
                             
-                            <!-- Col 2: Por Ingresos -->
                             <div class="p-6">
                                 <div class="flex items-center gap-2 mb-4">
                                     <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center"><i data-lucide="banknote" class="w-4 h-4"></i></div>
@@ -285,7 +241,6 @@
                                 <div id="rank-rev" class="space-y-4"></div>
                             </div>
 
-                            <!-- Col 3: Por Rentabilidad -->
                             <div class="p-6">
                                 <div class="flex items-center gap-2 mb-4">
                                     <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center"><i data-lucide="gem" class="w-4 h-4"></i></div>
@@ -312,6 +267,48 @@
             </div>
 
             <!-- ========================================== -->
+            <!-- VIEW: ESTRATEGIA Y METAS                   -->
+            <!-- ========================================== -->
+            <div id="view-metas" class="view-section">
+                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
+                        <div>
+                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Estrategia & Metas</h2>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Control corporativo de objetivos de venta por producto.</p>
+                        </div>
+                        <button onclick="abrirModalPlanner()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
+                            <i data-lucide="target" class="w-4 h-4"></i> Planner de Metas
+                        </button>
+                    </div>
+
+                    <!-- Avance Global -->
+                    <div class="card-panel p-8 md:p-12 relative overflow-hidden bg-slate-900 dark:bg-[#0b0f19] text-white border-0">
+                        <div class="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[80px] z-0 pointer-events-none"></div>
+                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div class="flex-1 w-full">
+                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="target" class="w-4 h-4"></i> Avance Global del Catálogo</p>
+                                <div class="flex items-end gap-4 mb-6">
+                                    <p class="text-6xl md:text-7xl font-black tracking-tighter drop-shadow-lg" id="metas-global-pct">0<span class="text-3xl text-slate-400">%</span></p>
+                                    <div class="pb-2">
+                                        <p class="font-bold text-lg text-slate-200"><span id="metas-global-sold">0</span> <span class="text-xs text-slate-400">vendidas</span></p>
+                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Meta Acum: <span id="metas-global-target">0</span> uds.</p>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
+                                    <div id="metas-global-bar" class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="metas-productos-grid">
+                        <!-- Llenado por JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
             <!-- VIEW: CUENTAS CLAVE (CRM)                  -->
             <!-- ========================================== -->
             <div id="view-crm" class="view-section">
@@ -319,7 +316,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <div>
                             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Directorio B2B (CRM)</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Administra cuentas clave, créditos y volumen de compra.</p>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Administra cuentas clave, condiciones comerciales y volumen de compra.</p>
                         </div>
                         <button onclick="abrirModalCRM()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
                             <i data-lucide="user-plus" class="w-4 h-4"></i> Registrar Cliente
@@ -424,11 +421,21 @@
                                     <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800/60">
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Categoría</label>
-                                            <input type="text" id="prod-categoria" required placeholder="General" class="input-global !px-3 !py-2.5 text-sm">
+                                            <div class="flex gap-2">
+                                                <select id="prod-categoria" onchange="actualizarSubcategoriasCatalogo()" class="input-global !px-3 !py-2.5 text-sm appearance-none truncate">
+                                                    <!-- Llenado por JS -->
+                                                </select>
+                                                <button type="button" onclick="nuevaCategoriaCatalogo()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 transition-colors shadow-sm shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                            </div>
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5 ml-1">Subcategoría</label>
-                                            <input type="text" id="prod-subcategoria" placeholder="Específica" class="input-global !px-3 !py-2.5 text-sm">
+                                            <div class="flex gap-2">
+                                                <select id="prod-subcategoria" class="input-global !px-3 !py-2.5 text-sm appearance-none truncate">
+                                                    <!-- Llenado por JS -->
+                                                </select>
+                                                <button type="button" onclick="nuevaSubcategoriaCatalogo()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 transition-colors shadow-sm shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                            </div>
                                         </div>
                                         <div class="col-span-2">
                                             <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Proveedor Principal</label>
@@ -481,7 +488,7 @@
                         
                         <div class="lg:col-span-8">
                             <div class="card-panel overflow-hidden flex flex-col h-[850px]">
-                                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] shrink-0">
+                                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] shrink-0 flex justify-between items-center">
                                     <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="database" class="text-indigo-500 w-5 h-5"></i> Directorio Base</h3>
                                 </div>
                                 <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
@@ -490,9 +497,9 @@
                                             <tr>
                                                 <th class="px-6 py-4 font-bold rounded-l-xl">Artículo</th>
                                                 <th class="px-4 py-4 font-bold">Jerarquía</th>
-                                                <th class="px-4 py-4 font-bold">Proveedor</th>
                                                 <th class="px-4 py-4 font-bold text-right text-emerald-500">PVP Base</th>
-                                                <th class="px-6 py-4 font-bold w-full rounded-r-xl">Especificaciones</th>
+                                                <th class="px-6 py-4 font-bold w-full">Especificaciones</th>
+                                                <th class="px-4 py-4 font-bold text-center rounded-r-xl">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody id="catalogo-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
@@ -578,7 +585,7 @@
                                     <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="history" class="text-slate-500 w-5 h-5"></i> Flujo de Salidas Realizadas</h3>
                                 </div>
                                 <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[950px]">
                                         <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-white dark:bg-[#0f172a] sticky top-0 z-10">
                                             <tr>
                                                 <th class="px-6 py-4 font-bold rounded-l-xl">Ticket / Emisión</th>
@@ -587,7 +594,8 @@
                                                 <th class="px-4 py-4 font-bold text-center">Vol.</th>
                                                 <th class="px-4 py-4 font-bold text-right">Monto Bruto</th>
                                                 <th class="px-4 py-4 font-bold text-right text-rose-500">Costo FIFO</th>
-                                                <th class="px-6 py-4 font-bold text-right text-emerald-500 rounded-r-xl">Ganancia</th>
+                                                <th class="px-4 py-4 font-bold text-right text-emerald-500">Ganancia</th>
+                                                <th class="px-6 py-4 font-bold text-center rounded-r-xl">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody id="ventas-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
@@ -607,7 +615,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
                         <div>
                             <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Libro Contable</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Centraliza salidas de dinero, con desglose fiscal y métodos de pago.</p>
+                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Centraliza salidas de dinero, compra de inventario y gastos operativos.</p>
                         </div>
                     </div>
 
@@ -626,7 +634,7 @@
                                     
                                     <div class="grid grid-cols-2 gap-3">
                                         <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Fecha</label><input type="date" id="egre-fecha" required class="input-global !px-3"></div>
-                                        <div><label id="lbl-egre-monto" class="block text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1.5 ml-1">Total Pagado ($)</label><input type="number" id="egre-monto" min="0.01" step="0.01" required placeholder="0.00" class="input-global !border-rose-200 dark:!border-rose-900/50 !bg-rose-50/30 dark:!bg-rose-900/10 !text-rose-600 !font-black text-center"></div>
+                                        <div class="hidden" id="blk-egre-monto-total"><label id="lbl-egre-monto" class="block text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1.5 ml-1">Total Pagado ($)</label><input type="number" id="egre-monto" min="0.01" step="0.01" placeholder="0.00" class="input-global !border-rose-200 dark:!border-rose-900/50 !bg-rose-50/30 dark:!bg-rose-900/10 !text-rose-600 !font-black text-center"></div>
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-3">
@@ -645,15 +653,20 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- BLOQUE INVENTARIO -->
+                                    <!-- BLOQUE INVENTARIO MULTIPLE -->
                                     <div id="bloque-gasto-inventario" class="space-y-4 p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl">
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1.5 ml-1">Producto Entrante</label>
-                                            <select id="comp-producto" class="input-global !border-emerald-200 dark:!border-emerald-800/50 truncate appearance-none !bg-white dark:!bg-[#0f172a]"></select>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-1"><i data-lucide="package" class="w-3 h-3"></i> Lotes Entrantes</span>
+                                            <button type="button" onclick="addCompraItem()" class="text-[9px] font-black uppercase text-emerald-600 bg-emerald-100 dark:bg-emerald-800/50 px-2 py-1 rounded">+ Añadir otro</button>
                                         </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1.5 ml-1">Unidades (Lote)</label>
-                                            <input type="number" id="comp-cant" min="1" placeholder="Ej: 50" class="input-global !border-emerald-200 dark:!border-emerald-800/50 text-center font-black !bg-white dark:!bg-[#0f172a]">
+                                        
+                                        <div id="compras-multiples-container" class="space-y-3">
+                                            <!-- Items dinámicos aquí -->
+                                        </div>
+                                        
+                                        <div class="pt-3 border-t border-emerald-200 dark:border-emerald-800 flex justify-between items-center">
+                                            <span class="text-xs font-black text-slate-600 dark:text-slate-300">Total Compra:</span>
+                                            <span id="lbl-total-compras" class="text-xl font-black text-rose-600 dark:text-rose-400">RD$ 0.00</span>
                                         </div>
                                     </div>
 
@@ -692,14 +705,15 @@
                                     </div>
                                 </div>
                                 <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[850px]">
+                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
                                         <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-white dark:bg-[#0f172a] sticky top-0 z-10">
                                             <tr>
                                                 <th class="px-6 py-4 font-bold rounded-l-xl">Fecha / Ref</th>
                                                 <th class="px-4 py-4 font-bold">Cuenta</th>
                                                 <th class="px-4 py-4 font-bold">Pago / Prov.</th>
                                                 <th class="px-4 py-4 font-bold w-full">Concepto Contable</th>
-                                                <th class="px-6 py-4 font-bold text-right text-rose-500 rounded-r-xl">Salida ($)</th>
+                                                <th class="px-4 py-4 font-bold text-right text-rose-500">Salida ($)</th>
+                                                <th class="px-6 py-4 font-bold text-center rounded-r-xl">Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody id="egresos-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
@@ -796,120 +810,19 @@
         </div>
     </div>
 
-    <!-- MODAL KARDEX PREMIUM (Bancario) -->
-    <div id="modal-kardex" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="cerrarModalKardex()"></div>
-        <div class="relative w-full max-w-6xl card-panel overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-[90vh] sm:h-[85vh] !rounded-[2rem]" id="modal-kardex-content">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-indigo-500"><i data-lucide="activity" class="w-5 h-5"></i></div>
-                    <div>
-                        <h3 class="font-black text-xl tracking-tight text-slate-800 dark:text-white leading-none" id="kardex-modal-title">Kardex de Auditoría</h3>
-                        <p id="kardex-modal-subtitle" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Control Financiero y Físico</p>
-                    </div>
-                </div>
-                <button onclick="cerrarModalKardex()" class="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50 dark:bg-[#020617] custom-scrollbar">
-                <div class="card-panel overflow-hidden">
-                    <div class="w-full overflow-x-auto p-2">
-                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
-                            <thead class="bg-white dark:bg-[#0b0f19] text-slate-500 font-bold uppercase tracking-wider text-[9px]">
-                                <tr>
-                                    <th class="p-4 border-r border-b border-slate-200 dark:border-slate-800">Transacción Base</th>
-                                    <th class="p-4 text-center border-r border-b border-slate-200 dark:border-slate-800 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-600 dark:text-emerald-500" colspan="3">Debe (Ingreso Almacén)</th>
-                                    <th class="p-4 text-center border-r border-b border-slate-200 dark:border-slate-800 bg-rose-50/50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-500" colspan="3">Haber (Salida Almacén)</th>
-                                    <th class="p-4 text-center border-b border-slate-200 dark:border-slate-800 bg-indigo-50/50 dark:bg-indigo-900/10 text-indigo-600 dark:text-indigo-400" colspan="3">Saldos Físicos y Valuación Continua</th>
-                                </tr>
-                                <tr class="text-[9px] bg-slate-50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800">
-                                    <th class="p-3 border-r border-slate-200 dark:border-slate-800 text-slate-400">Dato Referencial</th>
-                                    <th class="p-3 text-right">Cant</th><th class="p-3 text-right">Costo U.</th><th class="p-3 text-right border-r border-slate-200 dark:border-slate-800">Monto Total</th>
-                                    <th class="p-3 text-right">Cant</th><th class="p-3 text-right">Costo U.</th><th class="p-3 text-right border-r border-slate-200 dark:border-slate-800">Monto Total</th>
-                                    <th class="p-3 text-right">Stock Q</th><th class="p-3 text-right">CPP U.</th><th class="p-3 text-right">Balance $</th>
-                                </tr>
-                            </thead>
-                            <tbody id="km-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-[#0b0f19]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL PLANNER DE METAS -->
-    <div id="modal-planner" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="cerrarModalPlanner()"></div>
-        <div class="relative w-full max-w-4xl card-panel overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-[85vh]" id="modal-planner-content">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-indigo-500"><i data-lucide="target" class="w-5 h-5"></i></div>
-                    <div>
-                        <h3 class="font-black text-xl tracking-tight text-slate-800 dark:text-white leading-none">Planner Automático</h3>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Configuración de Cuotas</p>
-                    </div>
-                </div>
-                <button onclick="cerrarModalPlanner()" class="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-[#020617] custom-scrollbar space-y-6">
-                <div class="card-panel p-5">
-                    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="filter" class="w-3 h-3"></i> 1. Segmentar Grupo Objetivo</h4>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <select id="planner-cat" onchange="actualizarFiltrosPlanner()" class="input-global flex-1 !py-3 !text-sm"><option value="ALL">Todas las Categorías</option></select>
-                        <select id="planner-subcat" onchange="renderListaPlanner()" class="input-global flex-1 !py-3 !text-sm"><option value="ALL">Cualquier Subcategoría</option></select>
-                    </div>
-                </div>
-                <div class="card-panel p-5 bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-100 dark:border-indigo-900/30">
-                    <h4 class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="calculator" class="w-3 h-3"></i> 2. Distribución Matemática Pareja (Opcional)</h4>
-                    <div class="flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="flex-1 w-full">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Volumen Total a Vender (Uds)</label>
-                            <input type="number" id="planner-mass-qty" min="1" placeholder="Ej: 1000" class="input-global !py-3 !text-sm !border-indigo-200 dark:!border-indigo-800">
-                        </div>
-                        <button type="button" onclick="aplicarDistribucionMasiva()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm w-full sm:w-auto">Distribuir</button>
-                    </div>
-                </div>
-                <div class="card-panel overflow-hidden">
-                    <div class="grid grid-cols-12 gap-4 p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#0b0f19] text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6">
-                        <div class="col-span-8">Catálogo Filtrado</div>
-                        <div class="col-span-4 text-right">Meta (Uds)</div>
-                    </div>
-                    <div class="max-h-[35vh] overflow-y-auto custom-scrollbar p-2 space-y-1" id="planner-products-list"></div>
-                </div>
-                <button type="button" onclick="guardarMetas()" class="w-full text-white py-4 rounded-xl font-black text-lg shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all bg-slate-900 dark:bg-indigo-600 flex items-center justify-center gap-2">
-                    <i data-lucide="save" class="w-5 h-5"></i> Confirmar Plan de Metas
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- SCRIPT CORE -->
     <script>
         const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
         
-        let state = { 
-            catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [{ clave: '', valor: '' }], 
-            categoriasGastos: ['Operativo', 'Marketing', 'Logística', 'Nómina'], clientes: [], 
-            metasGlobales: JSON.parse(localStorage.getItem('elbien_metas')) || {} 
-        };
-        let plannerDataLocal = {};
-        let activeCatFilter = 'ALL'; let activeSubCatFilter = 'ALL';
-        let charts = {};
+        let state = { catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [{ clave: '', valor: '' }], formComprasItems: [], categoriasGastos: ['Operativo', 'Marketing', 'Logística', 'Nómina'], clientes: [], metasGlobales: JSON.parse(localStorage.getItem('elbien_metas')) || {} };
+        let activeCatFilter = 'ALL'; let activeSubCatFilter = 'ALL'; let charts = {};
         let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
 
         function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
-            if(window.lucide) lucide.createIcons();
-            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); 
+            document.documentElement.classList.toggle('dark'); const isDark = document.documentElement.classList.contains('dark'); localStorage.setItem('theme', isDark ? 'dark' : 'light'); document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
+            if(window.lucide) lucide.createIcons(); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); 
         }
-
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar'); const backdrop = document.getElementById('sidebar-backdrop');
@@ -919,15 +832,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             if(window.lucide) lucide.createIcons();
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
+            const isDark = document.documentElement.classList.contains('dark'); document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
             
             const today = new Date().toISOString().split('T')[0];
             ['comp-fecha', 'egre-fecha', 'vent-fecha'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = today; });
             
             actualizarEstadoConfig();
-            if(CONFIG_URL_GOOGLE) { navigate('dashboard'); cargarDatosDesdeGoogle(); } 
-            else { navigate('instrucciones'); document.getElementById('loading-overlay').classList.add('hidden'); }
+            if(CONFIG_URL_GOOGLE) { navigate('dashboard'); cargarDatosDesdeGoogle(); } else { navigate('instrucciones'); document.getElementById('loading-overlay').classList.add('hidden'); }
         });
 
         function navigate(viewId) {
@@ -935,14 +846,10 @@
             document.getElementById('view-' + viewId).classList.add('active');
             
             document.querySelectorAll('aside nav button').forEach(el => { 
-                el.classList.remove('text-slate-900', 'dark:text-white', 'bg-slate-50', 'dark:bg-slate-800/50'); 
-                el.classList.add('text-slate-600', 'dark:text-slate-400');
+                el.classList.remove('text-slate-900', 'dark:text-white', 'bg-slate-50', 'dark:bg-slate-800/50'); el.classList.add('text-slate-600', 'dark:text-slate-400');
             });
             const activeBtn = document.getElementById('nav-' + viewId);
-            if(activeBtn) { 
-                activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400'); 
-                activeBtn.classList.add('text-slate-900', 'dark:text-white', 'bg-slate-50', 'dark:bg-slate-800/50'); 
-            }
+            if(activeBtn) { activeBtn.classList.remove('text-slate-600', 'dark:text-slate-400'); activeBtn.classList.add('text-slate-900', 'dark:text-white', 'bg-slate-50', 'dark:bg-slate-800/50'); }
             
             if(window.innerWidth < 1024) toggleSidebar();
             
@@ -952,21 +859,20 @@
             const hIcon = document.getElementById('header-icon'); if(hIcon) { hIcon.innerHTML = `<i data-lucide="${icons[viewId]||'activity'}" class="w-5 h-5"></i>`; if(window.lucide) lucide.createIcons(); }
 
             if(viewId === 'ventas') { renderVentasSelect(); renderVentas(); }
-            if(viewId === 'finanzas') { renderSelectCategoriasGastos(); document.getElementById('egre-producto').innerHTML = '<option value="" disabled selected>-- Sin asociar --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join(''); document.getElementById('comp-producto').innerHTML = '<option value="" disabled selected>Buscar catálogo...</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join(''); renderEgresos(); }
+            if(viewId === 'finanzas') { renderSelectCategoriasGastos(); document.getElementById('egre-producto').innerHTML = '<option value="" disabled selected>-- Sin asociar --</option>' + state.catalogo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join(''); addCompraItem(); renderEgresos(); }
             if(viewId === 'dashboard') setTimeout(renderDashboard, 100);
             if(viewId === 'inventario') renderInventario();
-            if(viewId === 'catalogo') { renderCatalogo(); renderAtributosForm(); }
+            if(viewId === 'catalogo') { renderCatalogoSelects(); renderCatalogo(); renderAtributosForm(); }
             if(viewId === 'metas') renderMetas();
             if(viewId === 'crm') renderCRM();
         }
 
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container'); const toast = document.createElement('div');
-            const isErr = type === 'error'; const isInfo = type === 'info';
-            const icon = isErr ? 'alert-triangle' : (isInfo ? 'info' : 'check-circle-2');
+            const isErr = type === 'error'; const isInfo = type === 'info'; const icon = isErr ? 'alert-triangle' : (isInfo ? 'info' : 'check-circle-2');
             const colorBg = isErr ? 'bg-rose-50 border-rose-200 text-rose-700 dark:bg-rose-900/90 dark:border-rose-800 dark:text-rose-100' : (isInfo ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/90 dark:border-blue-800 dark:text-blue-100' : 'bg-slate-900 text-white dark:bg-slate-800 border-transparent dark:border-slate-700');
             const iconColor = isErr ? 'text-rose-500 dark:text-rose-300' : (isInfo ? 'text-blue-500 dark:text-blue-300' : 'text-emerald-400');
-            toast.className = `flex items-center gap-3 px-5 py-4 rounded-2xl shadow-xl border toast-enter w-full sm:w-auto ${colorBg}`;
+            toast.className = `flex items-center gap-3 px-5 py-4 rounded-2xl shadow-xl border toast-enter w-full sm:w-auto z-[999] ${colorBg}`;
             toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 shrink-0 ${iconColor}"></i><p class="font-bold text-sm tracking-tight">${msg}</p>`;
             container.appendChild(toast); if(window.lucide) lucide.createIcons({root: toast});
             setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 4000);
@@ -974,6 +880,7 @@
         
         const emptyStateHTML = (icon, title, desc, colspan) => `<tr><td colspan="${colspan}"><div class="flex flex-col items-center justify-center py-16 text-center"><div class="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-[1rem] flex items-center justify-center mb-4 text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700"><i data-lucide="${icon}" class="w-6 h-6"></i></div><p class="text-sm font-bold text-slate-700 dark:text-slate-300">${title}</p><p class="text-xs font-medium text-slate-400 mt-1">${desc}</p></div></td></tr>`;
 
+        // DB Fetch & Delete
         function guardarUrlConfig() {
             const url = document.getElementById('config-url-input').value.trim();
             if(url.startsWith('https://script.google.com/')) { localStorage.setItem('nexusERP_url', url); CONFIG_URL_GOOGLE = url; actualizarEstadoConfig(); showToast('Conexión guardada. Sincronizando...', 'success'); setTimeout(() => window.location.reload(), 1000); } 
@@ -994,14 +901,13 @@
                 if(!response.ok) throw new Error('Network error');
                 const data = await response.json();
                 
-                // Mapeo seguro de nuevos campos por si el backend viejo no los trae
                 state.catalogo = (data.catalogo || []).map(c => ({...c, proveedor: c.proveedor || '', unidad: c.unidad || 'Uds'})); 
                 state.compras = data.compras || []; 
                 state.ventas = (data.ventas || []).map(v => ({...v, metodoPago: v.metodoPago || 'Efectivo', ncf: v.ncf || ''})); 
                 state.egresos = (data.egresos || []).map(e => ({...e, metodoPago: e.metodoPago || 'Transferencia', ncf: e.ncf || '', proveedor: e.proveedor || ''})); 
                 state.clientes = (data.clientes || []).map(c => ({...c, rnc: c.rnc || '', limite: c.limite || 0}));
-                
                 if(data.categorias_gastos && data.categorias_gastos.length > 0) state.categoriasGastos = data.categorias_gastos;
+                
                 localStorage.setItem('nexusERP_backup', JSON.stringify(state));
                 updateMonthFilterOptions(); renderAll(); showToast('Sistema Sincronizado.');
             } catch (err) { 
@@ -1018,31 +924,25 @@
             if (!CONFIG_URL_GOOGLE) return;
             fetch(CONFIG_URL_GOOGLE, { method: 'POST', mode: 'no-cors', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ tipo, ...payload }) }).catch(e=>console.warn("Offline save"));
         }
+        function eliminarRegistro(tipo, id, sheetName) {
+            if(!confirm(`¿Estás seguro de eliminar este registro? Se recalculará todo automáticamente.`)) return;
+            
+            if(tipo === 'VENTA') state.ventas = state.ventas.filter(x => x.id !== id);
+            else if(tipo === 'EGRESO') state.egresos = state.egresos.filter(x => x.id !== id);
+            else if(tipo === 'CATALOGO') state.catalogo = state.catalogo.filter(x => x.id !== id);
+            else if(tipo === 'CLIENTE') state.clientes = state.clientes.filter(x => x.id !== id);
+            
+            enviarAGoogleSheets('DELETE', { sheetName, id });
+            renderAll(); showToast('Registro eliminado con éxito', 'info');
+        }
 
-        // --- FUNCIONES CORE: CRM ---
-        function abrirModalCRM() {
-            document.getElementById('modal-crm').classList.remove('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-0', 'opacity-100');
-            document.getElementById('modal-crm-content').classList.replace('scale-95', 'scale-100');
-        }
-        function cerrarModalCRM() {
-            document.getElementById('modal-crm').classList.add('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-100', 'opacity-0');
-            document.getElementById('modal-crm-content').classList.replace('scale-100', 'scale-95');
-        }
+        // --- FUNCIONES CRM ---
+        function abrirModalCRM() { document.getElementById('modal-crm').classList.remove('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-crm-content').classList.replace('scale-95', 'scale-100'); }
+        function cerrarModalCRM() { document.getElementById('modal-crm').classList.add('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-crm-content').classList.replace('scale-100', 'scale-95'); }
         function handleCrearCliente(e) {
             e.preventDefault();
-            const obj = { 
-                id: `CL-${Date.now().toString().slice(-6)}`, 
-                nombre: document.getElementById('crm-nombre').value, 
-                email: '', 
-                phone: document.getElementById('crm-phone').value, 
-                tipo: document.getElementById('crm-tipo').value, 
-                address: '', 
-                notes: '',
-                rnc: document.getElementById('crm-rnc').value,
-                limite: parseFloat(document.getElementById('crm-limite').value) || 0
-            };
-            state.clientes.push(obj); enviarAGoogleSheets("NUEVO_CLIENTE", obj); renderCRM(); 
-            cerrarModalCRM(); e.target.reset(); showToast('Cuenta Clave B2B añadida.');
+            const obj = { id: `CL-${Date.now().toString().slice(-6)}`, nombre: document.getElementById('crm-nombre').value, email: '', phone: document.getElementById('crm-phone').value, tipo: document.getElementById('crm-tipo').value, address: '', notes: '', rnc: document.getElementById('crm-rnc').value, limite: parseFloat(document.getElementById('crm-limite').value) || 0 };
+            state.clientes.push(obj); enviarAGoogleSheets("NUEVO_CLIENTE", obj); renderCRM(); cerrarModalCRM(); e.target.reset(); showToast('Cuenta B2B añadida.');
         }
         function renderCRM() {
             const grid = document.getElementById('crm-grid');
@@ -1051,16 +951,17 @@
                 const totalSpent = state.ventas.filter(v => v.cliente === c.id || v.cliente === c.nombre).reduce((acc, v) => acc + (v.cantidad * v.precio), 0);
                 return `
                 <div class="card-panel p-6 hover-lift relative overflow-hidden group">
+                    <button onclick="eliminarRegistro('CLIENTE', '${c.id}', 'Clientes_CRM')" class="absolute top-4 right-4 p-2 text-slate-300 hover:text-rose-500 bg-slate-50 dark:bg-slate-800 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-20"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     ${c.tipo.includes('VIP') ? '<div class="absolute top-0 right-0 bg-indigo-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg">VIP</div>' : ''}
                     <div class="flex items-center gap-4 mb-4">
                         <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-xl font-black text-slate-400">${c.nombre.charAt(0)}</div>
-                        <div class="flex-1 min-w-0">
+                        <div class="flex-1 min-w-0 pr-8">
                             <h3 class="font-bold text-base text-slate-800 dark:text-slate-100 truncate">${c.nombre}</h3>
                             <p class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">${c.tipo}</p>
                         </div>
                     </div>
                     <div class="space-y-1 mb-4">
-                        ${c.rnc ? `<p class="text-xs text-slate-500"><b>RNC/Doc:</b> ${c.rnc}</p>` : ''}
+                        ${c.rnc ? `<p class="text-xs text-slate-500"><b>RNC:</b> ${c.rnc}</p>` : ''}
                         ${c.phone ? `<p class="text-xs text-slate-500"><b>Tel:</b> ${c.phone}</p>` : ''}
                         ${c.limite > 0 ? `<p class="text-xs text-emerald-600 font-bold mt-2 border-t border-slate-100 pt-2">Límite Crédito: RD$ ${formatMoney(c.limite)}</p>` : ''}
                     </div>
@@ -1070,6 +971,7 @@
                     </div>
                 </div>`;
             }).join('');
+            if(window.lucide) lucide.createIcons();
         }
 
         // --- FUNCIONES CORE: INVENTARIO ---
@@ -1120,76 +1022,73 @@
             if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('box', 'Almacén Vacío', 'No hay datos para este filtro.', 6);
 
             tbody.innerHTML = stockConsolidado.map(p => `
-                <tr class="${p.stock===0?'opacity-50 grayscale':'hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer'} transition-colors border-b border-slate-100 dark:border-slate-800/60 group" ${p.stock>0 ? `onclick="abrirKardex('${p.id}')"` : `onclick="abrirKardex('${p.id}')"`}>
-                    <td class="px-6 py-4">
+                <tr class="${p.stock===0?'opacity-50 grayscale':'hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer'} transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
+                    <td class="px-6 py-4" onclick="abrirKardex('${p.id}')">
                         <p class="font-bold text-slate-800 dark:text-slate-200 text-sm truncate max-w-[250px] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">${p.nombre}</p>
                         <p class="text-[9px] font-medium text-slate-400 font-mono tracking-widest mt-0.5">${p.id}</p>
                     </td>
-                    <td class="px-4 py-4">
+                    <td class="px-4 py-4" onclick="abrirKardex('${p.id}')">
                         <div class="flex items-center gap-1.5 flex-wrap">
                             <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">${p.categoria}</span>
                             ${p.subcategoria ? `<span class="text-[9px] uppercase font-medium tracking-widest text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">${p.subcategoria}</span>` : ''}
                         </div>
                     </td>
-                    <td class="px-4 py-4 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-500 dark:bg-slate-800':'bg-slate-900 dark:bg-white text-white dark:text-slate-900'} px-3 py-1 rounded-lg text-xs font-bold">${p.stock} ${p.unidad||'u'}</span></td>
-                    <td class="px-4 py-4 text-right font-bold text-rose-500/90 text-sm">${formatMoney(p.costoPromedio)}</td>
-                    <td class="px-4 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400 text-sm">${formatMoney(p.precio_base)}</td>
-                    <td class="px-6 py-4 text-center"><button class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
+                    <td class="px-4 py-4 text-center" onclick="abrirKardex('${p.id}')"><span class="${p.stock===0?'bg-slate-200 text-slate-500 dark:bg-slate-800':'bg-slate-900 dark:bg-white text-white dark:text-slate-900'} px-3 py-1 rounded-lg text-xs font-bold">${p.stock} ${p.unidad||'u'}</span></td>
+                    <td class="px-4 py-4 text-right font-bold text-rose-500/90 text-sm" onclick="abrirKardex('${p.id}')">${formatMoney(p.costoPromedio)}</td>
+                    <td class="px-4 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400 text-sm" onclick="abrirKardex('${p.id}')">${formatMoney(p.precio_base)}</td>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick="abrirKardex('${p.id}')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 transition-all mr-2"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                        <button onclick="eliminarRegistro('CATALOGO', '${p.id}', 'Catalogo')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
                 </tr>`).join('');
             if(window.lucide) lucide.createIcons();
         }
 
-        // --- FUNCIONES CORE: KARDEX ---
-        function abrirKardexGeneral() { document.getElementById('kardex-modal-title').innerText = `Kardex Global`; document.getElementById('kardex-modal-subtitle').innerText = `Auditoría financiera y física absoluta`; procesarKardex(null); }
-        function abrirKardex(prodId) {
-            const prod = state.catalogo.find(p => p.id === prodId); if(!prod) return;
-            document.getElementById('kardex-modal-title').innerText = `${prod.nombre}`; document.getElementById('kardex-modal-subtitle').innerText = `SKU: ${prod.id}`; procesarKardex(prodId);
-        }
-        function procesarKardex(prodId = null) {
-            let comprasTarget = state.compras; let ventasTarget = state.ventas;
-            if(prodId) { comprasTarget = comprasTarget.filter(c => c.productoId === prodId); ventasTarget = ventasTarget.filter(v => v.productoId === prodId); }
-
-            const comprasProd = comprasTarget.map(c => ({ tipo: 'ENTRADA', fechaStr: c.fecha, cant: c.cantidad_inicial, valorU: c.costo, id: c.id, refId: c.productoId }));
-            const ventasProd = ventasTarget.map(v => ({ tipo: 'SALIDA', fechaStr: v.fecha, cant: v.cantidad, valorU: v.precio, costoVenta: v.costo_fifo, id: v.id, refId: v.productoId, client: v.cliente }));
-            let movs = [...comprasProd, ...ventasProd].sort((a, b) => { const d1 = new Date(a.fechaStr.split(',')[0]); const d2 = new Date(b.fechaStr.split(',')[0]); if (d1.getTime() !== d2.getTime()) return d1 - d2; if (a.tipo !== b.tipo) return a.tipo === 'ENTRADA' ? -1 : 1; return a.id.localeCompare(b.id); });
-
-            let saldoFisico = 0, saldoValuado = 0, cppActual = 0; const filas = [];
-            movs.forEach(mov => {
-                const isEntrada = mov.tipo === 'ENTRADA'; let outTotalCost = 0;
-                if (isEntrada) { saldoFisico += mov.cant; saldoValuado += (mov.cant * mov.valorU); } 
-                else { saldoFisico -= mov.cant; outTotalCost = mov.costoVenta || 0; saldoValuado -= outTotalCost; }
-                cppActual = saldoFisico > 0 ? (saldoValuado / saldoFisico) : 0;
-
-                const inCant = isEntrada ? mov.cant : '-'; const inCU = isEntrada ? formatMoney(mov.valorU) : '-'; const inTotal = isEntrada ? formatMoney(mov.cant * mov.valorU) : '-';
-                const outCant = !isEntrada ? mov.cant : '-'; const outCUProm = !isEntrada && mov.cant > 0 ? (outTotalCost / mov.cant) : 0; const outCUDraw = !isEntrada ? formatMoney(outCUProm) : '-'; const outTotalDraw = !isEntrada ? formatMoney(outTotalCost) : '-';
-
-                const pName = (state.catalogo.find(p=>p.id===mov.refId)||{}).nombre || 'N/A';
-                let opDesc = isEntrada ? `<span class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Ingreso Almacén</span>` : `<span class="bg-rose-500/10 text-rose-500 border border-rose-500/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Despacho (${mov.client || 'POS'})</span>`;
-
-                filas.unshift(`<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
-                    <td class="p-4 border-r border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center gap-2 mb-1.5">${opDesc} <span class="text-xs font-black text-slate-800 dark:text-slate-200">${mov.fechaStr.split('T')[0].split(',')[0]}</span></div>
-                        <div class="text-[9px] font-mono text-slate-400 font-bold break-all">${mov.id}</div>
-                        ${!prodId ? `<div class="text-[10px] font-bold text-slate-500 truncate max-w-[150px] mt-1 bg-slate-50 dark:bg-slate-800 inline-block px-1 rounded">${pName}</div>` : ''}
-                    </td>
-                    <td class="p-4 text-right text-emerald-600 font-black bg-emerald-50/20 dark:bg-emerald-900/10">${inCant}</td>
-                    <td class="p-4 text-right text-emerald-600/70 bg-emerald-50/20 dark:bg-emerald-900/10">${inCU}</td>
-                    <td class="p-4 text-right font-black text-emerald-600 border-r border-slate-200 dark:border-slate-800 bg-emerald-50/20 dark:bg-emerald-900/10">${inTotal}</td>
-                    <td class="p-4 text-right text-rose-500 font-black bg-rose-50/20 dark:bg-rose-900/10">${outCant}</td>
-                    <td class="p-4 text-right text-rose-500/70 bg-rose-50/20 dark:bg-rose-900/10">${outCUDraw}</td>
-                    <td class="p-4 text-right font-black text-rose-500 border-r border-slate-200 dark:border-slate-800 bg-rose-50/20 dark:bg-rose-900/10">${outTotalDraw}</td>
-                    <td class="p-4 text-right font-black text-slate-800 dark:text-slate-200 bg-indigo-50/20 dark:bg-indigo-900/10 text-base">${saldoFisico}</td>
-                    <td class="p-4 text-right text-slate-500 bg-indigo-50/20 dark:bg-indigo-900/10 text-xs">${formatMoney(cppActual)}</td>
-                    <td class="p-4 text-right font-black text-indigo-600 bg-indigo-50/20 dark:bg-indigo-900/10 text-sm">${formatMoney(saldoValuado)}</td>
-                </tr>`);
-            });
-            document.getElementById('km-body').innerHTML = filas.length ? filas.join('') : emptyStateHTML('ghost', 'Registro Contable Vacío', 'No hay flujo detectado.', 10);
-            
-            const modal = document.getElementById('modal-kardex'); modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-kardex-content').classList.replace('scale-95', 'scale-100');
-        }
-        function cerrarModalKardex() { const modal = document.getElementById('modal-kardex'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-kardex-content').classList.replace('scale-100', 'scale-95'); }
-
         // --- FUNCIONES CORE: CATÁLOGO ---
+        function renderCatalogoSelects() {
+            const cats = [...new Set(state.catalogo.map(p => p.categoria).filter(Boolean))];
+            let htmlCat = `<select id="prod-categoria-select" onchange="syncCategoriaCatalogo()" class="input-global !px-3 !py-2.5 text-sm appearance-none truncate">
+                <option value="" disabled selected>Elegir...</option>
+                ${cats.map(c => `<option value="${c}">${c}</option>`).join('')}
+            </select>`;
+            document.getElementById('cat-select-container').innerHTML = htmlCat;
+            document.getElementById('prod-categoria-hidden').value = '';
+            syncSubcategoriaCatalogo('');
+        }
+
+        function syncCategoriaCatalogo() {
+            const cat = document.getElementById('prod-categoria-select').value;
+            document.getElementById('prod-categoria-hidden').value = cat;
+            syncSubcategoriaCatalogo(cat);
+        }
+
+        function syncSubcategoriaCatalogo(cat) {
+            const subcats = [...new Set(state.catalogo.filter(p => p.categoria === cat && p.subcategoria).map(p => p.subcategoria))];
+            let htmlSub = `<select id="prod-subcategoria-select" onchange="document.getElementById('prod-subcategoria-hidden').value = this.value" class="input-global !px-3 !py-2.5 text-sm appearance-none truncate">
+                <option value="">-- Ninguna --</option>
+                ${subcats.map(c => `<option value="${c}">${c}</option>`).join('')}
+            </select>`;
+            document.getElementById('subcat-select-container').innerHTML = htmlSub;
+            document.getElementById('prod-subcategoria-hidden').value = '';
+        }
+
+        function nuevaCategoriaCatalogo() {
+            const val = prompt("Nombre de la nueva categoría principal:");
+            if(val && val.trim() !== '') {
+                document.getElementById('cat-select-container').innerHTML = `<input type="text" id="prod-categoria-select" value="${val.trim()}" class="input-global !px-3 !py-2.5 text-sm font-bold bg-indigo-50 text-indigo-700" readonly>`;
+                document.getElementById('prod-categoria-hidden').value = val.trim();
+                syncSubcategoriaCatalogo(val.trim());
+            }
+        }
+
+        function nuevaSubcategoriaCatalogo() {
+            const val = prompt("Nombre de la nueva subcategoría:");
+            if(val && val.trim() !== '') {
+                document.getElementById('subcat-select-container').innerHTML = `<input type="text" id="prod-subcategoria-select" value="${val.trim()}" class="input-global !px-3 !py-2.5 text-sm font-bold bg-indigo-50 text-indigo-700" readonly>`;
+                document.getElementById('prod-subcategoria-hidden').value = val.trim();
+            }
+        }
+
         function addAtributo() { state.formAtributos.push({ clave: '', valor: '' }); renderAtributosForm(); }
         function removeAtributo(idx) { state.formAtributos.splice(idx, 1); renderAtributosForm(); }
         function updateAtributo(idx, field, val) { state.formAtributos[idx][field] = val; }
@@ -1206,21 +1105,27 @@
 
         function handleCrearProducto(e) {
             e.preventDefault();
-            const nombre = document.getElementById('prod-nombre').value.trim(); const categoria = document.getElementById('prod-categoria').value.trim(); const subcategoria = document.getElementById('prod-subcategoria').value.trim(); const precioBase = parseFloat(document.getElementById('prod-precio-base').value); const costoRef = parseFloat(document.getElementById('prod-costo-ref').value) || 0; const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
+            const nombre = document.getElementById('prod-nombre').value.trim(); 
+            const categoria = document.getElementById('prod-categoria-hidden').value.trim(); 
+            const subcategoria = document.getElementById('prod-subcategoria-hidden').value.trim(); 
+            if(!categoria) return showToast("Debes seleccionar o crear una Categoría.", "error");
+
+            const precioBase = parseFloat(document.getElementById('prod-precio-base').value); const costoRef = parseFloat(document.getElementById('prod-costo-ref').value) || 0; const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
             const proveedor = document.getElementById('prod-proveedor').value.trim();
             const unidad = document.getElementById('prod-unidad').value;
             let atributosValidos = state.formAtributos.filter(a => a.clave.trim() && a.valor.trim());
 
             const obj = { id: `PRD-${Date.now().toString().slice(-6)}`, nombre, categoria, subcategoria, proveedor, unidad, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: atributosValidos };
             state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
-            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogo(); showToast('Ficha técnica insertada con éxito.');
+            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; 
+            renderCatalogoSelects(); renderAtributosForm(); renderCatalogo(); showToast('Ficha técnica insertada con éxito.');
         }
 
         function renderCatalogo() {
             const tbody = document.getElementById('catalogo-body');
-            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel para crear perfiles.', 5);
+            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel para crear perfiles.', 6);
             tbody.innerHTML = state.catalogo.slice().reverse().map(p => `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
                     <td class="px-6 py-4">
                         <p class="font-bold text-slate-800 dark:text-slate-200 text-sm">${p.nombre}</p>
                         <p class="text-[9px] text-slate-400 font-mono mt-1">${p.id}</p>
@@ -1239,183 +1144,62 @@
                         <p class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">${formatMoney(p.precio_base || 0)}</p>
                         ${p.costo_ref ? `<p class="text-[9px] font-medium text-slate-400 mt-1">Ref: ${formatMoney(p.costo_ref)}</p>` : ''}
                     </td>
-                    <td class="px-6 py-4 whitespace-normal text-xs font-medium text-slate-500">${p.atributos.length ? p.atributos.map(a => `<span class="mr-1.5 inline-block bg-slate-50 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 mb-1"><b>${a.clave}:</b> ${a.valor}</span>`).join('') : '-'}</td>
+                    <td class="px-6 py-4 whitespace-normal text-xs font-medium text-slate-500 max-w-[150px]">${p.atributos.length ? p.atributos.map(a => `<span class="mr-1.5 inline-block bg-slate-50 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 mb-1"><b>${a.clave}:</b> ${a.valor}</span>`).join('') : '-'}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="eliminarRegistro('CATALOGO', '${p.id}', 'Catalogo')" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
                 </tr>`).join('');
-        }
-
-        // --- FUNCIONES CORE: PLANNER METAS ---
-        function abrirModalPlanner() {
-            document.getElementById('modal-planner').classList.remove('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-0', 'opacity-100');
-            document.getElementById('modal-planner-content').classList.replace('scale-95', 'scale-100');
-            const cats = ['ALL', ...new Set(state.catalogo.map(p => p.categoria).filter(Boolean))];
-            document.getElementById('planner-cat').innerHTML = cats.map(c => `<option value="${c}">${c==='ALL'?'Todas las Categorías':c}</option>`).join('');
-            actualizarFiltrosPlanner();
-        }
-
-        function actualizarFiltrosPlanner() {
-            const cat = document.getElementById('planner-cat').value;
-            const subcats = ['ALL'];
-            if(cat !== 'ALL') { const subSet = new Set(state.catalogo.filter(p => p.categoria === cat && p.subcategoria).map(p => p.subcategoria)); subcats.push(...subSet); }
-            document.getElementById('planner-subcat').innerHTML = subcats.map(c => `<option value="${c}">${c==='ALL'?'Cualquier Subcategoría':c}</option>`).join('');
-            renderListaPlanner();
-        }
-
-        function renderListaPlanner() {
-            const cat = document.getElementById('planner-cat').value; const subcat = document.getElementById('planner-subcat').value;
-            let filtrados = state.catalogo;
-            if(cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
-            if(subcat !== 'ALL') filtrados = filtrados.filter(p => p.subcategoria === subcat);
-
-            const list = document.getElementById('planner-products-list');
-            if(filtrados.length === 0) { list.innerHTML = '<p class="text-xs text-slate-400 p-4 text-center font-bold">No hay productos en esta selección.</p>'; return; }
-
-            list.innerHTML = filtrados.map(p => {
-                const currentGlobal = state.metasGlobales[p.id] || 0;
-                return `
-                <div class="grid grid-cols-12 gap-4 items-center p-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl mb-2">
-                    <div class="col-span-6 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-900 flex items-center justify-center text-indigo-400"><i data-lucide="tag" class="w-4 h-4"></i></div>
-                        <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200 line-clamp-1">${p.nombre}</p></div>
-                    </div>
-                    <div class="col-span-3 text-center"><span class="bg-slate-100 dark:bg-slate-900 text-slate-500 font-bold px-2 py-1 rounded text-[10px]">${currentGlobal} u.</span></div>
-                    <div class="col-span-3"><input type="number" min="0" placeholder="0" class="input-global !px-2 !py-1.5 !text-xs !text-right input-planner" data-pid="${p.id}" value="${plannerDataLocal[p.id] || ''}"></div>
-                </div>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-            document.querySelectorAll('.input-planner').forEach(inp => { inp.addEventListener('input', (e) => { plannerDataLocal[e.target.dataset.pid] = parseInt(e.target.value) || 0; }); });
-        }
-
-        function aplicarDistribucionMasiva() {
-            const total = parseInt(document.getElementById('planner-mass-qty').value);
-            if(!total || total <= 0) return showToast('Ingresa cantidad total a distribuir.', 'error');
-            const cat = document.getElementById('planner-cat').value; const subcat = document.getElementById('planner-subcat').value;
-            let filtrados = state.catalogo;
-            if(cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
-            if(subcat !== 'ALL') filtrados = filtrados.filter(p => p.subcategoria === subcat);
-            if(filtrados.length === 0) return;
-
-            const baseQty = Math.floor(total / filtrados.length); let extra = total % filtrados.length;
-            filtrados.forEach(p => { const addQty = baseQty + (extra > 0 ? 1 : 0); if(extra > 0) extra--; plannerDataLocal[p.id] = addQty; });
-            renderListaPlanner(); document.getElementById('planner-mass-qty').value = ''; showToast('Distribución pareja aplicada.');
-        }
-
-        function guardarMetas() {
-            for(let key in plannerDataLocal) { if(plannerDataLocal[key] <= 0 || isNaN(plannerDataLocal[key])) delete plannerDataLocal[key]; }
-            state.metasGlobales = { ...plannerDataLocal };
-            localStorage.setItem('elbien_metas', JSON.stringify(state.metasGlobales));
-            document.getElementById('modal-planner').classList.add('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-100', 'opacity-0');
-            document.getElementById('modal-planner-content').classList.replace('scale-100', 'scale-95');
-            renderMetas(); showToast('Estrategia de metas fijada.');
-        }
-
-        function renderMetas() {
-            const vFiltered = getFilteredData(state.ventas, 'fecha');
-            let globalTargetUnits = 0; let globalSoldUnits = 0; const productStats = {};
-
-            for (const [prodId, qty] of Object.entries(state.metasGlobales)) {
-                const prod = state.catalogo.find(p => p.id === prodId);
-                if(prod && qty > 0) {
-                    const soldTotal = vFiltered.filter(tx => tx.productoId === prodId).reduce((acc, tx) => acc + tx.cantidad, 0);
-                    productStats[prodId] = { id: prod.id, name: prod.nombre, targetQty: qty, soldQty: soldTotal };
-                    globalTargetUnits += qty; globalSoldUnits += soldTotal;
-                }
-            }
-
-            const globalPct = globalTargetUnits > 0 ? ((globalSoldUnits/globalTargetUnits)*100) : 0;
-            document.getElementById('metas-global-pct').innerHTML = `${globalPct.toFixed(1)}<span class="text-3xl text-slate-400">%</span>`;
-            document.getElementById('metas-global-sold').innerText = globalSoldUnits;
-            document.getElementById('metas-global-target').innerText = globalTargetUnits;
-            document.getElementById('metas-global-bar').style.width = `${Math.min(globalPct, 100)}%`;
-
-            const pGrid = document.getElementById('metas-productos-grid'); const arrStats = Object.values(productStats);
-            if(arrStats.length === 0) {
-                pGrid.innerHTML = '<div class="col-span-full card-panel p-10 text-center"><p class="text-slate-400 font-bold">No hay objetivos fijados. Usa el Planner.</p></div>';
-            } else {
-                pGrid.innerHTML = arrStats.map((prod, i) => {
-                    const pct = prod.targetQty > 0 ? (prod.soldQty / prod.targetQty)*100 : 0;
-                    return `
-                    <div class="card-panel p-6 hover-lift animate-in slide-in-from-bottom-4 fade-in" style="animation-delay: ${i*30}ms">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-500 border border-slate-100 dark:border-slate-700"><i data-lucide="target" class="w-5 h-5"></i></div>
-                            <span class="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest border border-indigo-100 dark:border-indigo-500/20">Meta: ${prod.targetQty} u</span>
-                        </div>
-                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3 truncate">${prod.name}</h4>
-                        <div class="flex justify-between items-end mb-2">
-                            <span class="text-xs font-bold text-slate-500">Logradas</span>
-                            <span class="font-black text-base text-slate-900 dark:text-white">${prod.soldQty}</span>
-                        </div>
-                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                            <div class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: ${Math.min(pct, 100)}%"></div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
             if(window.lucide) lucide.createIcons();
         }
 
-        // --- FUNCIONES CORE: VENTAS ---
-        function renderVentasSelect() {
-            const selectProd = document.getElementById('vent-producto'); const selectCliente = document.getElementById('vent-cliente');
-            const stockData = getStockConsolidado().filter(p => p.stock > 0);
-            const grouped = stockData.reduce((acc, p) => { const cat = p.categoria || 'Sin Categoría'; if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
-            let htmlProd = '<option value="" disabled selected>Buscar artículo en stock...</option>';
+        // --- FUNCIONES CORE: COMPRAS MULTIPLES ---
+        function addCompraItem() {
+            state.formComprasItems.push({ id: Date.now(), prodId: '', qty: '', cost: '' });
+            renderFormComprasItems();
+        }
+        function removeCompraItem(id) {
+            state.formComprasItems = state.formComprasItems.filter(i => i.id !== id);
+            if(state.formComprasItems.length === 0) addCompraItem();
+            renderFormComprasItems();
+        }
+        function updateCompraItem(id, field, val) {
+            const item = state.formComprasItems.find(i => i.id === id);
+            if(item) { item[field] = val; renderFormComprasItems(); }
+        }
+        function calcularTotalCompras() {
+            return state.formComprasItems.reduce((acc, item) => acc + ((parseFloat(item.qty)||0) * (parseFloat(item.cost)||0)), 0);
+        }
+        function renderFormComprasItems() {
+            const container = document.getElementById('compras-multiples-container'); if(!container) return;
+            const stockData = state.catalogo;
+            const grouped = stockData.reduce((acc, p) => { const cat = p.categoria || 'Gen'; if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
+            let optionsHtml = '<option value="" disabled selected>Producto...</option>';
             for(const cat in grouped) {
-                htmlProd += `<optgroup label="📦 ${cat.toUpperCase()}">`;
-                grouped[cat].forEach(p => { htmlProd += `<option value="${p.id}">${p.nombre} (Disp: ${p.stock} ${p.unidad||'u'})</option>`; });
-                htmlProd += `</optgroup>`;
+                optionsHtml += `<optgroup label="📦 ${cat.toUpperCase()}">`;
+                grouped[cat].forEach(p => { optionsHtml += `<option value="${p.id}">${p.nombre}</option>`; });
+                optionsHtml += `</optgroup>`;
             }
-            if(selectProd) selectProd.innerHTML = htmlProd;
-            if(selectCliente) selectCliente.innerHTML = '<option value="">-- Cliente Casual (Ninguno) --</option>' + state.clientes.map(c => `<option value="${c.id}">${c.nombre} (${c.tipo})</option>`).join('');
-        }
-        function autoFillPrecioVenta() { const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value); if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base; }
-        
-        function handleVentaSubmit(e) {
-            e.preventDefault();
-            const fecha = document.getElementById('vent-fecha').value, prodId = document.getElementById('vent-producto').value, cant = parseInt(document.getElementById('vent-cant').value), precio = parseFloat(document.getElementById('vent-precio').value), clienteId = document.getElementById('vent-cliente').value;
-            const metodoPago = document.getElementById('vent-metodo-pago').value;
-            const ncf = document.getElementById('vent-ncf').value.trim();
 
-            const stockDisp = state.compras.filter(c => c.productoId === prodId).reduce((a, c) => a + c.cantidad_restante, 0);
-            if (cant > stockDisp) return showToast(`Stock insuficiente. Disp: ${stockDisp}`, 'error');
-
-            let comprasVirt = JSON.parse(JSON.stringify(state.compras)); comprasVirt.sort((a, b) => { const d = new Date(a.fecha) - new Date(b.fecha); return d === 0 ? a.id.localeCompare(b.id) : d; });
-            let qty = cant, costoTotal = 0;
-            for (let lote of comprasVirt) {
-                if (lote.productoId === prodId && lote.cantidad_restante > 0) {
-                    if (lote.cantidad_restante >= qty) { lote.cantidad_restante -= qty; costoTotal += qty * lote.costo; qty = 0; break; } 
-                    else { costoTotal += lote.cantidad_restante * lote.costo; qty -= lote.cantidad_restante; lote.cantidad_restante = 0; }
-                }
-            }
+            container.innerHTML = state.formComprasItems.map(item => `
+                <div class="flex flex-col sm:flex-row gap-3 items-end bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                    <div class="flex-1 w-full">
+                        <select required class="input-global !py-2 !px-3 !text-xs appearance-none truncate" onchange="updateCompraItem(${item.id}, 'prodId', this.value)">
+                            ${optionsHtml.replace(`value="${item.prodId}"`, `value="${item.prodId}" selected`)}
+                        </select>
+                    </div>
+                    <div class="w-full sm:w-20"><input type="number" min="1" placeholder="Cant." required class="input-global !py-2 !px-3 !text-xs text-center" value="${item.qty}" oninput="updateCompraItem(${item.id}, 'qty', this.value)"></div>
+                    <div class="w-full sm:w-28"><input type="number" min="0.01" step="0.01" placeholder="Costo Unit." required class="input-global !py-2 !px-3 !text-xs text-center" value="${item.cost}" oninput="updateCompraItem(${item.id}, 'cost', this.value)"></div>
+                    <div class="w-full sm:w-24 text-right pt-2 sm:pt-0 shrink-0">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase mb-0.5">Total</p>
+                        <p class="text-sm font-black text-slate-800 dark:text-slate-200">RD$ ${formatMoney((parseFloat(item.qty)||0)*(parseFloat(item.cost)||0))}</p>
+                    </div>
+                    <button type="button" onclick="removeCompraItem(${item.id})" class="p-2 bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-100 transition-colors w-full sm:w-auto flex justify-center"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
             
-            let clientName = ''; if(clienteId) { const c = state.clientes.find(x => x.id === clienteId); if(c) clientName = c.nombre; }
-
-            const obj = { id: `VNT-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal, cliente: clientName, metodoPago, ncf };
-            state.compras = comprasVirt; state.ventas.push(obj); enviarAGoogleSheets("VENTA", obj);
-            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; document.getElementById('vent-cliente').value = ''; document.getElementById('vent-ncf').value = ''; navigate('ventas'); showToast('Salida Fiscal Procesada');
-        }
-
-        function renderVentas() {
-            const tbody = document.getElementById('ventas-body'), data = getFilteredData(state.ventas, 'fecha');
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-cart', 'Caja en Blanco', 'Realiza la primera facturación.', 7);
-            tbody.innerHTML = data.slice().reverse().map(v => {
-                const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desc.'};
-                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
-                    <td class="px-6 py-4">
-                        <div class="text-[10px] font-mono text-slate-400 mb-0.5">${v.id}</div>
-                        <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${v.fecha.split('T')[0].split(',')[0]}</div>
-                        ${v.ncf ? `<div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">NCF: ${v.ncf}</div>` : ''}
-                    </td>
-                    <td class="px-4 py-4">
-                        <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${v.cliente || 'Casual'}</div>
-                        <div class="text-[9px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded mt-1 inline-block border border-indigo-100 dark:border-indigo-800">${v.metodoPago || 'Efectivo'}</div>
-                    </td>
-                    <td class="px-4 py-4 font-bold text-slate-800 dark:text-slate-200 text-sm truncate max-w-[200px]">${p.nombre}</td>
-                    <td class="px-4 py-4 text-center"><span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-lg font-bold text-xs">${v.cantidad}</span></td>
-                    <td class="px-4 py-4 text-right font-bold text-slate-800 dark:text-white text-sm">${formatMoney(v.cantidad * v.precio)}</td>
-                    <td class="px-4 py-4 text-right font-medium text-rose-500 text-xs">${formatMoney(v.costo_fifo)}</td>
-                    <td class="px-6 py-4 text-right font-black text-emerald-600 dark:text-emerald-400 text-sm">${formatMoney(v.ganancia)}</td>
-                </tr>`;
-            }).join('');
+            const totalLabel = document.getElementById('lbl-total-compras');
+            if(totalLabel) totalLabel.innerText = `RD$ ${formatMoney(calcularTotalCompras())}`;
+            if(window.lucide) lucide.createIcons();
         }
 
         // --- FUNCIONES CORE: FINANZAS (EGRESOS) ---
@@ -1423,20 +1207,20 @@
             document.getElementById('egre-tipo-registro').value = type;
             const btnOp = document.getElementById('tab-egreso-operativo'); const btnInv = document.getElementById('tab-egreso-inventario');
             const blkOp = document.getElementById('bloque-gasto-operativo'); const blkInv = document.getElementById('bloque-gasto-inventario');
-            const btnSub = document.getElementById('btn-submit-egreso'); const lblMon = document.getElementById('lbl-egre-monto');
+            const btnSub = document.getElementById('btn-submit-egreso'); const blkMonto = document.getElementById('blk-egre-monto-total');
 
             if(type === 'OPERATIVO') {
                 btnOp.className = "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest rounded-[1rem] transition-all shadow-sm bg-white dark:bg-slate-700 text-amber-600 border border-transparent";
                 btnInv.className = "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest rounded-[1rem] transition-all text-slate-400 dark:text-slate-500 border border-transparent";
-                blkOp.classList.remove('hidden'); blkInv.classList.add('hidden');
+                blkOp.classList.remove('hidden'); blkInv.classList.add('hidden'); blkMonto.classList.remove('hidden');
                 btnSub.className = "w-full bg-amber-500 text-white font-bold rounded-xl py-4 mt-2 shadow-lg shadow-amber-500/20 hover:bg-amber-600 transition-all flex items-center justify-center gap-2 text-sm";
-                btnSub.innerHTML = '<i data-lucide="arrow-up-right" class="w-4 h-4"></i> Procesar Gasto Operativo'; lblMon.innerHTML = 'Monto Salida ($)';
+                btnSub.innerHTML = '<i data-lucide="arrow-up-right" class="w-4 h-4"></i> Procesar Gasto Operativo';
             } else {
                 btnInv.className = "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest rounded-[1rem] transition-all shadow-sm bg-white dark:bg-slate-700 text-emerald-600 border border-transparent";
                 btnOp.className = "flex-1 py-3 text-[10px] font-bold uppercase tracking-widest rounded-[1rem] transition-all text-slate-400 dark:text-slate-500 border border-transparent";
-                blkInv.classList.remove('hidden'); blkOp.classList.add('hidden');
+                blkInv.classList.remove('hidden'); blkOp.classList.add('hidden'); blkMonto.classList.add('hidden');
                 btnSub.className = "w-full bg-emerald-600 text-white font-bold rounded-xl py-4 mt-2 shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-sm";
-                btnSub.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> Autorizar Compra de Stock'; lblMon.innerHTML = 'Costo Total Pagado ($)';
+                btnSub.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> Autorizar Compra de Stock';
             }
             if(window.lucide) lucide.createIcons();
         }
@@ -1444,17 +1228,25 @@
         function handleEgresoSubmit(e) {
             e.preventDefault();
             const type = document.getElementById('egre-tipo-registro').value, fecha = document.getElementById('egre-fecha').value;
-            const metodoPago = document.getElementById('egre-metodo-pago').value;
-            const ncf = document.getElementById('egre-ncf').value.trim();
+            const metodoPago = document.getElementById('egre-metodo-pago').value; const ncf = document.getElementById('egre-ncf').value.trim();
             
             if(type === 'INVENTARIO') {
-                const prodId = document.getElementById('comp-producto').value, cant = parseInt(document.getElementById('comp-cant').value), costoTotal = parseFloat(document.getElementById('egre-monto').value);
-                if(!prodId || isNaN(cant) || cant <= 0) return showToast("Por favor, revisa los datos del lote.", "error");
-                const objComp = { id: `CMP-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: costoTotal / cant };
-                state.compras.push(objComp); enviarAGoogleSheets("COMPRA", objComp);
-                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Compra Inventario: Lote ${cant} uds`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: prodId, metodoPago, ncf };
+                const isValid = state.formComprasItems.every(i => i.prodId && i.qty && i.cost);
+                if(!isValid || state.formComprasItems.length === 0) return showToast("Completa todos los datos de los productos.", "error");
+                
+                const costoTotal = calcularTotalCompras();
+                const numLotes = state.formComprasItems.length;
+
+                state.formComprasItems.forEach(item => {
+                    const cant = parseInt(item.qty); const cUnit = parseFloat(item.cost);
+                    const objComp = { id: `CMP-${Date.now().toString().slice(-6)}-${Math.floor(Math.random()*100)}`, fecha, productoId: item.prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: cUnit };
+                    state.compras.push(objComp); enviarAGoogleSheets("COMPRA", objComp);
+                });
+
+                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Adquisición Inventario (${numLotes} Lotes Múltiples)`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: '', metodoPago, ncf, proveedor: '' };
                 state.egresos.push(objEgre); enviarAGoogleSheets("EGRESO", objEgre);
-                document.getElementById('comp-cant').value = ''; document.getElementById('egre-monto').value = ''; document.getElementById('egre-ncf').value = ''; showToast('Lote inyectado al Kardex.');
+                
+                state.formComprasItems = []; addCompraItem(); document.getElementById('egre-ncf').value = ''; showToast('Lotes inyectados al Kardex correctamente.');
             } else {
                 const obj = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value, proveedor: document.getElementById('egre-proveedor').value.trim(), metodoPago, ncf };
                 state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
@@ -1471,10 +1263,10 @@
         function renderEgresos() {
             const tbody = document.getElementById('egresos-body'), data = getFilteredData(state.egresos, 'fecha');
             document.getElementById('egresos-total-mes').innerText = formatMoney(data.reduce((s, e) => s + e.monto, 0));
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 5);
+            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 6);
             tbody.innerHTML = data.slice().reverse().map(e => {
                 const isInv = e.categoria_gasto === 'Inventario';
-                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60">
+                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
                     <td class="px-6 py-4">
                         <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${e.fecha.split('T')[0]}</div>
                         <div class="text-[9px] font-mono text-slate-400 mt-1">${e.id}</div>
@@ -1486,9 +1278,11 @@
                         <div class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded mt-1 inline-block border border-slate-200 dark:border-slate-700">${e.metodoPago || 'Transferencia'}</div>
                     </td>
                     <td class="px-4 py-4 font-medium text-slate-800 dark:text-slate-200 text-sm whitespace-normal min-w-[200px]">${e.concepto} ${e.producto_id ? `<span class="inline-block text-[9px] text-indigo-500 font-bold ml-1 border border-indigo-200 px-1 rounded">Ref: ${(state.catalogo.find(p=>p.id===e.producto_id)||{}).nombre}</span>` : ''}</td>
-                    <td class="px-6 py-4 text-right font-black ${isInv?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'} text-sm">-${formatMoney(e.monto)}</td>
+                    <td class="px-4 py-4 text-right font-black ${isInv?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'} text-sm">-${formatMoney(e.monto)}</td>
+                    <td class="px-6 py-4 text-right"><button onclick="eliminarRegistro('EGRESO', '${e.id}', 'Egresos')" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
                 </tr>`;
             }).join('');
+            if(window.lucide) lucide.createIcons();
         }
 
         // --- DASHBOARD ANALYTICS ---
@@ -1507,32 +1301,37 @@
         function handleMonthChange() { renderVentas(); renderEgresos(); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); if(document.getElementById('view-metas').classList.contains('active')) renderMetas(); }
 
         function renderDashboard() {
+            const todayStr = new Date().toISOString().split('T')[0];
+            const ayer = new Date(); ayer.setDate(ayer.getDate() - 1); const ayerStr = ayer.toISOString().split('T')[0];
+            const sem = new Date(); sem.setDate(sem.getDate() - 7); const semStr = sem.toISOString().split('T')[0];
+            const mes = new Date(); mes.setMonth(mes.getMonth() - 1); const mesStr = mes.toISOString().split('T')[0];
+
+            const getVentasDia = (dateStr) => state.ventas.filter(v => v.fecha.startsWith(dateStr)).reduce((s, v) => s + (v.cantidad * v.precio), 0);
+            const vHoy = getVentasDia(todayStr), vAyer = getVentasDia(ayerStr), vSem = getVentasDia(semStr), vMes = getVentasDia(mesStr);
+
+            document.getElementById('flash-hoy').innerText = formatMoney(vHoy); document.getElementById('flash-ayer').innerText = formatMoney(vAyer); document.getElementById('flash-semana').innerText = formatMoney(vSem); document.getElementById('flash-mes').innerText = formatMoney(vMes);
+
+            const renderDiff = (elId, val, base) => {
+                const el = document.getElementById(elId);
+                if(base === 0) { el.innerText = val > 0 ? '+100%' : '-'; el.className = val > 0 ? 'text-[10px] font-black mt-2 text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded-md inline-block' : 'text-[10px] font-black mt-2 text-slate-500 bg-slate-800 px-2 py-1 rounded-md inline-block'; return; }
+                const diff = ((val - base) / base) * 100; el.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
+                el.className = diff > 0 ? 'text-[10px] font-black mt-2 text-emerald-400 bg-emerald-900/30 px-2 py-1 rounded-md inline-block' : (diff < 0 ? 'text-[10px] font-black mt-2 text-rose-400 bg-rose-900/30 px-2 py-1 rounded-md inline-block' : 'text-[10px] font-black mt-2 text-slate-500 bg-slate-800 px-2 py-1 rounded-md inline-block');
+            };
+            renderDiff('flash-diff-ayer', vHoy, vAyer); renderDiff('flash-diff-semana', vHoy, vSem); renderDiff('flash-diff-mes', vHoy, vMes);
+
             const v = getFilteredData(state.ventas, 'fecha'), e = getFilteredData(state.egresos, 'fecha');
             const ing = v.reduce((s, x) => s + (x.cantidad * x.precio), 0), cos = v.reduce((s, x) => s + x.costo_fifo, 0), egr = e.reduce((s, x) => s + x.monto, 0);
             const net = ing - cos - egr;
             
-            // Payment Methods Breakdown
             const payMethods = { Efectivo: 0, Tarjeta: 0, Transferencia: 0, Otros: 0 };
             v.forEach(tx => { 
-                if(tx.metodoPago === 'Efectivo') payMethods.Efectivo += (tx.cantidad * tx.precio);
-                else if(tx.metodoPago === 'Tarjeta') payMethods.Tarjeta += (tx.cantidad * tx.precio);
-                else if(tx.metodoPago === 'Transferencia') payMethods.Transferencia += (tx.cantidad * tx.precio);
-                else payMethods.Otros += (tx.cantidad * tx.precio);
+                if(tx.metodoPago === 'Efectivo') payMethods.Efectivo += (tx.cantidad * tx.precio); else if(tx.metodoPago === 'Tarjeta') payMethods.Tarjeta += (tx.cantidad * tx.precio); else if(tx.metodoPago === 'Transferencia') payMethods.Transferencia += (tx.cantidad * tx.precio); else payMethods.Otros += (tx.cantidad * tx.precio);
             });
-            document.getElementById('dash-cash').innerText = formatMoney(payMethods.Efectivo);
-            document.getElementById('dash-card').innerText = formatMoney(payMethods.Tarjeta);
-            document.getElementById('dash-transfer').innerText = formatMoney(payMethods.Transferencia);
+            document.getElementById('dash-cash').innerText = formatMoney(payMethods.Efectivo); document.getElementById('dash-card').innerText = formatMoney(payMethods.Tarjeta); document.getElementById('dash-transfer').innerText = formatMoney(payMethods.Transferencia);
 
-            const roi = cos+egr > 0 ? (net / (cos+egr)) * 100 : 0;
-            const grossMargin = ing > 0 ? ((ing - cos) / ing) * 100 : 0;
-            const avgTicket = v.length > 0 ? ing / v.length : 0;
-            const absRatio = ing > 0 ? (egr / ing) * 100 : 0;
-
+            const roi = cos+egr > 0 ? (net / (cos+egr)) * 100 : 0; const grossMargin = ing > 0 ? ((ing - cos) / ing) * 100 : 0; const avgTicket = v.length > 0 ? ing / v.length : 0; const absRatio = ing > 0 ? (egr / ing) * 100 : 0;
             document.getElementById('kpi-ingresos').innerText = formatMoney(ing); document.getElementById('kpi-costos').innerText = formatMoney(cos); document.getElementById('kpi-egresos').innerText = formatMoney(egr); document.getElementById('kpi-neto').innerText = formatMoney(net);
-            document.getElementById('kpi-ticket-prom').innerText = formatMoney(avgTicket) + ' prom.';
-            document.getElementById('kpi-roi').innerText = roi.toFixed(1) + '%';
-            document.getElementById('kpi-margen-bruto').innerText = grossMargin.toFixed(1) + '%';
-            document.getElementById('kpi-absorcion').innerText = absRatio.toFixed(1) + '%';
+            document.getElementById('kpi-ticket-prom').innerText = formatMoney(avgTicket) + ' prom.'; document.getElementById('kpi-roi').innerText = roi.toFixed(1) + '%'; document.getElementById('kpi-margen-bruto').innerText = grossMargin.toFixed(1) + '%'; document.getElementById('kpi-absorcion').innerText = absRatio.toFixed(1) + '%';
 
             const cardNeto = document.getElementById('kpi-neto-card');
             if(net < 0) { cardNeto.className = 'bg-rose-600 text-white p-6 rounded-3xl border border-rose-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white'; } 
@@ -1563,8 +1362,7 @@
             document.getElementById('rank-rev').innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.rev - a.rev).slice(0,5), 'rev', true);
             document.getElementById('rank-profit').innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.profit - a.profit).slice(0,5), 'profit', true);
 
-            const isDark = document.documentElement.classList.contains('dark');
-            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'; const textColor = isDark ? '#94a3b8' : '#64748b';
+            const isDark = document.documentElement.classList.contains('dark'); const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'; const textColor = isDark ? '#94a3b8' : '#64748b';
             const cOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 640 ? 'top' : 'bottom', labels: {font:{family:'Inter', size:11}, usePointStyle:true, color: textColor, padding: 20} } } };
             
             if(charts.tend) charts.tend.destroy();
