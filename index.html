@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="light">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,15 +10,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
         
-        body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #0f172a; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
-        
-        /* DARK MODE VARS */
-        .dark body { background-color: #020617; color: #f8fafc; }
+        body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #0f172a; overflow: hidden; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 10px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.6); }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
 
         .view-section { display: none; opacity: 0; }
@@ -31,38 +27,33 @@
         .toast-exit { animation: fadeOut 0.3s forwards; }
 
         .input-premium {
-            width: 100%; padding: 1rem 1.25rem; border-radius: 1.25rem; font-weight: 700; transition: all 0.3s ease; outline: none;
-            background-color: #f1f5f9; border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+            width: 100%; padding: 1rem 1.25rem; background-color: #f1f5f9; border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 1.25rem; font-weight: 700; color: #1e293b; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02); transition: all 0.3s ease; outline: none;
         }
         .input-premium:focus { background-color: #ffffff; border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
-        
-        .dark .input-premium { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
-        .dark .input-premium:focus { background-color: #020617; border-color: #818cf8; box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.15); }
 
         .btn-premium { width: 100%; padding: 1rem 1.5rem; border-radius: 1.25rem; font-weight: 900; transition: all 0.3s ease; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
         .btn-premium:active { transform: scale(0.98); }
         .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
         .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1); }
-        .dark .hover-lift:hover { box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3); }
         
-        /* Componentes de Cristal */
-        .card-panel { background-color: #ffffff; border: 1px solid #f1f5f9; border-radius: 1.5rem; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); }
-        .dark .card-panel { background-color: #0b0f19; border: 1px solid #1e293b; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.3); }
+        /* Pills Animados para Multi-Nicho */
+        .filter-pill { transition: all 0.2s ease; cursor: pointer; }
+        .filter-pill.active { background-color: #0f172a; color: white; border-color: #0f172a; box-shadow: 0 4px 10px rgba(15,23,42,0.2); transform: scale(1.05); }
     </style>
 </head>
-<body class="h-screen w-screen relative selection:bg-indigo-200 antialiased flex text-slate-800 dark:text-slate-200">
+<body class="h-screen w-screen relative selection:bg-indigo-200 antialiased flex text-slate-800">
 
-    <!-- FONDOS ABSTRACTOS LIQUID GLASS BLANCO/OSCURO -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#f8fafc] dark:bg-[#020617] transition-colors duration-300">
-        <div class="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-500/10 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-violet-400/10 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen"></div>
-        <div class="absolute top-[30%] right-[20%] w-[30vw] h-[30vw] bg-emerald-400/10 rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen"></div>
+    <!-- FONDOS ABSTRACTOS LIQUID GLASS BLANCO -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#f8fafc]">
+        <div class="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-500/10 rounded-full blur-[120px] mix-blend-multiply"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-violet-400/10 rounded-full blur-[100px] mix-blend-multiply"></div>
+        <div class="absolute top-[30%] right-[20%] w-[30vw] h-[30vw] bg-emerald-400/10 rounded-full blur-[90px] mix-blend-multiply"></div>
     </div>
 
     <!-- OVERLAY CARGA -->
-    <div id="loading-overlay" class="fixed inset-0 bg-white/70 dark:bg-[#020617]/80 backdrop-blur-xl z-[100] flex flex-col items-center justify-center text-slate-900 dark:text-white transition-all duration-300 hidden">
-        <div class="card-panel p-10 rounded-[2.5rem] flex flex-col items-center max-w-sm w-[90%]">
-            <div class="w-16 h-16 rounded-full border-4 border-indigo-100 dark:border-indigo-900 border-t-indigo-600 animate-spin mb-6"></div>
+    <div id="loading-overlay" class="fixed inset-0 bg-white/70 backdrop-blur-xl z-[100] flex flex-col items-center justify-center text-slate-900 transition-all duration-300 hidden">
+        <div class="bg-white p-10 rounded-[2.5rem] flex flex-col items-center max-w-sm w-[90%] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100">
+            <div class="w-16 h-16 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin mb-6"></div>
             <h2 class="text-2xl font-black tracking-tight">Sincronizando...</h2>
             <p class="text-slate-500 font-bold mt-2 text-center uppercase tracking-widest text-[10px]">El Bien Cloud</p>
         </div>
@@ -73,91 +64,89 @@
     <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[40] hidden lg:hidden transition-opacity opacity-0"></div>
 
     <!-- SIDEBAR EL BIEN -->
-    <aside id="sidebar" class="fixed lg:left-6 lg:top-6 lg:bottom-6 lg:w-[320px] w-[280px] h-full lg:h-auto bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-3xl border border-white dark:border-slate-800 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] lg:rounded-[2.5rem] z-[50] flex flex-col overflow-hidden transition-all duration-500 ease-in-out transform -translate-x-full lg:translate-x-0 inset-y-0 left-0">
-        <div class="p-8 flex items-center gap-4 border-b border-slate-100 dark:border-slate-800/60 relative">
-            <button onclick="toggleSidebar()" class="lg:hidden absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <aside id="sidebar" class="fixed lg:left-6 lg:top-6 lg:bottom-6 lg:w-[320px] w-[280px] h-full lg:h-auto bg-white/90 backdrop-blur-3xl border border-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] lg:rounded-[2.5rem] z-[50] flex flex-col overflow-hidden transition-all duration-500 ease-in-out transform -translate-x-full lg:translate-x-0 inset-y-0 left-0">
+        <div class="p-8 flex items-center gap-4 border-b border-slate-100 relative">
+            <button onclick="toggleSidebar()" class="lg:hidden absolute top-6 right-6 p-2 bg-slate-100 rounded-xl text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
             <div class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-2xl text-white flex items-center justify-center font-black shadow-lg shadow-indigo-500/30 shrink-0">
                 <i data-lucide="sparkles" class="w-6 h-6"></i>
             </div>
             <div>
-                <span class="font-black text-2xl text-slate-800 dark:text-white tracking-tight block leading-none">El Bien.</span>
-                <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded mt-1.5 inline-block border border-indigo-100 dark:border-indigo-500/20">Suite Directiva</span>
+                <span class="font-black text-2xl text-slate-800 tracking-tight block leading-none">El Bien.</span>
+                <span class="text-[9px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded mt-1.5 inline-block border border-indigo-100">Suite Directiva</span>
             </div>
         </div>
 
-        <nav class="flex-1 px-6 space-y-2 overflow-y-auto mt-6 custom-scrollbar relative z-10 w-full">
+        <nav class="flex-1 px-6 space-y-2 overflow-y-auto mt-8 custom-scrollbar relative z-10 w-full">
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-3">📊 Inteligencia & Panel</div>
-            <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-white bg-slate-900 dark:bg-indigo-600 shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20">
-                <i data-lucide="pie-chart" class="relative z-10 w-5 h-5 text-indigo-400 dark:text-indigo-200 transition-transform duration-300 group-hover:scale-110"></i>
+            <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-white">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-100 scale-100"></div>
+                <i data-lucide="pie-chart" class="relative z-10 w-5 h-5 text-indigo-400 transition-transform duration-300 group-hover:scale-110"></i>
                 <span class="relative z-10">Inteligencia Fin.</span>
             </button>
-            <button onclick="navigate('metas')" id="nav-metas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <div class="nav-bg absolute inset-0 bg-slate-900 dark:bg-indigo-600 rounded-[1.25rem] shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+            <button onclick="navigate('metas')" id="nav-metas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="target" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Estrategia & Metas</span>
             </button>
 
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-3 mt-6">📦 Activos y Catálogo</div>
-            <button onclick="navigate('inventario')" id="nav-inventario" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <div class="nav-bg absolute inset-0 bg-slate-900 dark:bg-indigo-600 rounded-[1.25rem] shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+            <button onclick="navigate('inventario')" id="nav-inventario" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="layers" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Gestión de Activos</span>
             </button>
-            <button onclick="navigate('catalogo')" id="nav-catalogo" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <div class="nav-bg absolute inset-0 bg-slate-900 dark:bg-indigo-600 rounded-[1.25rem] shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+            <button onclick="navigate('catalogo')" id="nav-catalogo" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="tags" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Directorio Multi-Nicho</span>
             </button>
 
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-3 mt-6">🔄 Operaciones & CRM</div>
-            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <div class="nav-bg absolute inset-0 bg-slate-900 dark:bg-indigo-600 rounded-[1.25rem] shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+            <button onclick="navigate('ventas')" id="nav-ventas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="shopping-cart" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Terminal de Ventas</span>
             </button>
-            <button onclick="navigate('crm')" id="nav-crm" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <div class="nav-bg absolute inset-0 bg-slate-900 dark:bg-indigo-600 rounded-[1.25rem] shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+            <button onclick="navigate('crm')" id="nav-crm" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="users" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Cuentas Clave B2B</span>
             </button>
 
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-3 mt-6">💼 Finanzas</div>
-            <button onclick="navigate('finanzas')" id="nav-finanzas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                <div class="nav-bg absolute inset-0 bg-slate-900 dark:bg-indigo-600 rounded-[1.25rem] shadow-lg shadow-slate-900/20 dark:shadow-indigo-600/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+            <button onclick="navigate('finanzas')" id="nav-finanzas" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="wallet" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Libro Contable (Egresos)</span>
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-100 dark:border-slate-800/60 flex flex-col gap-2">
-            <button onclick="toggleTheme()" class="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
-                <span class="text-xs font-bold flex items-center gap-2" id="theme-text"><i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro</span>
-                <div class="w-8 h-4 bg-slate-200 dark:bg-indigo-600 rounded-full relative"><div class="absolute w-3 h-3 bg-white rounded-full top-0.5 left-0.5 dark:translate-x-4 transition-transform shadow-sm"></div></div>
-            </button>
-            <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full flex items-center gap-3 p-3 rounded-xl border border-transparent hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors text-slate-600 dark:text-slate-400">
-                <i data-lucide="server-cog" class="w-4 h-4"></i>
-                <div class="flex-1 min-w-0 text-left"><p class="text-xs font-bold truncate">Base de Datos</p><p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-0.5" id="config-status-sidebar">Sin Configurar</p></div>
+        <div class="p-6 shrink-0 mt-auto border-t border-slate-100 relative z-10">
+            <button onclick="navigate('instrucciones')" id="nav-instrucciones" class="w-full flex items-center gap-4 bg-slate-50 hover:bg-slate-100 p-4 rounded-2xl border border-slate-200 transition-colors text-slate-600 hover:text-indigo-600">
+                <div class="w-10 h-10 rounded-[1rem] bg-indigo-100 text-indigo-700 flex items-center justify-center font-black border border-indigo-200"><i data-lucide="database" class="w-5 h-5"></i></div>
+                <div class="flex-1 min-w-0 text-left"><p class="text-sm font-black truncate">Base de Datos</p><p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5" id="config-status-sidebar">Conectar / Ajustes</p></div>
             </button>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col h-full relative transition-all duration-500 w-full lg:pl-[360px] z-10">
         
-        <header class="absolute top-0 lg:top-6 left-0 lg:left-6 right-0 lg:right-6 lg:ml-[340px] rounded-none lg:rounded-[2rem] bg-white/80 dark:bg-[#0b0f19]/80 border-b lg:border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-2xl h-20 flex items-center justify-between px-8 z-40">
+        <!-- HEADER TOP -->
+        <header class="absolute top-0 lg:top-6 left-0 lg:left-6 right-0 lg:right-6 lg:ml-[340px] rounded-none lg:rounded-[2rem] bg-white/70 border-b lg:border border-white shadow-[0_4px_20px_rgba(0,0,0,0.02)] backdrop-blur-2xl h-20 flex items-center justify-between px-8 z-40">
             <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 rounded-xl"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                <div class="font-black text-2xl text-slate-800 dark:text-white tracking-tight flex items-center gap-3">
-                    <span id="header-icon" class="text-indigo-600 dark:text-indigo-400 hidden sm:block"><i data-lucide="pie-chart" class="w-6 h-6"></i></span>
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-slate-800 bg-white shadow-sm border border-slate-200 rounded-xl"><i data-lucide="menu" class="w-6 h-6"></i></button>
+                <div class="font-black text-2xl text-slate-800 tracking-tight flex items-center gap-3">
+                    <span id="header-icon" class="text-indigo-600 hidden sm:block"><i data-lucide="activity" class="w-6 h-6"></i></span>
                     <span id="page-title">Cargando...</span>
                 </div>
             </div>
-            <div class="flex items-center">
-                <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#020617] rounded-xl px-4 py-2.5 border border-slate-200 dark:border-slate-700 shadow-sm hover-lift cursor-pointer">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-white rounded-xl px-3 py-1.5 lg:px-4 lg:py-2 border border-slate-200 shadow-sm hover-lift cursor-pointer">
                     <i data-lucide="calendar" class="w-4 h-4 text-indigo-500"></i>
-                    <select id="month-filter" onchange="handleMonthChange()" class="bg-transparent text-sm font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer border-none appearance-none pr-2">
+                    <select id="month-filter" onchange="handleMonthChange()" class="bg-transparent text-xs lg:text-sm font-bold text-slate-700 outline-none cursor-pointer border-none appearance-none pr-4">
                         <option value="ALL">Histórico Global</option>
                     </select>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                    <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400 absolute right-10 lg:right-12 pointer-events-none hidden sm:block"></i>
                 </div>
             </div>
         </header>
@@ -165,18 +154,18 @@
         <div class="flex-1 overflow-auto custom-scrollbar scroll-smooth w-full pt-24 lg:pt-32 px-4 lg:px-8 pb-10 relative z-0">
 
             <!-- ========================================== -->
-            <!-- VIEW: DASHBOARD (TRIPLE ANÁLISIS)          -->
+            <!-- VIEW: DASHBOARD (ESTADÍSTICAS AVANZADAS)   -->
             <!-- ========================================== -->
             <div id="view-dashboard" class="view-section active">
                 <div class="max-w-7xl mx-auto space-y-8">
                     
-                    <div class="flex flex-col gap-1 mb-2 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <h2 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">Panel Directivo</h2>
-                        <p class="text-slate-500 dark:text-slate-400 font-medium text-sm max-w-3xl">Métricas de salud corporativa y análisis de rendimiento de productos en tiempo real.</p>
+                    <div class="flex flex-col gap-1 mb-2 border-b border-slate-200/60 pb-6">
+                        <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Inteligencia Directiva</h2>
+                        <p class="text-slate-500 font-bold text-sm mt-1 max-w-3xl">Análisis multidimensional de salud financiera, rendimiento y proyecciones de caja.</p>
                     </div>
 
                     <!-- Flash Metrics -->
-                    <div class="bg-slate-900 dark:bg-[#0b0f19] text-white rounded-[3rem] shadow-xl border border-slate-800 p-8 md:p-10 relative overflow-hidden group hover-lift">
+                    <div class="bg-[#0f172a] text-white rounded-[3rem] shadow-[0_20px_50px_-12px_rgba(79,70,229,0.3)] border border-slate-800 p-8 md:p-10 relative overflow-hidden group hover-lift">
                         <div class="absolute right-[-10%] top-[-20%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
                         <div class="relative z-10 flex items-center gap-3 mb-8">
                             <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl border border-amber-500/30"><i data-lucide="zap" class="w-5 h-5"></i></div>
@@ -188,112 +177,124 @@
                                 <h4 id="flash-hoy" class="text-3xl font-black text-indigo-400 tracking-tight">$0.00</h4>
                             </div>
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem]">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Cierre Ayer</p>
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Cierre Ayer</p>
                                 <h4 id="flash-ayer" class="text-xl font-bold text-slate-300">$0.00</h4>
                                 <p id="flash-diff-ayer" class="text-[10px] font-black mt-2 inline-block px-2 py-1 rounded-md bg-slate-800 border border-slate-700">-</p>
                             </div>
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem]">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Semana Pasada</p>
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Semana Pasada</p>
                                 <h4 id="flash-semana" class="text-xl font-bold text-slate-300">$0.00</h4>
                                 <p id="flash-diff-semana" class="text-[10px] font-black mt-2 inline-block px-2 py-1 rounded-md bg-slate-800 border border-slate-700">-</p>
                             </div>
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem]">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Mes Ant. (Igual Día)</p>
+                                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Mes Ant. (Igual Día)</p>
                                 <h4 id="flash-mes" class="text-xl font-bold text-slate-300">$0.00</h4>
                                 <p id="flash-diff-mes" class="text-[10px] font-black mt-2 inline-block px-2 py-1 rounded-md bg-slate-800 border border-slate-700">-</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Salud del Negocio (KPIs Principales) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                        <div class="card-panel p-6 flex flex-col justify-between hover-lift group relative overflow-hidden">
-                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-indigo-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
+                    <!-- Salud del Negocio (Métricas Principales) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                             <div class="relative z-10">
-                                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="trending-up" class="w-3 h-3 text-indigo-500"></i> Ingresos Brutos</p>
-                                <h4 id="kpi-ingresos" class="text-3xl font-black text-slate-800 dark:text-white mt-1 tracking-tight">$0.00</h4>
-                                <p class="text-xs font-semibold text-slate-400 mt-2">Tickets: <span id="kpi-ticket-prom" class="text-slate-600 dark:text-slate-300 font-bold">$0.00 prom.</span></p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="trending-up" class="text-emerald-500 w-4 h-4"></i> Ingresos Brutos</p>
+                                <h4 id="kpi-ingresos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
                             </div>
                         </div>
-                        <div class="card-panel p-6 flex flex-col justify-between hover-lift group relative overflow-hidden">
-                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-rose-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                             <div class="relative z-10">
-                                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="box" class="w-3 h-3 text-rose-500"></i> Costo Mercancía (COGS)</p>
-                                <h4 id="kpi-costos" class="text-3xl font-black text-slate-800 dark:text-white mt-1 tracking-tight">$0.00</h4>
-                                <p class="text-xs font-semibold text-slate-400 mt-2">Margen Bruto: <span id="kpi-margen-bruto" class="text-emerald-500 font-bold">0%</span></p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="box" class="text-rose-500 w-4 h-4"></i> Costo Mercancía</p>
+                                <h4 id="kpi-costos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
                             </div>
                         </div>
-                        <div class="card-panel p-6 flex flex-col justify-between hover-lift group relative overflow-hidden">
-                            <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-500/10 rounded-full blur-xl group-hover:scale-150 transition-transform"></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                             <div class="relative z-10">
-                                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="wallet" class="w-3 h-3 text-amber-500"></i> Gastos Operativos (OPEX)</p>
-                                <h4 id="kpi-egresos" class="text-3xl font-black text-slate-800 dark:text-white mt-1 tracking-tight">$0.00</h4>
-                                <p class="text-xs font-semibold text-slate-400 mt-2">Absorción: <span id="kpi-absorcion" class="text-amber-500 font-bold">0%</span></p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="wallet" class="text-amber-500 w-4 h-4"></i> Gastos Operativos</p>
+                                <h4 id="kpi-egresos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
                             </div>
                         </div>
-                        <div id="kpi-neto-card" class="bg-indigo-600 p-6 rounded-3xl border border-indigo-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white">
-                            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                        <div id="kpi-neto-card" class="bg-gradient-to-br from-indigo-600 to-violet-700 p-8 rounded-[2.5rem] shadow-xl shadow-indigo-600/30 border border-indigo-400/30 flex flex-col justify-between h-40 hover-lift relative overflow-hidden">
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                             <div class="relative z-10">
-                                <p class="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="gem" class="w-3 h-3 text-white"></i> Utilidad Neta (Pura)</p>
-                                <h4 id="kpi-neto" class="text-4xl font-black text-white mt-1 tracking-tighter">$0.00</h4>
-                                <p class="text-[10px] font-black text-white mt-3 bg-indigo-900/40 px-2 py-1 rounded inline-block" id="kpi-ing-egr">ROI Global: <span id="kpi-roi">0%</span></p>
+                                <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="gem" class="text-white w-4 h-4"></i> Utilidad Neta (Pura)</p>
+                                <h4 id="kpi-neto" class="text-3xl font-black text-white mt-1 tracking-tighter">$0.00</h4>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                        <div class="card-panel p-5 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><i data-lucide="banknote" class="text-slate-500 w-6 h-6"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">En Efectivo</p><h4 id="dash-cash" class="text-xl font-black text-slate-900 dark:text-white">$0.00</h4></div>
+                    <!-- NUEVAS ESTADÍSTICAS: Pacing, Ticket, Burn Rate -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-indigo-50/60 p-8 rounded-[2.5rem] border border-indigo-100 shadow-sm flex flex-col justify-center relative overflow-hidden hover-lift">
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="bar-chart" class="text-indigo-500 w-4 h-4"></i> Proyección Cierre (Mes)</p>
+                                <h4 id="dash-proyeccion" class="text-3xl font-black text-indigo-900 tracking-tight">$0.00</h4>
+                                <p class="text-[10px] font-bold text-slate-500 mt-2">Ingreso estimado al finalizar el mes</p>
+                            </div>
                         </div>
-                        <div class="card-panel p-5 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center"><i data-lucide="credit-card" class="text-indigo-500 w-6 h-6"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">En Tarjeta</p><h4 id="dash-card" class="text-xl font-black text-slate-900 dark:text-white">$0.00</h4></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-center relative overflow-hidden hover-lift">
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="tag" class="text-emerald-500 w-4 h-4"></i> Ticket Promedio (Venta)</p>
+                                <h4 id="dash-ticket-promedio" class="text-3xl font-black text-slate-800 tracking-tight">$0.00</h4>
+                                <p class="text-[10px] font-bold text-slate-500 mt-2">Valor promedio por transacción</p>
+                            </div>
                         </div>
-                        <div class="card-panel p-5 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center"><i data-lucide="arrow-right-left" class="text-emerald-500 w-6 h-6"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">En Transferencia</p><h4 id="dash-transfer" class="text-xl font-black text-slate-900 dark:text-white">$0.00</h4></div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-center relative overflow-hidden hover-lift">
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="flame" class="text-rose-500 w-4 h-4"></i> Burn Rate (Gasto Diario)</p>
+                                <h4 id="dash-burn-rate" class="text-3xl font-black text-slate-800 tracking-tight">$0.00</h4>
+                                <p class="text-[10px] font-bold text-slate-500 mt-2">Velocidad de gasto operativo</p>
+                            </div>
                         </div>
                     </div>
 
                     <!-- TRIPLE ANÁLISIS DE RENDIMIENTO -->
-                    <div class="card-panel overflow-hidden flex flex-col">
-                        <div class="p-6 lg:p-8 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19]">
-                            <h3 class="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2"><i data-lucide="award" class="text-amber-500 w-6 h-6"></i> Triple Análisis de Rendimiento (ABC)</h3>
-                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-1">Descubre qué productos mueven volumen, cuáles generan dinero y cuáles te dejan rentabilidad real.</p>
+                    <div class="bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white overflow-hidden flex flex-col">
+                        <div class="px-8 py-6 border-b border-slate-100 bg-white/50">
+                            <h3 class="font-black text-2xl text-slate-800 flex items-center gap-3"><i data-lucide="award" class="text-amber-500 w-6 h-6"></i> Análisis de Desempeño por Producto (ABC)</h3>
+                            <p class="text-xs font-bold text-slate-500 mt-1">Evalúa qué productos lideran en volumen, facturación y ganancia neta.</p>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 dark:divide-slate-800/80 bg-white dark:bg-[#0b0f19]">
-                            <div class="p-6">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center"><i data-lucide="layers" class="w-4 h-4"></i></div>
-                                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 uppercase tracking-wide">Top por Volumen</h4>
-                                </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 bg-white/40">
+                            <div class="p-8">
+                                <h4 class="font-black text-[11px] text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="layers" class="text-blue-500 w-4 h-4"></i> Top Rotación (Volumen)</h4>
                                 <div id="rank-vol" class="space-y-4"></div>
                             </div>
-                            <div class="p-6">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center"><i data-lucide="banknote" class="w-4 h-4"></i></div>
-                                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 uppercase tracking-wide">Top por Facturación</h4>
-                                </div>
+                            <div class="p-8 bg-slate-50/50">
+                                <h4 class="font-black text-[11px] text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="banknote" class="text-emerald-500 w-4 h-4"></i> Top Ingresos (Facturación)</h4>
                                 <div id="rank-rev" class="space-y-4"></div>
                             </div>
-                            <div class="p-6">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center"><i data-lucide="gem" class="w-4 h-4"></i></div>
-                                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 uppercase tracking-wide">Top por Ganancia Neta</h4>
-                                </div>
+                            <div class="p-8 bg-indigo-50/30">
+                                <h4 class="font-black text-[11px] text-indigo-600 uppercase tracking-widest mb-6 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4 text-indigo-500"></i> Top Rentabilidad (Neta)</h4>
                                 <div id="rank-profit" class="space-y-4"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-                        <div class="card-panel p-6 lg:p-8 flex flex-col min-h-[350px]">
-                            <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2 mb-6"><i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-500"></i> P&L Global Histórico</h3>
+                    <!-- NUEVO: ANÁLISIS DE MERCADO Y CLIENTES -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white flex flex-col min-h-[350px]">
+                            <h3 class="font-black text-2xl text-slate-800 flex items-center gap-3 mb-6"><i data-lucide="users" class="w-6 h-6 text-indigo-500"></i> Top 5 Clientes B2B</h3>
+                            <p class="text-xs font-bold text-slate-500 mb-6">Clientes con mayor volumen de compra en el periodo.</p>
+                            <div id="dash-top-clients" class="space-y-3"></div>
+                        </div>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white flex flex-col min-h-[350px]">
+                            <h3 class="font-black text-2xl text-slate-800 flex items-center gap-3 mb-6"><i data-lucide="pie-chart" class="w-6 h-6 text-amber-500"></i> Rendimiento por Nicho</h3>
+                            <p class="text-xs font-bold text-slate-500 mb-6">Distribución de ingresos según el Nicho de Mercado.</p>
+                            <div id="dash-nicho-stats" class="space-y-5 overflow-y-auto pr-2 custom-scrollbar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white flex flex-col min-h-[400px]">
+                            <h3 class="font-black text-2xl text-slate-800 flex items-center gap-3 mb-8"><i data-lucide="bar-chart-2" class="w-6 h-6 text-indigo-500"></i> P&L Global Histórico</h3>
                             <div class="relative w-full flex-1"><canvas id="chart-tendencias"></canvas></div>
                         </div>
-                        <div class="card-panel p-6 lg:p-8 flex flex-col min-h-[350px]">
-                            <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2 mb-6"><i data-lucide="pie-chart" class="w-5 h-5 text-amber-500"></i> Distribución de Gastos (OPEX)</h3>
+                        <div class="bg-white/80 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-white flex flex-col min-h-[400px]">
+                            <h3 class="font-black text-2xl text-slate-800 flex items-center gap-3 mb-8"><i data-lucide="pie-chart" class="w-6 h-6 text-rose-500"></i> Distribución de Gastos (OPEX)</h3>
                             <div class="relative w-full flex-1 flex justify-center"><canvas id="chart-gastos"></canvas></div>
                         </div>
                     </div>
@@ -301,1488 +302,80 @@
             </div>
 
             <!-- ========================================== -->
-            <!-- VIEW: FINANZAS (COMPRAS Y EGRESOS)         -->
+            <!-- VIEW: INVENTARIO CENTRAL                   -->
             <!-- ========================================== -->
-            <div id="view-finanzas" class="view-section">
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Libro Contable</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Centraliza salidas de dinero, compras masivas de mercancía y gastos operativos.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid xl:grid-cols-12 gap-6 lg:gap-8">
-                        <div class="xl:col-span-5 space-y-6">
-                            <div class="card-panel p-6 lg:p-8 relative overflow-hidden">
-                                <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="wallet" class="w-5 h-5 text-amber-500"></i> Asiento de Gasto</h3>
-                                
-                                <div class="flex bg-slate-100 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 mb-6 mt-4 shadow-inner">
-                                    <button type="button" id="tab-egreso-inventario" onclick="setGastoType('INVENTARIO')" class="flex-1 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all shadow-sm bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400">Comprar Stock</button>
-                                    <button type="button" id="tab-egreso-operativo" onclick="setGastoType('OPERATIVO')" class="flex-1 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white">Op / Admin</button>
-                                </div>
-
-                                <form id="form-egreso" onsubmit="handleEgresoSubmit(event)" class="space-y-4">
-                                    <input type="hidden" id="egre-tipo-registro" value="INVENTARIO">
-                                    
-                                    <div class="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-700/50">
-                                        <div class="grid grid-cols-2 gap-3 mb-3">
-                                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Fecha Pago</label><input type="date" id="egre-fecha" required class="input-premium !px-3 !py-3 !text-sm"></div>
-                                            <div id="blk-egre-monto-total" class="hidden"><label id="lbl-egre-monto" class="block text-[10px] font-bold text-rose-500 uppercase tracking-widest mb-1.5 ml-1">Monto Salida ($)</label><input type="number" id="egre-monto" min="0.01" step="0.01" placeholder="0.00" class="input-premium !py-3 !text-sm !border-rose-200 dark:!border-rose-900/50 !bg-rose-50/30 dark:!bg-rose-900/10 !text-rose-600 !font-black text-center"></div>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Método de Pago</label>
-                                                <select id="egre-metodo-pago" required class="input-premium !px-3 !py-3 !text-sm appearance-none bg-white dark:bg-[#0f172a]">
-                                                    <option value="Transferencia">Transferencia</option>
-                                                    <option value="Tarjeta">Tarjeta</option>
-                                                    <option value="Efectivo">Efectivo</option>
-                                                    <option value="Crédito Prov.">Crédito a Proveedor</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Comprobante / NCF</label>
-                                                <input type="text" id="egre-ncf" placeholder="Opcional" class="input-premium !px-3 !py-3 !text-sm bg-white dark:bg-[#0f172a]">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- BLOQUE INVENTARIO MULTIPLE -->
-                                    <div id="bloque-gasto-inventario" class="space-y-4 p-4 bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-1"><i data-lucide="package" class="w-3 h-3"></i> Lotes Entrantes</span>
-                                            <button type="button" onclick="addCompraItem()" class="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-400 bg-white dark:bg-[#0f172a] border border-emerald-200 dark:border-emerald-800 shadow-sm px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors">+ Añadir Fila</button>
-                                        </div>
-                                        
-                                        <!-- Múltiples Productos UI Mejorado -->
-                                        <div id="compras-multiples-container" class="space-y-3 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar"></div>
-                                        
-                                        <div class="pt-4 border-t border-emerald-200 dark:border-emerald-800/50 flex justify-between items-center mt-2">
-                                            <span class="text-xs font-black text-slate-600 dark:text-slate-300">Total Factura:</span>
-                                            <span id="lbl-total-compras" class="text-2xl font-black text-rose-500 dark:text-rose-400 tracking-tight">RD$ 0.00</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- BLOQUE OPERATIVO -->
-                                    <div id="bloque-gasto-operativo" class="space-y-4 p-5 bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] hidden">
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Plan de Cuentas</label>
-                                                <div class="flex gap-2">
-                                                    <select id="egre-categoria" class="input-premium truncate appearance-none !bg-white dark:!bg-[#0f172a] !py-3 !text-sm w-full"></select>
-                                                    <button type="button" onclick="nuevaCategoriaGasto()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 shadow-sm shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Proveedor / Entidad</label>
-                                                <input type="text" id="egre-proveedor" placeholder="Ej: Claro, Edesur..." class="input-premium !bg-white !py-3 !text-sm dark:!bg-[#0f172a]">
-                                            </div>
-                                            <div class="sm:col-span-2">
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Concepto Detallado</label>
-                                                <input type="text" id="egre-concepto" placeholder="Justificación..." class="input-premium !bg-white !py-3 !text-sm dark:!bg-[#0f172a]">
-                                            </div>
-                                            <div class="sm:col-span-2 pt-3 border-t border-slate-200 dark:border-slate-700">
-                                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Vincular a Producto (Atribución Directa Opcional)</label>
-                                                <select id="egre-producto" class="input-premium truncate appearance-none !bg-white dark:!bg-[#0f172a] !py-3 !text-sm w-full"></select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <button type="submit" id="btn-submit-egreso" class="w-full bg-emerald-600 text-white font-bold rounded-xl py-3.5 mt-2 shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex justify-center items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Autorizar Compra de Stock</button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div class="xl:col-span-7">
-                            <div class="card-panel overflow-hidden flex flex-col h-full min-h-[600px]">
-                                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center gap-4 shrink-0">
-                                    <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="file-text" class="text-rose-500 w-5 h-5"></i> Mayor de Egresos</h3>
-                                    <div class="text-right">
-                                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Salidas Globales</p>
-                                        <p id="egresos-total-mes" class="text-xl font-black text-rose-500 leading-none mt-1">$0.00</p>
-                                    </div>
-                                </div>
-                                <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[850px]">
-                                        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-white dark:bg-[#0f172a] sticky top-0 z-10">
-                                            <tr>
-                                                <th class="px-6 py-4 font-bold rounded-l-xl">Fecha / Ref</th>
-                                                <th class="px-4 py-4 font-bold">Cuenta</th>
-                                                <th class="px-4 py-4 font-bold">Pago / Prov.</th>
-                                                <th class="px-4 py-4 font-bold w-full">Concepto Contable</th>
-                                                <th class="px-6 py-4 font-bold text-right text-rose-500">Monto</th>
-                                                <th class="px-6 py-4 font-bold text-center rounded-r-xl">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="egresos-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RESTO DE LAS VISTAS SE MANTIENEN IGUAL (VENTAS, METAS, CRM, INVENTARIO, CATALOGO, CONFIG) -->
-            <!-- Debido al límite de caracteres para evitar corte, asumo que las vistas restantes (ventas, metas, crm, inventario, catalogo, config) ya están cargadas correctamente en tu entorno basadas en mi versión anterior. Abajo proveo solo los JS actualizados para hacer funcionar las compras múltiples dinámicas por Nicho. -->
-            
-            <!-- VIEW: VENTAS (SALIDAS / POS) -->
-            <div id="view-ventas" class="view-section">
-                <!-- (Mismo código de Ventas de la versión anterior) -->
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Terminal de Ventas</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Registra facturación, captura métodos de pago y emite salidas con NCF.</p>
-                        </div>
-                    </div>
-                    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
-                        <div class="lg:col-span-4 space-y-6">
-                            <div class="card-panel p-6 lg:p-8 relative overflow-hidden">
-                                <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="scan-line" class="w-5 h-5 text-indigo-500"></i> Transacción POS</h3>
-                                <form id="form-venta" onsubmit="handleVentaSubmit(event)" class="space-y-4 mt-6">
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Fecha</label><input type="date" id="vent-fecha" required class="input-premium !px-3 !py-3 !text-sm"></div>
-                                        <div><label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5 ml-1">Cuenta B2B (Opc)</label><select id="vent-cliente" class="input-premium !px-3 !py-3 !text-sm appearance-none truncate bg-white dark:bg-[#0f172a]"></select></div>
-                                    </div>
-                                    <div class="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800/60">
-                                        <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Seleccionar Producto</label>
-                                        <select id="vent-producto" onchange="autoFillPrecioVenta()" required class="input-premium appearance-none truncate !bg-white dark:!bg-[#0f172a] shadow-sm !py-3.5 !text-sm"></select>
-                                        <div class="grid grid-cols-2 gap-3 mt-3">
-                                            <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Unidades</label><input type="number" id="vent-cant" min="1" required placeholder="0" class="input-premium text-center font-black !bg-white dark:!bg-[#0f172a] !py-3"></div>
-                                            <div><label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Precio Cobrado</label><input type="number" id="vent-precio" min="0" step="0.01" required placeholder="0.00" class="input-premium text-center font-black !border-emerald-200 dark:!border-emerald-900/50 !text-emerald-700 dark:!text-emerald-400 !bg-white dark:!bg-[#0f172a] !py-3"></div>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Método de Pago</label><select id="vent-metodo-pago" required class="input-premium !px-3 !py-3 !text-sm appearance-none bg-white dark:bg-[#0f172a]"><option value="Efectivo">Efectivo</option><option value="Tarjeta">Tarjeta</option><option value="Transferencia">Transferencia</option><option value="Crédito">A Crédito</option></select></div>
-                                        <div><label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Comprobante (NCF)</label><input type="text" id="vent-ncf" placeholder="Opcional" class="input-premium !px-3 !py-3 !text-sm bg-white dark:bg-[#0f172a]"></div>
-                                    </div>
-                                    <button type="submit" class="w-full bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl py-3.5 mt-4 shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Procesar Factura</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-8">
-                            <div class="card-panel overflow-hidden flex flex-col h-full min-h-[500px]">
-                                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] shrink-0"><h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="history" class="text-slate-500 w-5 h-5"></i> Flujo de Salidas Realizadas</h3></div>
-                                <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
-                                        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-white dark:bg-[#0f172a] sticky top-0 z-10">
-                                            <tr><th class="px-6 py-4 font-bold rounded-l-xl">Ticket / Emisión</th><th class="px-4 py-4 font-bold">Cliente / Pago</th><th class="px-4 py-4 font-bold">Artículo</th><th class="px-4 py-4 font-bold text-center">Vol.</th><th class="px-4 py-4 font-bold text-right">Monto Bruto</th><th class="px-4 py-4 font-bold text-right text-rose-500">Costo FIFO</th><th class="px-6 py-4 font-bold text-right text-emerald-500 rounded-r-xl">Ganancia</th><th class="px-4 py-4 font-bold text-center">Acción</th></tr>
-                                        </thead>
-                                        <tbody id="ventas-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: ESTRATEGIA Y METAS -->
-            <div id="view-metas" class="view-section">
-                <!-- (Mismo código de Metas de la versión anterior) -->
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Estrategia & Metas</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Control corporativo de objetivos de venta por producto.</p>
-                        </div>
-                        <button onclick="abrirModalPlanner()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
-                            <i data-lucide="target" class="w-4 h-4"></i> Planner de Metas
-                        </button>
-                    </div>
-
-                    <div class="card-panel p-8 md:p-12 relative overflow-hidden bg-slate-900 dark:bg-[#0b0f19] text-white border-0">
-                        <div class="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[80px] z-0 pointer-events-none"></div>
-                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <div class="flex-1 w-full">
-                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="target" class="w-4 h-4"></i> Avance Global del Catálogo</p>
-                                <div class="flex items-end gap-4 mb-6">
-                                    <p class="text-6xl md:text-7xl font-black tracking-tighter drop-shadow-lg" id="metas-global-pct">0<span class="text-3xl text-slate-400">%</span></p>
-                                    <div class="pb-2">
-                                        <p class="font-bold text-lg text-slate-200"><span id="metas-global-sold">0</span> <span class="text-xs text-slate-400">vendidas</span></p>
-                                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Meta Acum: <span id="metas-global-target">0</span> uds.</p>
-                                    </div>
-                                </div>
-                                <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
-                                    <div id="metas-global-bar" class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
-                                </div>
-                            </div>
-                            <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[2rem] text-center shadow-2xl shrink-0 min-w-[250px] relative z-10">
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Ritmo Diario (Pacing)</p>
-                                <p class="text-4xl font-black text-white" id="metas-daily-pacing">0 <span class="text-sm text-slate-500 font-bold">u/día</span></p>
-                                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-3 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50 inline-block" id="metas-pacing-status">Calculando...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="metas-productos-grid"></div>
-                </div>
-            </div>
-
-            <!-- VIEW: INVENTARIO -->
             <div id="view-inventario" class="view-section">
-                <!-- (Mismo código de Inventario de la versión anterior) -->
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
+                <div class="max-w-7xl mx-auto space-y-8">
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
                         <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Gestión de Activos</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Filtra por jerarquías y audita el valor de tu almacén físico.</p>
+                            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Gestión de Activos</h2>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Audita el valor de tu almacén segmentado por Nicho de Mercado.</p>
                         </div>
-                        <button onclick="abrirKardexGeneral()" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 px-6 py-3.5 rounded-xl font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2">
-                            <i data-lucide="list" class="w-4 h-4 text-indigo-500"></i> Kardex General
+                        <button onclick="abrirKardexGeneral()" class="bg-slate-900 text-white px-8 py-4 rounded-[1.25rem] font-black shadow-xl shadow-slate-900/20 hover:bg-black hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3">
+                            <i data-lucide="list" class="w-5 h-5 text-indigo-400"></i> Auditoría Kardex Global
                         </button>
                     </div>
 
-                    <div class="card-panel p-5 lg:p-6 flex flex-col gap-4">
-                        <div class="flex items-center gap-2 flex-wrap" id="inv-nicho-filters"></div>
-                        <div class="flex items-center gap-2 flex-wrap pt-3 border-t border-slate-100 dark:border-slate-800/60 hidden" id="inv-grupo-filters-container">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-2">Grupo:</div>
-                            <div class="flex items-center gap-2 flex-wrap" id="inv-grupo-filters"></div>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap pt-3 border-t border-slate-100 dark:border-slate-800/60 hidden" id="inv-cat-filters-container">
-                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-2">Categoría:</div>
-                            <div class="flex items-center gap-2 flex-wrap" id="inv-cat-filters"></div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="card-panel p-6 flex flex-col justify-center relative overflow-hidden group hover-lift">
-                            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="box" class="w-3 h-3 text-indigo-500"></i> Stock Físico Total</p>
-                            <p id="inv-kpi-prods" class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">0</p>
-                        </div>
-                        <div class="card-panel p-6 flex flex-col justify-center relative overflow-hidden group hover-lift">
-                            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="dollar-sign" class="w-3 h-3 text-rose-500"></i> Valor Inventario (Costo)</p>
-                            <p id="inv-kpi-costo" class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">$0.00</p>
-                        </div>
-                        <div class="bg-slate-900 dark:bg-indigo-600 text-white p-6 rounded-3xl border border-slate-800 dark:border-indigo-500 flex flex-col justify-center relative overflow-hidden shadow-xl hover-lift">
-                            <p class="text-[10px] font-bold text-slate-300 dark:text-indigo-200 uppercase tracking-widest mb-1 flex items-center gap-2"><i data-lucide="gem" class="w-3 h-3 text-white"></i> Ingreso Potencial (Venta)</p>
-                            <p id="inv-kpi-potencial" class="text-3xl font-black text-white tracking-tighter">$0.00</p>
-                        </div>
-                    </div>
-
-                    <div class="card-panel overflow-hidden flex flex-col">
-                        <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19]">
-                            <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2">Disponibilidad en Almacén</h3>
-                        </div>
-                        <div class="w-full overflow-x-auto p-4 custom-scrollbar">
-                            <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
-                                <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50">
-                                    <tr>
-                                        <th class="px-6 py-4 font-bold rounded-l-xl">Producto / Ref</th>
-                                        <th class="px-4 py-4 font-bold">Segmento de Mercado</th>
-                                        <th class="px-4 py-4 font-bold text-center">Físico</th>
-                                        <th class="px-4 py-4 font-bold text-right text-rose-500">Costo Promedio</th>
-                                        <th class="px-4 py-4 font-bold text-right text-emerald-500">PVP Sugerido</th>
-                                        <th class="px-6 py-4 font-bold text-center rounded-r-xl">Kardex</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventario-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: CATÁLOGO -->
-            <div id="view-catalogo" class="view-section">
-                <!-- (Mismo código de Catálogo de la versión anterior) -->
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Directorio Maestro</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Creación de perfiles, precios, proveedores y estructura del catálogo.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
-                        <div class="lg:col-span-4 space-y-6">
-                            <div class="card-panel p-6 lg:p-8 relative overflow-hidden">
-                                <h3 class="text-xl font-black text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i data-lucide="plus-square" class="w-5 h-5 text-indigo-500"></i> Alta Ficha</h3>
-                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-6">Nuevo SKU al sistema.</p>
-                                
-                                <form id="form-producto" onsubmit="handleCrearProducto(event)" class="space-y-4">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Nombre Comercial</label>
-                                        <input type="text" id="prod-nombre" required placeholder="Ej: Zapatillas X1" class="input-premium !px-4 !py-3 !text-sm">
-                                    </div>
-                                    
-                                    <div class="p-3 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800/60 space-y-3">
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">1. Nicho de Mercado</label>
-                                            <div class="flex gap-2">
-                                                <select id="prod-nicho" onchange="syncGruposSelect()" class="input-premium !px-3 !py-2.5 text-sm appearance-none truncate bg-white dark:bg-[#0f172a]"><option value="" disabled selected>Seleccione Nicho...</option></select>
-                                                <button type="button" onclick="crearNicho()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 transition-colors shadow-sm shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">2. Grupo</label>
-                                            <div class="flex gap-2">
-                                                <select id="prod-grupo" onchange="syncCategoriasSelect()" class="input-premium !px-3 !py-2.5 text-sm appearance-none truncate bg-white dark:bg-[#0f172a]"><option value="" disabled selected>-- Primero elija Nicho --</option></select>
-                                                <button type="button" onclick="crearGrupo()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 transition-colors shadow-sm shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1.5 ml-1">3. Categoría</label>
-                                            <div class="flex gap-2">
-                                                <select id="prod-categoria" class="input-premium !px-3 !py-2.5 text-sm appearance-none truncate bg-white dark:bg-[#0f172a]"><option value="" disabled selected>-- Primero elija Grupo --</option></select>
-                                                <button type="button" onclick="crearCategoria()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-slate-50 transition-colors shadow-sm shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Proveedor / Marca</label>
-                                            <input type="text" id="prod-proveedor" placeholder="Nombre del Suplidor" class="input-premium !px-3 !py-2.5 text-sm bg-white dark:bg-[#0f172a]">
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800/60 p-3 space-y-3">
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">PVP Base ($)</label>
-                                                <input type="number" id="prod-precio-base" min="0" step="0.01" required placeholder="0.00" class="input-premium !px-4 !py-3 !text-sm !font-black !text-emerald-600 dark:!text-emerald-400 !border-emerald-200 dark:!border-emerald-900/50 bg-white dark:bg-[#0f172a]">
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Unidad Medida</label>
-                                                <select id="prod-unidad" class="input-premium !px-3 !py-3 text-sm appearance-none bg-white dark:bg-[#0f172a]">
-                                                    <option value="Uds">Unidades (Uds)</option>
-                                                    <option value="Kg">Kilogramos (Kg)</option>
-                                                    <option value="Lbs">Libras (Lbs)</option>
-                                                    <option value="Cajas">Cajas</option>
-                                                    <option value="Lts">Litros</option>
-                                                    <option value="Mts">Metros</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Costo Ref. (Opc)</label>
-                                                <input type="number" id="prod-costo-ref" min="0" step="0.01" placeholder="0.00" class="input-premium !px-3 !py-2.5 text-sm bg-white dark:bg-[#0f172a]">
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Desc. Max (%)</label>
-                                                <input type="number" id="prod-descuento" min="0" max="100" step="0.1" placeholder="15" class="input-premium !px-3 !py-2.5 text-sm bg-white dark:bg-[#0f172a]">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
-                                        <div class="flex justify-between items-center mb-3">
-                                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Cualidades Extras</label>
-                                            <button type="button" onclick="addAtributo()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded font-bold hover:bg-slate-50 transition-colors flex items-center gap-1 shadow-sm"><i data-lucide="plus" class="w-3 h-3"></i></button>
-                                        </div>
-                                        <div id="atributos-container" class="space-y-2"></div>
-                                    </div>
-
-                                    <button type="submit" class="w-full bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl py-3.5 mt-2 shadow-lg hover:shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Guardar Ficha</button>
-                                </form>
+                    <!-- Filtros Dinámicos Multi-Nicho -->
+                    <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col gap-5">
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-3 flex-wrap" id="inv-nicho-filters"></div>
+                            <div class="flex items-center gap-3 flex-wrap pt-4 border-t border-slate-100 hidden" id="inv-grupo-filters-container">
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2 flex items-center gap-1"><i data-lucide="corner-down-right" class="w-3 h-3"></i> Grupo:</div>
+                                <div class="flex items-center gap-2 flex-wrap" id="inv-grupo-filters"></div>
                             </div>
-                        </div>
-                        
-                        <div class="lg:col-span-8">
-                            <div class="card-panel overflow-hidden flex flex-col h-[850px]">
-                                <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] shrink-0">
-                                    <h3 class="font-black text-lg text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="database" class="text-indigo-500 w-5 h-5"></i> Directorio Base</h3>
-                                </div>
-                                <div class="w-full flex-1 overflow-auto custom-scrollbar p-4">
-                                    <table class="w-full text-left text-sm whitespace-nowrap min-w-[900px]">
-                                        <thead class="text-[10px] text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50 sticky top-0 z-10">
-                                            <tr>
-                                                <th class="px-6 py-4 font-bold rounded-l-xl">Artículo</th>
-                                                <th class="px-4 py-4 font-bold">Jerarquía</th>
-                                                <th class="px-4 py-4 font-bold">Marca / Prov.</th>
-                                                <th class="px-4 py-4 font-bold text-right text-emerald-500">PVP Base</th>
-                                                <th class="px-6 py-4 font-bold w-full text-center">Acción</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="catalogo-body" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
-                                    </table>
-                                </div>
+                            <div class="flex items-center gap-3 flex-wrap pt-4 border-t border-slate-100 hidden" id="inv-cat-filters-container">
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2 flex items-center gap-1"><i data-lucide="corner-down-right" class="w-3 h-3 text-indigo-400"></i> Categoria:</div>
+                                <div class="flex items-center gap-2 flex-wrap" id="inv-cat-filters"></div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- VIEW: CRM -->
-            <div id="view-crm" class="view-section">
-                <!-- (Mismo código de CRM de la versión anterior) -->
-                <div class="max-w-7xl mx-auto space-y-6 lg:space-y-8">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-slate-200/60 dark:border-slate-800/60 pb-6">
-                        <div>
-                            <h2 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tighter">Directorio B2B (CRM)</h2>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium text-sm mt-1">Administra cuentas clave, condiciones comerciales y volumen de compra.</p>
+                    <!-- KPIs Dinámicos -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)] border border-white flex flex-col justify-center relative overflow-hidden group hover-lift">
+                            <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-indigo-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                            <div class="relative z-10">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                    <i data-lucide="layers" class="text-indigo-500 w-4 h-4"></i> Total Artículos
+                                </p>
+                                <h4 class="text-3xl font-black text-slate-800 tracking-tight">0</h4>
+                            </div>
                         </div>
-                        <button onclick="abrirModalCRM()" class="bg-slate-900 dark:bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center gap-2">
-                            <i data-lucide="user-plus" class="w-4 h-4"></i> Registrar Cliente
-                        </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="crm-grid"></div>
-                </div>
-            </div>
-
-            <!-- VIEW: INSTRUCCIONES -->
-            <div id="view-instrucciones" class="view-section">
-                <!-- (Mismo código de Config de la versión anterior) -->
-                <div class="max-w-2xl mx-auto card-panel p-8 sm:p-12 mt-8 md:mt-12 text-center">
-                    <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mb-6 mx-auto"><i data-lucide="database" class="w-8 h-8 text-slate-600 dark:text-slate-300"></i></div>
-                    <h2 class="text-2xl font-black text-slate-800 dark:text-white mb-2">Motor Backend Google</h2>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-8 max-w-sm mx-auto">Sincroniza la aplicación con tu archivo de Google Sheets pegando la URL Web App.</p>
-                    
-                    <div class="space-y-4">
-                        <input type="url" id="config-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="input-premium !text-center !font-mono !text-xs !py-4 shadow-inner">
-                        <button onclick="guardarUrlConfig()" class="w-full bg-slate-900 dark:bg-indigo-600 text-white font-bold rounded-xl py-4 shadow-lg hover:shadow-xl transition-all active:scale-95 flex justify-center items-center gap-2"><i data-lucide="link" class="w-4 h-4"></i> Enlazar Base de Datos</button>
-                    </div>
-                    
-                    <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-center">
-                        <div id="config-status" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-[10px] font-bold uppercase tracking-widest text-slate-400">Desconectado</div>
-                    </div>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- MODAL CRM COMPLETO -->
-    <div id="modal-crm" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalCRM()"></div>
-        <div class="relative w-full max-w-2xl card-panel overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out" id="modal-crm-content">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center shrink-0">
-                <h3 class="font-black text-xl tracking-tight text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="user-plus" class="text-indigo-500 w-5 h-5"></i> Alta Cliente B2B</h3>
-                <button onclick="cerrarModalCRM()" class="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <form onsubmit="handleCrearCliente(event)" class="p-6 space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Razón Social / Nombre</label>
-                        <input type="text" id="crm-nombre" required class="input-premium !py-3 !text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">RNC / Cédula</label>
-                        <input type="text" id="crm-rnc" class="input-premium !py-3 !text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Categoría</label>
-                        <select id="crm-tipo" class="input-premium !py-3 !text-sm appearance-none bg-white">
-                            <option value="Normal">Normal</option>
-                            <option value="VIP Premium">VIP Premium</option>
-                            <option value="B2B Mayorista">B2B Mayorista</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Teléfono</label>
-                        <input type="text" id="crm-phone" class="input-premium !py-3 !text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Límite Crédito ($)</label>
-                        <input type="number" id="crm-limite" min="0" step="100" placeholder="0.00" class="input-premium !py-3 !text-sm !border-emerald-200 focus:!border-emerald-500 bg-emerald-50/30">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-slate-900 dark:bg-indigo-600 text-white font-black rounded-2xl py-3.5 mt-4 shadow-lg hover:bg-black transition-all active:scale-[0.98]">Guardar Cliente</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL PLANNER DE METAS -->
-    <div id="modal-planner" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="cerrarModalPlanner()"></div>
-        <div class="relative w-full max-w-4xl card-panel overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-[85vh]" id="modal-planner-content">
-            <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-[#0b0f19] flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-indigo-500"><i data-lucide="target" class="w-5 h-5"></i></div>
-                    <div>
-                        <h3 class="font-black text-xl tracking-tight text-slate-800 dark:text-white leading-none">Planner Automático</h3>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Configuración de Cuotas</p>
-                    </div>
-                </div>
-                <button onclick="cerrarModalPlanner()" class="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-[#020617] custom-scrollbar space-y-6">
-                <div class="card-panel p-5">
-                    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="filter" class="w-3 h-3"></i> 1. Segmentar Productos a impactar</h4>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <select id="planner-nicho" onchange="actualizarFiltrosPlannerGrupo()" class="input-premium !py-3 !text-sm flex-1"><option value="ALL">Todo el Nicho</option></select>
-                        <select id="planner-grupo" onchange="actualizarFiltrosPlannerCat()" class="input-premium !py-3 !text-sm flex-1 hidden"><option value="ALL">Cualquier Grupo</option></select>
-                        <select id="planner-cat" onchange="renderListaPlanner()" class="input-premium !py-3 !text-sm flex-1 hidden"><option value="ALL">Cualquier Categoría</option></select>
-                    </div>
-                </div>
-                <div class="card-panel p-5 bg-indigo-50/50 dark:bg-indigo-900/10 border-indigo-100 dark:border-indigo-900/30">
-                    <h4 class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i data-lucide="calculator" class="w-3 h-3"></i> 2. Distribución Matemática Pareja (Opcional)</h4>
-                    <div class="flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="flex-1 w-full">
-                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1.5 ml-1">Volumen Total a Vender (Uds)</label>
-                            <input type="number" id="planner-mass-qty" min="1" placeholder="Ej: 1000" class="input-premium !py-3 !text-sm !border-indigo-200 dark:!border-indigo-800">
-                        </div>
-                        <button type="button" onclick="aplicarDistribucionMasiva()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm w-full sm:w-auto">Distribuir</button>
-                    </div>
-                </div>
-                <div class="card-panel overflow-hidden">
-                    <div class="grid grid-cols-12 gap-4 p-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#0b0f19] text-[10px] font-bold text-slate-400 uppercase tracking-widest px-6">
-                        <div class="col-span-8">Catálogo Filtrado</div>
-                        <div class="col-span-4 text-right">Meta (Uds)</div>
-                    </div>
-                    <div class="max-h-[35vh] overflow-y-auto custom-scrollbar p-2 space-y-1" id="planner-products-list"></div>
-                </div>
-                <button type="button" onclick="guardarMetas()" class="w-full text-white py-4 rounded-xl font-black text-lg shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all bg-slate-900 dark:bg-indigo-600 flex items-center justify-center gap-2">
-                    <i data-lucide="save" class="w-5 h-5"></i> Confirmar Plan de Metas
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPT CORE -->
     <script>
-        const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount);
-        
-        let state = { 
-            catalogo: [], compras: [], ventas: [], egresos: [], formAtributos: [{ clave: '', valor: '' }], 
-            categoriasGastos: ['Operativo', 'Marketing', 'Logística', 'Nómina', 'Servicios', 'Otros'], clientes: [], 
-            metasGlobales: {}, 
-            formComprasItems: []
-        };
-        let activeCatFilter = 'ALL'; let activeSubCatFilter = 'ALL'; let activeNicho = 'ALL'; let activeGrupo = 'ALL'; let activeCategoria = 'ALL';
-        let charts = {};
-        let activeKardexProdId = null;
-        let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
-
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
-            if(window.lucide) lucide.createIcons();
-            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); 
-        }
-
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
+        lucide.createIcons();
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
             if (sidebar.classList.contains('-translate-x-full')) {
                 sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
             } else {
                 sidebar.classList.add('-translate-x-full');
-                backdrop.classList.remove('opacity-100'); setTimeout(() => backdrop.classList.add('hidden'), 300);
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
             }
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if(window.lucide) lucide.createIcons();
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('theme-text').innerHTML = isDark ? '<i data-lucide="sun" class="w-4 h-4"></i> Modo Claro' : '<i data-lucide="moon" class="w-4 h-4"></i> Modo Oscuro';
-            
-            const today = new Date().toISOString().split('T')[0];
-            ['comp-fecha', 'egre-fecha', 'vent-fecha'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = today; });
-            
-            actualizarEstadoConfig();
-            if(CONFIG_URL_GOOGLE) { navigate('dashboard'); cargarDatosDesdeGoogle(); } 
-            else { navigate('instrucciones'); document.getElementById('loading-overlay').classList.add('hidden'); }
-        });
 
         function navigate(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            // Estilos Sidebar Menu
-            document.querySelectorAll('aside nav button').forEach(el => { 
-                el.classList.remove('text-slate-900', 'dark:text-white', 'bg-slate-50', 'dark:bg-slate-800/50'); 
-                el.classList.add('text-slate-500', 'dark:text-slate-400');
-                const bg = el.querySelector('.nav-bg'); if(bg) { bg.classList.remove('opacity-100', 'scale-100'); bg.classList.add('opacity-0', 'scale-95'); }
-                const icon = el.querySelector('i'); if(icon) icon.classList.remove('text-indigo-400');
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
             });
-            const activeBtn = document.getElementById('nav-' + viewId);
-            if(activeBtn) { 
-                activeBtn.classList.remove('text-slate-500', 'dark:text-slate-400'); 
-                activeBtn.classList.add('text-slate-900', 'dark:text-white', 'bg-slate-50', 'dark:bg-slate-800/50'); 
-                const bg = activeBtn.querySelector('.nav-bg'); if(bg) { bg.classList.remove('opacity-0', 'scale-95'); bg.classList.add('opacity-100', 'scale-100'); }
-                const icon = activeBtn.querySelector('i'); if(icon) icon.classList.add('text-indigo-400');
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) {
+                targetView.classList.add('active');
             }
-            
-            if(window.innerWidth < 1024) toggleSidebar();
-            
-            const titles = { 'ventas': 'Punto de Venta', 'dashboard': 'Panel Directivo', 'catalogo': 'Directorio Maestro', 'finanzas': 'Libro Contable', 'instrucciones': 'Configuración Core', 'inventario': 'Gestión de Activos', 'metas': 'Estrategia de Ventas', 'crm': 'Cuentas Clave B2B' };
-            document.getElementById('page-title').innerText = titles[viewId] || '';
-            const icons = { 'ventas': 'shopping-cart', 'dashboard': 'pie-chart', 'catalogo': 'tags', 'finanzas': 'wallet', 'instrucciones': 'settings', 'inventario': 'layers', 'metas': 'target', 'crm': 'users' };
-            const hIcon = document.getElementById('header-icon'); if(hIcon) { hIcon.innerHTML = `<i data-lucide="${icons[viewId]||'activity'}" class="w-5 h-5"></i>`; if(window.lucide) lucide.createIcons(); }
-
-            if(viewId === 'ventas') { renderVentasSelect(); renderVentas(); }
-            if(viewId === 'finanzas') { renderSelectCategoriasGastos(); renderEgresos(); addCompraItem(); }
-            if(viewId === 'dashboard') setTimeout(renderDashboard, 100);
-            if(viewId === 'inventario') renderInventario();
-            if(viewId === 'catalogo') { renderCatalogoSelects(); renderCatalogo(); renderAtributosForm(); }
-            if(viewId === 'metas') renderMetas();
-            if(viewId === 'crm') renderCRM();
-        }
-
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            const isErr = type === 'error'; const isInfo = type === 'info';
-            const icon = isErr ? 'alert-triangle' : (isInfo ? 'info' : 'check-circle-2');
-            const colorBg = isErr ? 'bg-rose-50 border-rose-200 text-rose-700 dark:bg-rose-900/90 dark:border-rose-800 dark:text-rose-100' : (isInfo ? 'bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/90 dark:border-blue-800 dark:text-blue-100' : 'bg-slate-900 text-white dark:bg-slate-800 border-transparent dark:border-slate-700');
-            const iconColor = isErr ? 'text-rose-500 dark:text-rose-300' : (isInfo ? 'text-blue-500 dark:text-blue-300' : 'text-emerald-400');
-            toast.className = `flex items-center gap-3 px-5 py-4 rounded-2xl shadow-xl border toast-enter w-full sm:w-auto z-[999] ${colorBg}`;
-            toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 shrink-0 ${iconColor}"></i><p class="font-bold text-sm tracking-tight">${msg}</p>`;
-            container.appendChild(toast); if(window.lucide) lucide.createIcons({root: toast});
-            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-exit'); setTimeout(() => toast.remove(), 300); }, 4000);
-        }
-        
-        const emptyStateHTML = (icon, title, desc, colspan) => `<tr><td colspan="${colspan}"><div class="flex flex-col items-center justify-center py-16 text-center"><div class="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-[1rem] flex items-center justify-center mb-4 text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700"><i data-lucide="${icon}" class="w-6 h-6"></i></div><p class="text-sm font-bold text-slate-700 dark:text-slate-300">${title}</p><p class="text-xs font-medium text-slate-400 mt-1">${desc}</p></div></td></tr>`;
-
-        // DB Fetch
-        function guardarUrlConfig() {
-            const url = document.getElementById('config-url-input').value.trim();
-            if(url.startsWith('https://script.google.com/')) { localStorage.setItem('nexusERP_url', url); CONFIG_URL_GOOGLE = url; actualizarEstadoConfig(); showToast('Conexión guardada. Sincronizando...', 'success'); setTimeout(() => window.location.reload(), 1000); } 
-            else showToast('URL inválida. Revisa el endpoint.', 'error');
-        }
-        function actualizarEstadoConfig() {
-            if(document.getElementById('config-url-input')) document.getElementById('config-url-input').value = CONFIG_URL_GOOGLE;
-            const htmlOnline = `<div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div> <span class="text-emerald-600">Online</span>`;
-            if(CONFIG_URL_GOOGLE && document.getElementById('config-status')) document.getElementById('config-status').innerHTML = htmlOnline;
-            if(CONFIG_URL_GOOGLE && document.getElementById('config-status-sidebar')) document.getElementById('config-status-sidebar').innerHTML = `<span class="text-emerald-500">Cloud DB Activa</span>`;
-            if(window.lucide) lucide.createIcons();
-        }
-        async function cargarDatosDesdeGoogle() {
-            if (!CONFIG_URL_GOOGLE) return;
-            const loader = document.getElementById('loading-overlay'); loader.classList.remove('hidden'); loader.classList.add('flex');
-            try {
-                const response = await fetch(CONFIG_URL_GOOGLE, { method: 'GET', mode: 'cors', credentials: 'omit', headers: { 'Accept': 'application/json' } });
-                if(!response.ok) throw new Error('Network error');
-                const data = await response.json();
-                
-                state.catalogo = (data.catalogo || []).map(c => ({...c, proveedor: c.proveedor || '', unidad: c.unidad || 'Uds'})); 
-                state.compras = data.compras || []; 
-                state.ventas = (data.ventas || []).map(v => ({...v, metodoPago: v.metodoPago || 'Efectivo', ncf: v.ncf || ''})); 
-                state.egresos = (data.egresos || []).map(e => ({...e, metodoPago: e.metodoPago || 'Transferencia', ncf: e.ncf || '', proveedor: e.proveedor || ''})); 
-                state.clientes = (data.clientes || []).map(c => ({...c, rnc: c.rnc || '', limite: c.limite || 0}));
-                state.metasGlobales = data.metas || {};
-                
-                if(data.categorias_gastos && data.categorias_gastos.length > 0) state.categoriasGastos = data.categorias_gastos;
-                localStorage.setItem('nexusERP_backup', JSON.stringify(state));
-                updateMonthFilterOptions(); renderAll(); showToast('Sistema Sincronizado.');
-            } catch (err) { 
-                const backup = localStorage.getItem('nexusERP_backup');
-                if (backup) { 
-                    const b = JSON.parse(backup);
-                    state.catalogo = b.catalogo || []; state.compras = b.compras || []; state.ventas = b.ventas || []; state.egresos = b.egresos || []; state.clientes = b.clientes || [];
-                    state.metasGlobales = b.metasGlobales || {};
-                    updateMonthFilterOptions(); renderAll(); showToast('Modo Local Restablecido.', 'info'); 
-                } else showToast('Fallo crítico al leer nube.', 'error');
-            } finally { loader.classList.add('hidden'); loader.classList.remove('flex'); }
-        }
-        function enviarAGoogleSheets(tipo, payload) {
-            localStorage.setItem('nexusERP_backup', JSON.stringify(state));
-            if (!CONFIG_URL_GOOGLE) return;
-            fetch(CONFIG_URL_GOOGLE, { method: 'POST', mode: 'no-cors', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ tipo, ...payload }) }).catch(e=>console.warn("Offline save"));
-        }
-        function eliminarRegistro(tipo, id, sheetName) {
-            if(!confirm(`¿Estás seguro de eliminar este registro? La base de datos y la auditoría se recalcularán automáticamente.`)) return;
-            if(tipo === 'VENTA') state.ventas = state.ventas.filter(x => x.id !== id);
-            else if(tipo === 'EGRESO') state.egresos = state.egresos.filter(x => x.id !== id);
-            else if(tipo === 'CATALOGO') state.catalogo = state.catalogo.filter(x => x.id !== id);
-            else if(tipo === 'CLIENTE') state.clientes = state.clientes.filter(x => x.id !== id);
-            else if(tipo === 'COMPRA') state.compras = state.compras.filter(x => x.id !== id);
-            enviarAGoogleSheets('DELETE', { sheetName, id });
-            renderAll(); showToast('Registro eliminado de la base de datos.', 'info');
-            const modalKardex = document.getElementById('modal-kardex');
-            if(modalKardex && !modalKardex.classList.contains('opacity-0')) { procesarKardex(activeKardexProdId); }
-        }
-
-        function renderAll() {
-            if(document.getElementById('view-catalogo').classList.contains('active')) renderCatalogo();
-            if(document.getElementById('view-ventas').classList.contains('active')) renderVentas();
-            if(document.getElementById('view-finanzas').classList.contains('active')) renderEgresos();
-            if(document.getElementById('view-inventario').classList.contains('active')) renderInventario();
-            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
-            if(document.getElementById('view-metas').classList.contains('active')) renderMetas();
-            if(document.getElementById('view-crm').classList.contains('active')) renderCRM();
-        }
-
-        // --- FUNCIONES CRM ---
-        function abrirModalCRM() { document.getElementById('modal-crm').classList.remove('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-crm-content').classList.replace('scale-95', 'scale-100'); }
-        function cerrarModalCRM() { document.getElementById('modal-crm').classList.add('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-crm-content').classList.replace('scale-100', 'scale-95'); }
-        function handleCrearCliente(e) {
-            e.preventDefault();
-            const obj = { id: `CL-${Date.now().toString().slice(-6)}`, nombre: document.getElementById('crm-nombre').value, email: '', phone: document.getElementById('crm-phone').value, tipo: document.getElementById('crm-tipo').value, address: '', notes: '', rnc: document.getElementById('crm-rnc').value, limite: parseFloat(document.getElementById('crm-limite').value) || 0 };
-            state.clientes.push(obj); enviarAGoogleSheets("NUEVO_CLIENTE", obj); renderCRM(); cerrarModalCRM(); e.target.reset(); showToast('Cuenta Clave B2B añadida.');
-        }
-        function renderCRM() {
-            const grid = document.getElementById('crm-grid'); if(!grid) return;
-            if(!state.clientes || state.clientes.length === 0) { grid.innerHTML = '<div class="col-span-full py-16 text-center card-panel"><p class="text-slate-400 font-bold text-lg">No hay clientes registrados en el CRM.</p></div>'; return; }
-            grid.innerHTML = state.clientes.slice().reverse().map((c, i) => {
-                const totalSpent = state.ventas.filter(v => v.cliente === c.id || v.cliente === c.nombre).reduce((acc, v) => acc + (v.cantidad * v.precio), 0);
-                return `
-                <div class="card-panel p-6 hover-lift relative overflow-hidden group animate-in slide-in-from-bottom-4 fade-in" style="animation-delay: ${i*50}ms">
-                    <button onclick="eliminarRegistro('CLIENTE', '${c.id}', 'Clientes_CRM')" class="absolute top-4 right-4 p-2 text-slate-300 hover:text-rose-500 bg-slate-50 dark:bg-slate-800 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-20"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    ${c.tipo.includes('VIP') ? '<div class="absolute top-0 right-0 bg-indigo-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-bl-lg">VIP</div>' : ''}
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-xl font-black text-slate-400">${c.nombre.charAt(0)}</div>
-                        <div class="flex-1 min-w-0 pr-8">
-                            <h3 class="font-bold text-base text-slate-800 dark:text-slate-100 truncate">${c.nombre}</h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">${c.tipo}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-1 mb-4">
-                        ${c.rnc ? `<p class="text-xs text-slate-500"><b>RNC/Doc:</b> ${c.rnc}</p>` : ''}
-                        ${c.phone ? `<p class="text-xs text-slate-500"><b>Tel:</b> ${c.phone}</p>` : ''}
-                        ${c.limite > 0 ? `<p class="text-xs text-emerald-600 font-bold mt-2 border-t border-slate-100 pt-2">Límite Crédito: RD$ ${formatMoney(c.limite)}</p>` : ''}
-                    </div>
-                    <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Volumen Compra</p>
-                        <p class="text-xl font-black text-slate-900 dark:text-white">RD$ ${formatMoney(totalSpent)}</p>
-                    </div>
-                </div>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // --- FUNCIONES CORE: INVENTARIO ---
-        function getStockConsolidado() {
-            return state.catalogo.map(prod => {
-                const comprasProd = state.compras.filter(c => c.productoId === prod.id);
-                const stock = comprasProd.reduce((acc, c) => acc + c.cantidad_restante, 0);
-                const costoTotal = comprasProd.reduce((acc, c) => acc + (c.cantidad_restante * c.costo), 0);
-                const costoPromedio = stock > 0 ? (costoTotal / stock) : 0;
-                return { ...prod, stock, costoPromedio, costoTotal, precio_base: Number(prod.precio_base || 0) };
-            });
-        }
-        function renderInventarioFilters(stockData) {
-            const nichoContainer = document.getElementById('inv-nicho-filters');
-            const grupoWrap = document.getElementById('inv-grupo-filters-container');
-            const grupoContainer = document.getElementById('inv-grupo-filters');
-            const catWrap = document.getElementById('inv-cat-filters-container');
-            const catContainer = document.getElementById('inv-cat-filters');
-
-            const nichos = ['ALL', ...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            if (nichoContainer) {
-                nichoContainer.innerHTML = nichos.map(n => `
-                    <button onclick="setInvNichoFilter('${n}')" class="px-5 py-2.5 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest border shadow-sm transition-all ${activeNicho === n ? 'bg-slate-900 dark:bg-indigo-600 text-white border-transparent scale-105' : 'bg-white dark:bg-[#0b0f19] text-slate-500 border-slate-200 dark:border-slate-800 hover:border-indigo-300'}">${n === 'ALL' ? 'Catálogo General' : n}</button>`).join('');
-            }
-
-            if (activeNicho === 'ALL') { if(grupoWrap) grupoWrap.classList.add('hidden'); if(catWrap) catWrap.classList.add('hidden'); activeGrupo = 'ALL'; activeCategoria = 'ALL'; } 
-            else {
-                const grupos = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === activeNicho).map(p => p.grupo).filter(Boolean))];
-                if (grupos.length > 1) { 
-                    if(grupoWrap) grupoWrap.classList.remove('hidden');
-                    if(grupoContainer) grupoContainer.innerHTML = grupos.map(g => `
-                        <button onclick="setInvGrupoFilter('${g}')" class="px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${activeGrupo === g ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800' : 'bg-white dark:bg-[#0b0f19] text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50'}">${g === 'ALL' ? 'Todos los Grupos' : g}</button>`).join('');
-                } else { if(grupoWrap) grupoWrap.classList.add('hidden'); activeGrupo = 'ALL'; }
-
-                if(activeGrupo === 'ALL') { if(catWrap) catWrap.classList.add('hidden'); activeCategoria = 'ALL'; }
-                else {
-                    const categorias = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === activeNicho && p.grupo === activeGrupo).map(p => p.categoria).filter(Boolean))];
-                    if (categorias.length > 1) {
-                        if(catWrap) catWrap.classList.remove('hidden');
-                        if(catContainer) catContainer.innerHTML = categorias.map(c => `
-                            <button onclick="setInvCatFilterLevel3('${c}')" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all ${activeCategoria === c ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-white dark:bg-[#0b0f19] text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50'}">${c === 'ALL' ? 'Cualquier Categoría' : c}</button>`).join('');
-                    } else { if(catWrap) catWrap.classList.add('hidden'); activeCategoria = 'ALL'; }
-                }
-            }
-        }
-        function setInvNichoFilter(n) { activeNicho = n; activeGrupo = 'ALL'; activeCategoria = 'ALL'; renderInventario(); }
-        function setInvGrupoFilter(g) { activeGrupo = g; activeCategoria = 'ALL'; renderInventario(); }
-        function setInvCatFilterLevel3(c) { activeCategoria = c; renderInventario(); }
-
-        function renderInventario() {
-            const tbody = document.getElementById('inventario-body'); if(!tbody) return;
-            let stockConsolidado = getStockConsolidado();
-            renderInventarioFilters(stockConsolidado);
-            
-            if (activeNicho !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.nicho === activeNicho);
-            if (activeGrupo !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.grupo === activeGrupo);
-            if (activeCategoria !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.categoria === activeCategoria);
-            
-            stockConsolidado.sort((a,b) => b.stock - a.stock);
-            
-            const totalStock = stockConsolidado.reduce((s,p)=>s+p.stock, 0); 
-            const totalCosto = stockConsolidado.reduce((s, p) => s + p.costoTotal, 0);
-            const totalPotencial = stockConsolidado.reduce((s, p) => s + (p.stock * p.precio_base), 0);
-            
-            if(document.getElementById('inv-kpi-prods')) document.getElementById('inv-kpi-prods').innerText = totalStock.toLocaleString();
-            if(document.getElementById('inv-kpi-costo')) document.getElementById('inv-kpi-costo').innerText = `RD$ ${formatMoney(totalCosto)}`;
-            if(document.getElementById('inv-kpi-potencial')) document.getElementById('inv-kpi-potencial').innerText = `RD$ ${formatMoney(totalPotencial)}`;
-
-            if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('box', 'Almacén Vacío', 'No hay datos para este filtro.', 6);
-
-            tbody.innerHTML = stockConsolidado.map(p => `
-                <tr class="${p.stock===0?'opacity-50 grayscale':'hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer'} transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
-                    <td class="px-6 py-4" onclick="abrirKardex('${p.id}')">
-                        <p class="font-bold text-slate-800 dark:text-slate-200 text-sm truncate max-w-[250px] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">${p.nombre}</p>
-                        <p class="text-[9px] font-medium text-slate-400 font-mono tracking-widest mt-0.5">${p.id}</p>
-                    </td>
-                    <td class="px-4 py-4" onclick="abrirKardex('${p.id}')">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[9px] uppercase font-bold tracking-widest text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded border border-indigo-100 dark:border-indigo-800">${p.nicho || 'Gen'}</span>
-                            ${p.grupo ? `<span class="text-[9px] uppercase font-medium tracking-widest text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">${p.grupo}</span>` : ''}
-                            ${p.categoria ? `<span class="text-[9px] uppercase font-medium tracking-widest text-slate-400 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">${p.categoria}</span>` : ''}
-                        </div>
-                    </td>
-                    <td class="px-4 py-4 text-center" onclick="abrirKardex('${p.id}')"><span class="${p.stock===0?'bg-slate-200 text-slate-500 dark:bg-slate-800':'bg-slate-900 dark:bg-white text-white dark:text-slate-900'} px-3 py-1 rounded-lg text-xs font-bold">${p.stock} ${p.unidad||'u'}</span></td>
-                    <td class="px-4 py-4 text-right font-bold text-rose-500/90 text-sm" onclick="abrirKardex('${p.id}')">${formatMoney(p.costoPromedio)}</td>
-                    <td class="px-4 py-4 text-right font-bold text-emerald-600 dark:text-emerald-400 text-sm" onclick="abrirKardex('${p.id}')">${formatMoney(p.precio_base)}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="abrirKardex('${p.id}')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 transition-all mr-2"><i data-lucide="eye" class="w-4 h-4"></i></button>
-                        <button onclick="eliminarRegistro('CATALOGO', '${p.id}', 'Catalogo')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // --- FUNCIONES CORE: KARDEX BANCARIO ---
-        function abrirKardexGeneral() { activeKardexProdId = null; document.getElementById('kardex-modal-title').innerText = `Kardex Global`; document.getElementById('kardex-modal-subtitle').innerText = `Auditoría financiera y física absoluta`; procesarKardex(null); }
-        function abrirKardex(prodId) {
-            const prod = state.catalogo.find(p => p.id === prodId); if(!prod) return;
-            activeKardexProdId = prodId; document.getElementById('kardex-modal-title').innerText = `${prod.nombre}`; document.getElementById('kardex-modal-subtitle').innerText = `SKU: ${prod.id}`; procesarKardex(prodId);
-        }
-        function procesarKardex(prodId = null) {
-            let comprasTarget = state.compras; let ventasTarget = state.ventas;
-            if(prodId) { comprasTarget = comprasTarget.filter(c => c.productoId === prodId); ventasTarget = ventasTarget.filter(v => v.productoId === prodId); }
-
-            const comprasProd = comprasTarget.map(c => ({ tipo: 'ENTRADA', fechaStr: c.fecha, cant: c.cantidad_inicial, valorU: c.costo, id: c.id, refId: c.productoId }));
-            const ventasProd = ventasTarget.map(v => ({ tipo: 'SALIDA', fechaStr: v.fecha, cant: v.cantidad, valorU: v.precio, costoVenta: v.costo_fifo, id: v.id, refId: v.productoId, client: v.cliente }));
-            
-            let movs = [...comprasProd, ...ventasProd].sort((a, b) => { const d1 = new Date(a.fechaStr.split(',')[0]); const d2 = new Date(b.fechaStr.split(',')[0]); if (d1.getTime() !== d2.getTime()) return d1 - d2; if (a.tipo !== b.tipo) return a.tipo === 'ENTRADA' ? -1 : 1; return a.id.localeCompare(b.id); });
-
-            let saldoFisico = 0, saldoValuado = 0, cppActual = 0; const filas = [];
-            movs.forEach(mov => {
-                const isEntrada = mov.tipo === 'ENTRADA'; let outTotalCost = 0;
-                if (isEntrada) { saldoFisico += mov.cant; saldoValuado += (mov.cant * mov.valorU); } 
-                else { saldoFisico -= mov.cant; outTotalCost = mov.costoVenta || 0; saldoValuado -= outTotalCost; }
-                cppActual = saldoFisico > 0 ? (saldoValuado / saldoFisico) : 0;
-
-                const inCant = isEntrada ? mov.cant : '-'; const inCU = isEntrada ? formatMoney(mov.valorU) : '-'; const inTotal = isEntrada ? formatMoney(mov.cant * mov.valorU) : '-';
-                const outCant = !isEntrada ? mov.cant : '-'; const outCUProm = !isEntrada && mov.cant > 0 ? (outTotalCost / mov.cant) : 0; const outCUDraw = !isEntrada ? formatMoney(outCUProm) : '-'; const outTotalDraw = !isEntrada ? formatMoney(outTotalCost) : '-';
-
-                const pName = (state.catalogo.find(p=>p.id===mov.refId)||{}).nombre || 'N/A';
-                let opDesc = isEntrada ? `<span class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Ingreso Almacén</span>` : `<span class="bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Despacho (${mov.client || 'POS'})</span>`;
-
-                filas.unshift(`<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
-                    <td class="p-4 border-r border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">${opDesc} <span class="text-xs font-black text-slate-800 dark:text-slate-200">${mov.fechaStr.split('T')[0].split(',')[0]}</span></div>
-                            <button onclick="eliminarRegistro('${isEntrada?'COMPRA':'VENTA'}', '${mov.id}', '${isEntrada?'Compras':'Ventas'}')" class="opacity-0 group-hover:opacity-100 p-1.5 bg-rose-50 dark:bg-rose-900/30 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all border border-rose-100 dark:border-rose-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                        </div>
-                        <div class="text-[9px] font-mono text-slate-400 font-bold break-all">${mov.id}</div>
-                        ${!prodId ? `<div class="text-[10px] font-bold text-slate-500 truncate max-w-[150px] mt-1 bg-slate-50 dark:bg-slate-800 inline-block px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">${pName}</div>` : ''}
-                    </td>
-                    <td class="p-4 text-right text-emerald-600 font-black bg-emerald-50/20 dark:bg-emerald-900/10">${inCant}</td>
-                    <td class="p-4 text-right text-emerald-600/70 bg-emerald-50/20 dark:bg-emerald-900/10">${inCU}</td>
-                    <td class="p-4 text-right font-black text-emerald-600 border-r border-slate-200 dark:border-slate-800 bg-emerald-50/20 dark:bg-emerald-900/10">${inTotal}</td>
-                    <td class="p-4 text-right text-rose-500 font-black bg-rose-50/20 dark:bg-rose-900/10">${outCant}</td>
-                    <td class="p-4 text-right text-rose-500/70 bg-rose-50/20 dark:bg-rose-900/10">${outCUDraw}</td>
-                    <td class="p-4 text-right font-black text-rose-500 border-r border-slate-200 dark:border-slate-800 bg-rose-50/20 dark:bg-rose-900/10">${outTotalDraw}</td>
-                    <td class="p-4 text-right font-black text-slate-800 dark:text-slate-200 bg-indigo-50/20 dark:bg-indigo-900/10 text-base">${saldoFisico}</td>
-                    <td class="p-4 text-right text-slate-500 bg-indigo-50/20 dark:bg-indigo-900/10 text-xs">${formatMoney(cppActual)}</td>
-                    <td class="p-4 text-right font-black text-indigo-600 bg-indigo-50/20 dark:bg-indigo-900/10 text-sm">${formatMoney(saldoValuado)}</td>
-                </tr>`);
-            });
-            document.getElementById('km-body').innerHTML = filas.length ? filas.join('') : emptyStateHTML('ghost', 'Registro Contable Vacío', 'No hay flujo detectado.', 10);
-        }
-        function cerrarModalKardex() { const modal = document.getElementById('modal-kardex'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-kardex-content').classList.replace('scale-100', 'scale-95'); activeKardexProdId = null; }
-
-        // --- FUNCIONES CORE: CATÁLOGO ---
-        function renderCatalogoSelects() {
-            const nichos = [...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            let htmlNicho = `<option value="" disabled selected>Seleccione Nicho...</option>${nichos.map(c => `<option value="${c}">${c}</option>`).join('')}`;
-            if(document.getElementById('prod-nicho')) { document.getElementById('prod-nicho').innerHTML = htmlNicho; syncGruposSelect(); }
-        }
-        function syncGruposSelect() {
-            const n = document.getElementById('prod-nicho').value;
-            if(!n) { document.getElementById('prod-grupo').innerHTML = '<option value="" disabled selected>-- Primero elija Nicho --</option>'; syncCategoriasSelect(); return; }
-            const grupos = [...new Set(state.catalogo.filter(p => p.nicho === n).map(p => p.grupo).filter(Boolean))];
-            let htmlGrupo = `<option value="" disabled selected>Seleccione Grupo...</option>${grupos.map(c => `<option value="${c}">${c}</option>`).join('')}`;
-            document.getElementById('prod-grupo').innerHTML = htmlGrupo; syncCategoriasSelect();
-        }
-        function syncCategoriasSelect() {
-            const n = document.getElementById('prod-nicho').value; const g = document.getElementById('prod-grupo').value;
-            if(!n || !g) { document.getElementById('prod-categoria').innerHTML = '<option value="" disabled selected>-- Primero elija Grupo --</option>'; return; }
-            const cats = [...new Set(state.catalogo.filter(p => p.nicho === n && p.grupo === g).map(p => p.categoria).filter(Boolean))];
-            let htmlCat = `<option value="" disabled selected>Seleccione Categoría...</option>${cats.map(c => `<option value="${c}">${c}</option>`).join('')}`;
-            document.getElementById('prod-categoria').innerHTML = htmlCat;
-        }
-
-        function crearNicho() { const v = prompt("Nombre del nuevo Nicho:"); if(v && v.trim() !== '') { document.getElementById('prod-nicho').innerHTML = `<option value="${v.trim()}" selected>${v.trim()}</option>`; syncGruposSelect(); } }
-        function crearGrupo() { const v = prompt("Nombre del nuevo Grupo:"); if(v && v.trim() !== '') { document.getElementById('prod-grupo').innerHTML = `<option value="${v.trim()}" selected>${v.trim()}</option>`; syncCategoriasSelect(); } }
-        function crearCategoria() { const v = prompt("Nombre de la nueva Categoría:"); if(v && v.trim() !== '') { document.getElementById('prod-categoria').innerHTML = `<option value="${v.trim()}" selected>${v.trim()}</option>`; } }
-
-        function addAtributo() { state.formAtributos.push({ clave: '', valor: '' }); renderAtributosForm(); }
-        function removeAtributo(idx) { state.formAtributos.splice(idx, 1); renderAtributosForm(); }
-        function updateAtributo(idx, field, val) { state.formAtributos[idx][field] = val; }
-        function renderAtributosForm() {
-            const container = document.getElementById('atributos-container'); if(!container) return;
-            container.innerHTML = state.formAtributos.map((a, i) => `
-                <div class="flex gap-2 items-center">
-                    <input type="text" placeholder="Key (Ej: Talla)" class="w-1/2 input-premium !p-2.5 !text-xs bg-white dark:bg-[#0f172a]" value="${a.clave}" oninput="updateAtributo(${i}, 'clave', this.value)">
-                    <input type="text" placeholder="Valor (Ej: M)" class="w-1/2 input-premium !p-2.5 !text-xs bg-white dark:bg-[#0f172a]" value="${a.valor}" oninput="updateAtributo(${i}, 'valor', this.value)">
-                    <button type="button" onclick="removeAtributo(${i})" class="text-slate-400 hover:text-rose-500 bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors shadow-sm"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </div>`).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function handleCrearProducto(e) {
-            e.preventDefault();
-            const nombre = document.getElementById('prod-nombre').value.trim(); 
-            const nicho = document.getElementById('prod-nicho').value; const grupo = document.getElementById('prod-grupo').value; const categoria = document.getElementById('prod-categoria').value; 
-            if(!nicho || !grupo || !categoria) return showToast("Debes seleccionar la jerarquía completa.", "error");
-
-            const precioBase = parseFloat(document.getElementById('prod-precio-base').value); const costoRef = parseFloat(document.getElementById('prod-costo-ref').value) || 0; const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
-            const proveedor = document.getElementById('prod-proveedor').value.trim(); const unidad = document.getElementById('prod-unidad').value;
-            let atributosValidos = state.formAtributos.filter(a => a.clave.trim() && a.valor.trim());
-
-            const obj = { id: `PRD-${Date.now().toString().slice(-6)}`, nombre, nicho, grupo, categoria, proveedor, unidad, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: atributosValidos };
-            state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
-            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderAtributosForm(); renderCatalogoSelects(); renderCatalogo(); showToast('Ficha técnica insertada.');
-        }
-
-        function renderCatalogo() {
-            const tbody = document.getElementById('catalogo-body'); if(!tbody) return;
-            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel izquierdo para crear perfiles.', 5);
-            tbody.innerHTML = state.catalogo.slice().reverse().map(p => `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
-                    <td class="px-6 py-4">
-                        <p class="font-bold text-slate-800 dark:text-slate-200 text-sm">${p.nombre}</p>
-                        <p class="text-[9px] text-slate-400 font-mono mt-1">${p.id}</p>
-                    </td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border border-indigo-100 dark:border-indigo-800">${p.nicho}</span>
-                            <span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border border-slate-200 dark:border-slate-700">${p.grupo}</span>
-                            <span class="bg-white dark:bg-[#0b0f19] text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border border-slate-200 dark:border-slate-700 shadow-sm">${p.categoria}</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4">
-                        <p class="text-xs font-bold text-slate-600 dark:text-slate-400 truncate max-w-[150px]">${p.proveedor || 'No especificado'}</p>
-                        <p class="text-[9px] text-slate-400 mt-0.5 uppercase tracking-widest">UND: ${p.unidad || 'Uds'}</p>
-                    </td>
-                    <td class="px-4 py-4 text-right">
-                        <p class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">${formatMoney(p.precio_base || 0)}</p>
-                        ${p.costo_ref ? `<p class="text-[9px] font-medium text-slate-400 mt-1">Ref: ${formatMoney(p.costo_ref)}</p>` : ''}
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="eliminarRegistro('CATALOGO', '${p.id}', 'Catalogo')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // --- FUNCIONES CORE: COMPRAS MULTIPLES (EN FINANZAS) ---
-        function addCompraItem() { state.formComprasItems.push({ id: Date.now() + Math.random(), nicho: 'ALL', prodId: '', qty: '', cost: '' }); renderFormComprasItems(); }
-        function removeCompraItem(id) { state.formComprasItems = state.formComprasItems.filter(i => i.id !== id); if(state.formComprasItems.length === 0) addCompraItem(); renderFormComprasItems(); }
-        
-        function updateCompraItem(id, field, val) { 
-            const item = state.formComprasItems.find(i => i.id === id); 
-            if(item) { 
-                item[field] = val; 
-                if(field === 'nicho') { item.prodId = ''; renderFormComprasItems(); return; } // Si cambia el nicho, re-renderiza para filtrar productos
-                
-                const subtotalEl = document.getElementById(`subtotal-compra-${id}`);
-                if(subtotalEl) subtotalEl.innerText = `RD$ ${formatMoney((parseFloat(item.qty)||0)*(parseFloat(item.cost)||0))}`;
-                const totalLabel = document.getElementById('lbl-total-compras'); 
-                if(totalLabel) totalLabel.innerText = `RD$ ${formatMoney(calcularTotalCompras())}`;
-            } 
-        }
-
-        function calcularTotalCompras() { return state.formComprasItems.reduce((acc, item) => acc + ((parseFloat(item.qty)||0) * (parseFloat(item.cost)||0)), 0); }
-        
-        function renderFormComprasItems() {
-            const container = document.getElementById('compras-multiples-container'); if(!container) return;
-            const nichos = [...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            let nichoOptionsBase = '<option value="" disabled selected>Filtro: Nicho...</option><option value="ALL">Cualquier Nicho</option>';
-            nichos.forEach(n => nichoOptionsBase += `<option value="${n}">${n}</option>`);
-
-            container.innerHTML = state.formComprasItems.map((item, idx) => {
-                let filtrados = state.catalogo;
-                if(item.nicho && item.nicho !== 'ALL') filtrados = filtrados.filter(p => p.nicho === item.nicho);
-                
-                const grouped = filtrados.reduce((acc, p) => { const cat = p.grupo ? `${p.nicho} > ${p.grupo}` : (p.nicho || 'Gen'); if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
-                let prodOptions = '<option value="" disabled selected>Selecciona producto...</option>';
-                for(const cat in grouped) {
-                    prodOptions += `<optgroup label="📦 ${cat.toUpperCase()}">`;
-                    grouped[cat].forEach(p => { prodOptions += `<option value="${p.id}">${p.nombre}</option>`; });
-                    prodOptions += `</optgroup>`;
-                }
-
-                return `
-                <div class="flex flex-col gap-3 bg-white dark:bg-slate-800 p-4 rounded-[1.5rem] border border-emerald-100 dark:border-emerald-800/50 shadow-sm relative">
-                    <div class="absolute -left-2 -top-2 w-6 h-6 bg-slate-900 dark:bg-indigo-500 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-md z-10">${idx + 1}</div>
-                    <button type="button" onclick="removeCompraItem(${item.id})" class="absolute -right-2 -top-2 w-6 h-6 bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors shadow-sm z-10"><i data-lucide="x" class="w-3 h-3"></i></button>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <select class="input-premium !py-2.5 !px-3 !text-sm appearance-none truncate w-full !bg-slate-50 dark:!bg-[#0b0f19]" onchange="updateCompraItem(${item.id}, 'nicho', this.value)">
-                            ${nichoOptionsBase.replace(`value="${item.nicho}"`, `value="${item.nicho}" selected`)}
-                        </select>
-                        <select required class="input-premium !py-2.5 !px-3 !text-sm appearance-none truncate w-full border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 !bg-white dark:!bg-[#0f172a]" onchange="updateCompraItem(${item.id}, 'prodId', this.value)">
-                            ${prodOptions.replace(`value="${item.prodId}"`, `value="${item.prodId}" selected`)}
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-12 gap-3 items-end">
-                        <div class="col-span-4">
-                            <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Cantidad</label>
-                            <input type="number" min="1" placeholder="Uds" required class="input-premium !py-2.5 !px-3 !text-sm text-center w-full !bg-slate-50 dark:!bg-[#0b0f19]" value="${item.qty}" oninput="updateCompraItem(${item.id}, 'qty', this.value)">
-                        </div>
-                        <div class="col-span-4">
-                            <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1 pl-1">Costo Unit.</label>
-                            <input type="number" min="0.01" step="0.01" placeholder="RD$" required class="input-premium !py-2.5 !px-3 !text-sm text-center !bg-emerald-50/30 dark:!bg-emerald-900/10 !text-emerald-700 dark:!text-emerald-400 !border-emerald-200 dark:!border-emerald-800 w-full" value="${item.cost}" oninput="updateCompraItem(${item.id}, 'cost', this.value)">
-                        </div>
-                        <div class="col-span-4 text-right pb-1">
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Subtotal</p>
-                            <p id="subtotal-compra-${item.id}" class="text-sm font-black text-slate-800 dark:text-slate-200">RD$ ${formatMoney((parseFloat(item.qty)||0)*(parseFloat(item.cost)||0))}</p>
-                        </div>
-                    </div>
-                </div>
-                `;
-            }).join('');
-            
-            const totalLabel = document.getElementById('lbl-total-compras'); if(totalLabel) totalLabel.innerText = `RD$ ${formatMoney(calcularTotalCompras())}`;
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // --- FUNCIONES CORE: FINANZAS (EGRESOS) ---
-        function setGastoType(type) {
-            document.getElementById('egre-tipo-registro').value = type;
-            const btnOp = document.getElementById('tab-egreso-operativo'); const btnInv = document.getElementById('tab-egreso-inventario');
-            const blkOp = document.getElementById('bloque-gasto-operativo'); const blkInv = document.getElementById('bloque-gasto-inventario');
-            const btnSub = document.getElementById('btn-submit-egreso'); const blkMonto = document.getElementById('blk-egre-monto-total');
-
-            if(type === 'OPERATIVO') {
-                btnOp.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md bg-white dark:bg-slate-700 text-amber-600 border border-transparent scale-[1.02]";
-                btnInv.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 dark:text-slate-500 border border-transparent hover:text-slate-600";
-                blkOp.classList.remove('hidden'); blkInv.classList.add('hidden'); blkMonto.classList.remove('hidden');
-                btnSub.className = "w-full bg-amber-500 text-white font-bold rounded-xl py-4 mt-2 shadow-lg shadow-amber-500/20 hover:bg-amber-600 transition-all flex items-center justify-center gap-2 text-sm";
-                btnSub.innerHTML = '<i data-lucide="arrow-up-right" class="w-4 h-4"></i> Procesar Gasto Operativo'; 
-            } else {
-                btnInv.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-md bg-white dark:bg-slate-700 text-emerald-600 border border-transparent scale-[1.02]";
-                btnOp.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 dark:text-slate-500 border border-transparent hover:text-slate-600";
-                blkInv.classList.remove('hidden'); blkOp.classList.add('hidden'); blkMonto.classList.add('hidden');
-                btnSub.className = "w-full bg-emerald-600 text-white font-bold rounded-xl py-4 mt-2 shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-sm";
-                btnSub.innerHTML = '<i data-lucide="download" class="w-4 h-4"></i> Autorizar Compra Múltiple'; 
-            }
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function handleEgresoSubmit(e) {
-            e.preventDefault();
-            const type = document.getElementById('egre-tipo-registro').value, fecha = document.getElementById('egre-fecha').value;
-            const metodoPago = document.getElementById('egre-metodo-pago').value; const ncf = document.getElementById('egre-ncf').value.trim();
-            
-            if(type === 'INVENTARIO') {
-                const isValid = state.formComprasItems.every(i => i.prodId && i.qty && i.cost);
-                if(!isValid || state.formComprasItems.length === 0) return showToast("Completa todos los datos de los lotes.", "error");
-                
-                const costoTotal = calcularTotalCompras();
-                const numLotes = state.formComprasItems.length;
-
-                state.formComprasItems.forEach(item => {
-                    const cant = parseInt(item.qty); const cUnit = parseFloat(item.cost);
-                    const objComp = { id: `CMP-${Date.now().toString().slice(-6)}-${Math.floor(Math.random()*1000)}`, fecha, productoId: item.prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: cUnit };
-                    state.compras.push(objComp); enviarAGoogleSheets("COMPRA", objComp);
-                });
-
-                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Adquisición Múltiple (${numLotes} Lotes)`, monto: costoTotal, categoria_gasto: 'Inventario', producto_id: '', metodoPago, ncf };
-                state.egresos.push(objEgre); enviarAGoogleSheets("EGRESO", objEgre);
-                
-                state.formComprasItems = []; addCompraItem(); showToast('Factura dividida e inyectada al Kardex.');
-            } else {
-                const obj = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: parseFloat(document.getElementById('egre-monto').value), categoria_gasto: document.getElementById('egre-categoria').value, producto_id: document.getElementById('egre-producto').value, proveedor: document.getElementById('egre-proveedor').value.trim(), metodoPago, ncf };
-                state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
-                document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; document.getElementById('egre-ncf').value = ''; document.getElementById('egre-proveedor').value = ''; showToast('Asiento contable registrado.');
-            }
-            renderEgresos();
-        }
-
-        function renderSelectCategoriasGastos() { if(document.getElementById('egre-categoria')) document.getElementById('egre-categoria').innerHTML = state.categoriasGastos.map(c => `<option value="${c}">${c}</option>`).join(''); }
-        function nuevaCategoriaGasto() {
-            const cat = prompt("Nombre de la nueva cuenta contable:");
-            if(cat && cat.trim() !== '') { state.categoriasGastos.push(cat.trim()); renderSelectCategoriasGastos(); document.getElementById('egre-categoria').value = cat.trim(); enviarAGoogleSheets("NUEVA_CATEGORIA_GASTO", { nombre: cat.trim() }); showToast("Cuenta creada en el plan."); }
-        }
-        function renderEgresos() {
-            const tbody = document.getElementById('egresos-body'), data = getFilteredData(state.egresos, 'fecha');
-            if(!tbody) return;
-            if (document.getElementById('egresos-total-mes')) document.getElementById('egresos-total-mes').innerText = formatMoney(data.reduce((s, e) => s + e.monto, 0));
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 6);
-            tbody.innerHTML = data.slice().reverse().map(e => {
-                const isInv = e.categoria_gasto === 'Inventario';
-                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
-                    <td class="px-6 py-5">
-                        <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${e.fecha.split('T')[0]}</div>
-                        <div class="text-[9px] font-mono text-slate-400 mt-1">${e.id}</div>
-                        ${e.ncf ? `<div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">NCF: ${e.ncf}</div>` : ''}
-                    </td>
-                    <td class="px-4 py-5"><span class="${isInv ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800'} px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border shadow-sm">${e.categoria_gasto || 'General'}</span></td>
-                    <td class="px-4 py-5">
-                        <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${e.proveedor || '-'}</div>
-                        <div class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded mt-1 inline-block border border-slate-200 dark:border-slate-700">${e.metodoPago || 'Transferencia'}</div>
-                    </td>
-                    <td class="px-4 py-5 font-medium text-slate-800 dark:text-slate-200 text-sm whitespace-normal min-w-[200px] leading-snug">${e.concepto} ${e.producto_id ? `<span class="inline-block text-[10px] text-indigo-500 font-bold ml-1 border border-indigo-200 dark:border-indigo-800 px-1.5 rounded">Ref: ${(state.catalogo.find(p=>p.id===e.producto_id)||{}).nombre}</span>` : ''}</td>
-                    <td class="px-6 py-5 text-right font-black ${isInv?'text-emerald-600 dark:text-emerald-400':'text-rose-600 dark:text-rose-400'} text-base">-${formatMoney(e.monto)}</td>
-                    <td class="px-6 py-5 text-center"><button onclick="eliminarRegistro('EGRESO', '${e.id}', 'Egresos')" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-                </tr>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // VENTAS (POS)
-        function renderVentasSelect() {
-            const selectProd = document.getElementById('vent-producto'); 
-            if(!selectProd) return;
-            const stockData = getStockConsolidado().filter(p => p.stock > 0);
-            
-            const grouped = stockData.reduce((acc, p) => { const cat = p.nicho || 'Sin Categoría'; if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
-            let htmlProd = '<option value="" disabled selected>Buscar artículo en stock...</option>';
-            for(const cat in grouped) {
-                htmlProd += `<optgroup label="📦 ${cat.toUpperCase()}">`;
-                grouped[cat].forEach(p => { htmlProd += `<option value="${p.id}">${p.nombre} (Disp: ${p.stock} u.)</option>`; });
-                htmlProd += `</optgroup>`;
-            }
-            selectProd.innerHTML = htmlProd;
-        }
-        function autoFillPrecioVenta() { const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value); if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base; }
-        
-        function handleVentaSubmit(e) {
-            e.preventDefault();
-            const fecha = document.getElementById('vent-fecha').value, prodId = document.getElementById('vent-producto').value, cant = parseInt(document.getElementById('vent-cant').value), precio = parseFloat(document.getElementById('vent-precio').value), clienteName = document.getElementById('vent-cliente').value;
-            const metodoPago = document.getElementById('vent-metodo-pago').value; const ncf = document.getElementById('vent-ncf').value.trim();
-
-            const stockDisp = state.compras.filter(c => c.productoId === prodId).reduce((a, c) => a + c.cantidad_restante, 0);
-            if (cant > stockDisp) return showToast(`Stock crítico. Máximo vendible: ${stockDisp} u.`, 'error');
-
-            let comprasVirt = JSON.parse(JSON.stringify(state.compras)); 
-            comprasVirt.sort((a, b) => { const d = new Date(a.fecha) - new Date(b.fecha); return d === 0 ? a.id.localeCompare(b.id) : d; });
-            let qty = cant, costoTotal = 0;
-            for (let lote of comprasVirt) {
-                if (lote.productoId === prodId && lote.cantidad_restante > 0) {
-                    if (lote.cantidad_restante >= qty) { lote.cantidad_restante -= qty; costoTotal += qty * lote.costo; qty = 0; break; } 
-                    else { costoTotal += lote.cantidad_restante * lote.costo; qty -= lote.cantidad_restante; lote.cantidad_restante = 0; }
-                }
-            }
-            
-            const obj = { id: `VNT-${Date.now().toString().slice(-6)}`, fecha, productoId: prodId, cantidad: cant, precio, costo_fifo: costoTotal, ganancia: (cant * precio) - costoTotal, cliente: clienteName, metodoPago, ncf };
-            state.compras = comprasVirt; state.ventas.push(obj); enviarAGoogleSheets("VENTA", obj);
-            document.getElementById('vent-cant').value = ''; document.getElementById('vent-precio').value = ''; document.getElementById('vent-cliente').value = ''; document.getElementById('vent-ncf').value = ''; navigate('ventas'); showToast('Salida Fiscal Procesada');
-        }
-
-        function renderVentas() {
-            const tbody = document.getElementById('ventas-body'), data = getFilteredData(state.ventas, 'fecha');
-            if(!tbody) return;
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-cart', 'Caja en Blanco', 'Realiza la primera facturación.', 8);
-            tbody.innerHTML = data.slice().reverse().map(v => {
-                const p = state.catalogo.find(x => x.id === v.productoId) || {nombre: 'Desc.'};
-                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 group">
-                    <td class="px-6 py-5">
-                        <div class="text-[9px] font-mono text-slate-400 mb-1">${v.id}</div>
-                        <div class="text-xs font-bold text-slate-700 dark:text-slate-300">${v.fecha.split('T')[0].split(',')[0]}</div>
-                        ${v.ncf ? `<div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">NCF: ${v.ncf}</div>` : ''}
-                    </td>
-                    <td class="px-4 py-5">
-                        <div class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate max-w-[150px]">${v.cliente || 'Casual'}</div>
-                        <div class="text-[9px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded mt-1 inline-block border border-indigo-100 dark:border-indigo-800">${v.metodoPago || 'Efectivo'}</div>
-                    </td>
-                    <td class="px-4 py-5 font-bold text-slate-800 dark:text-slate-200 text-sm truncate max-w-[200px]">${p.nombre}</td>
-                    <td class="px-4 py-5 text-center"><span class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3 py-1 rounded-lg font-black text-xs shadow-md">${v.cantidad} u</span></td>
-                    <td class="px-4 py-5 text-right font-black text-slate-800 dark:text-slate-200 text-base">${formatMoney(v.cantidad * v.precio)}</td>
-                    <td class="px-4 py-5 text-right font-bold text-rose-500 text-xs bg-rose-50/30 dark:bg-rose-900/10">${formatMoney(v.costo_fifo)}</td>
-                    <td class="px-4 py-5 text-right font-black text-emerald-600 dark:text-emerald-400 text-base bg-emerald-50/20 dark:bg-emerald-900/10">${formatMoney(v.ganancia)}</td>
-                    <td class="px-6 py-5 text-center"><button onclick="eliminarRegistro('VENTA', '${v.id}', 'Ventas')" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-                </tr>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        // --- MÓDULO: ESTRATEGIA Y METAS ---
-        let plannerDataLocal = {};
-        
-        function abrirModalPlanner() {
-            document.getElementById('modal-planner').classList.remove('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-planner-content').classList.replace('scale-95', 'scale-100');
-            const nichos = ['ALL', ...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            document.getElementById('planner-nicho').innerHTML = nichos.map(c => `<option value="${c}">${c==='ALL'?'Todo el Catálogo':c}</option>`).join('');
-            actualizarFiltrosPlannerGrupo();
-        }
-
-        function actualizarFiltrosPlannerGrupo() {
-            const nicho = document.getElementById('planner-nicho').value;
-            const grupoSelect = document.getElementById('planner-grupo'); const catSelect = document.getElementById('planner-cat');
-            if(nicho === 'ALL') { grupoSelect.classList.add('hidden'); catSelect.classList.add('hidden'); }
-            else {
-                grupoSelect.classList.remove('hidden');
-                const grupos = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === nicho).map(p => p.grupo).filter(Boolean))];
-                grupoSelect.innerHTML = grupos.map(c => `<option value="${c}">${c==='ALL'?'Cualquier Grupo':c}</option>`).join('');
-            }
-            actualizarFiltrosPlannerCat();
-        }
-
-        function actualizarFiltrosPlannerCat() {
-            const nicho = document.getElementById('planner-nicho').value; const grupo = document.getElementById('planner-grupo').value;
-            const catSelect = document.getElementById('planner-cat');
-            if(nicho === 'ALL' || grupo === 'ALL') { catSelect.classList.add('hidden'); }
-            else {
-                catSelect.classList.remove('hidden');
-                const cats = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === nicho && p.grupo === grupo).map(p => p.categoria).filter(Boolean))];
-                catSelect.innerHTML = cats.map(c => `<option value="${c}">${c==='ALL'?'Cualquier Categoría':c}</option>`).join('');
-            }
-            renderListaPlanner();
-        }
-
-        function renderListaPlanner() {
-            const nicho = document.getElementById('planner-nicho').value; const grupo = document.getElementById('planner-grupo')?.value; const cat = document.getElementById('planner-cat')?.value;
-            let filtrados = state.catalogo;
-            if(nicho !== 'ALL') filtrados = filtrados.filter(p => p.nicho === nicho);
-            if(nicho !== 'ALL' && grupo !== 'ALL') filtrados = filtrados.filter(p => p.grupo === grupo);
-            if(nicho !== 'ALL' && grupo !== 'ALL' && cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
-
-            const list = document.getElementById('planner-products-list');
-            if(!list) return;
-            if(filtrados.length === 0) { list.innerHTML = '<p class="text-xs text-slate-400 p-4 text-center font-bold">No hay productos en esta selección.</p>'; return; }
-
-            list.innerHTML = filtrados.map(p => {
-                const currentGlobal = state.metasGlobales[p.id] || 0;
-                return `
-                <div class="grid grid-cols-12 gap-4 items-center p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-colors">
-                    <div class="col-span-6 flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-[#0B0F19] flex items-center justify-center text-indigo-400"><i data-lucide="tag" class="w-4 h-4"></i></div>
-                        <div><p class="font-bold text-xs text-white line-clamp-1">${p.nombre}</p></div>
-                    </div>
-                    <div class="col-span-3 text-center"><span class="bg-[#0B0F19] text-slate-400 font-black px-2 py-1 rounded text-[10px]">${currentGlobal} u.</span></div>
-                    <div class="col-span-3"><input type="number" min="0" placeholder="0" class="input-premium !bg-black/50 !border-white/10 !text-white focus:!border-indigo-500 !px-2 !py-1.5 !text-xs !text-right input-planner" data-pid="${p.id}" value="${plannerDataLocal[p.id] || ''}"></div>
-                </div>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-            document.querySelectorAll('.input-planner').forEach(inp => { inp.addEventListener('input', (e) => { plannerDataLocal[e.target.dataset.pid] = parseInt(e.target.value) || 0; }); });
-        }
-
-        function aplicarDistribucionMasiva() {
-            const total = parseInt(document.getElementById('planner-mass-qty').value);
-            if(!total || total <= 0) return showToast('Ingresa cantidad total a distribuir.', 'error');
-            const nicho = document.getElementById('planner-nicho').value; const grupo = document.getElementById('planner-grupo')?.value; const cat = document.getElementById('planner-cat')?.value;
-            let filtrados = state.catalogo;
-            if(nicho !== 'ALL') filtrados = filtrados.filter(p => p.nicho === nicho);
-            if(nicho !== 'ALL' && grupo !== 'ALL') filtrados = filtrados.filter(p => p.grupo === grupo);
-            if(nicho !== 'ALL' && grupo !== 'ALL' && cat !== 'ALL') filtrados = filtrados.filter(p => p.categoria === cat);
-            if(filtrados.length === 0) return;
-
-            const baseQty = Math.floor(total / filtrados.length); let extra = total % filtrados.length;
-            filtrados.forEach(p => { const addQty = baseQty + (extra > 0 ? 1 : 0); if(extra > 0) extra--; plannerDataLocal[p.id] = addQty; });
-            renderListaPlanner(); document.getElementById('planner-mass-qty').value = ''; showToast('Distribución pareja aplicada.');
-        }
-
-        function guardarMetas() {
-            for(let key in plannerDataLocal) { 
-                if(plannerDataLocal[key] <= 0 || isNaN(plannerDataLocal[key])) delete plannerDataLocal[key]; 
-                else state.metasGlobales[key] = plannerDataLocal[key];
-            }
-            enviarAGoogleSheets("METAS", { payload: state.metasGlobales });
-            document.getElementById('modal-planner').classList.add('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-planner-content').classList.replace('scale-100', 'scale-95');
-            renderMetas(); showToast('Estrategia de metas fijada en Cloud.');
-            plannerDataLocal = {};
-        }
-
-        function deleteMeta(prodId) {
-            if(!confirm('¿Eliminar esta meta?')) return;
-            delete state.metasGlobales[prodId];
-            enviarAGoogleSheets("METAS", { payload: state.metasGlobales });
-            renderMetas(); showToast('Meta eliminada.', 'info');
-        }
-
-        function renderMetas() {
-            const vFiltered = getFilteredData(state.ventas, 'fecha');
-            let globalTargetUnits = 0; let globalSoldUnits = 0; const productStats = {};
-
-            const today = new Date(); const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate(); const daysPassed = today.getDate();
-
-            for (const [prodId, qty] of Object.entries(state.metasGlobales)) {
-                const prod = state.catalogo.find(p => p.id === prodId);
-                if(prod && qty > 0) {
-                    const soldTotal = vFiltered.filter(tx => tx.productoId === prodId).reduce((acc, tx) => acc + tx.cantidad, 0);
-                    productStats[prodId] = { id: prod.id, name: prod.nombre, targetQty: qty, soldQty: soldTotal };
-                    globalTargetUnits += qty; globalSoldUnits += soldTotal;
-                }
-            }
-
-            const globalPct = globalTargetUnits > 0 ? ((globalSoldUnits/globalTargetUnits)*100) : 0;
-            if(document.getElementById('metas-global-pct')) document.getElementById('metas-global-pct').innerHTML = `${globalPct.toFixed(1)}<span class="text-4xl text-slate-500">%</span>`;
-            if(document.getElementById('metas-global-sold')) document.getElementById('metas-global-sold').innerText = globalSoldUnits;
-            if(document.getElementById('metas-global-target')) document.getElementById('metas-global-target').innerText = globalTargetUnits;
-            if(document.getElementById('metas-global-bar')) document.getElementById('metas-global-bar').style.width = `${Math.min(globalPct, 100)}%`;
-
-            const currentDailyPace = daysPassed > 0 ? globalSoldUnits / daysPassed : 0;
-            const requiredDailyPace = (globalTargetUnits - globalSoldUnits) / Math.max(1, (daysInMonth - daysPassed));
-            if(document.getElementById('metas-daily-pacing')) document.getElementById('metas-daily-pacing').innerHTML = `${currentDailyPace.toFixed(1)} <span class="text-lg text-slate-500 font-bold">u/día</span>`;
-            
-            const pacingStatusEl = document.getElementById('metas-pacing-status');
-            if(pacingStatusEl) {
-                if(globalSoldUnits >= globalTargetUnits && globalTargetUnits > 0) { pacingStatusEl.innerText = "¡Meta Alcanzada!"; pacingStatusEl.className = "text-[9px] font-bold text-emerald-600 mt-3 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg border border-emerald-200 dark:border-emerald-800 inline-block"; } 
-                else if (currentDailyPace >= requiredDailyPace && globalTargetUnits > 0) { pacingStatusEl.innerText = `Ritmo sano. Requerido: ${requiredDailyPace.toFixed(1)} u/día`; pacingStatusEl.className = "text-[9px] font-bold text-indigo-600 mt-3 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800 inline-block"; } 
-                else if (globalTargetUnits > 0) { pacingStatusEl.innerText = `Atrasado. Requerido: ${requiredDailyPace.toFixed(1)} u/día`; pacingStatusEl.className = "text-[9px] font-bold text-rose-600 mt-3 px-3 py-1.5 bg-rose-50 dark:bg-rose-900/30 rounded-lg border border-rose-200 dark:border-rose-800 inline-block"; }
-                else { pacingStatusEl.innerText = `Configura tus metas`; pacingStatusEl.className = "text-[9px] font-bold text-slate-400 mt-3 px-3 py-1.5 bg-slate-800/50 rounded-lg border border-slate-700/50 inline-block"; }
-            }
-
-            const pGrid = document.getElementById('metas-productos-grid'); 
-            if(pGrid) {
-                const arrStats = Object.values(productStats);
-                if(arrStats.length === 0) {
-                    pGrid.innerHTML = '<div class="col-span-full card-panel p-10 text-center"><p class="text-slate-400 dark:text-slate-500 font-bold text-lg">No hay objetivos fijados. Usa el Planner.</p></div>';
-                } else {
-                    pGrid.innerHTML = arrStats.map((prod, i) => {
-                        const pct = prod.targetQty > 0 ? (prod.soldQty / prod.targetQty)*100 : 0;
-                        const prodReqDaily = (prod.targetQty - prod.soldQty) / Math.max(1, (daysInMonth - daysPassed));
-                        
-                        return `
-                        <div class="card-panel p-6 hover-lift animate-in slide-in-from-bottom-4 fade-in relative group" style="animation-delay: ${i*30}ms">
-                            <div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onclick="deleteMeta('${prod.id}')" class="p-2 bg-rose-50 dark:bg-rose-900/20 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-colors border border-rose-100 dark:border-rose-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                            </div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-center text-indigo-500 border border-slate-100 dark:border-slate-700 shadow-inner"><i data-lucide="target" class="w-5 h-5"></i></div>
-                                <span class="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded text-[9px] font-black uppercase tracking-widest border border-indigo-100 dark:border-indigo-500/20 mr-8">Meta: ${prod.targetQty} u</span>
-                            </div>
-                            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 leading-tight mb-3 truncate pr-4">${prod.name}</h4>
-                            <div class="flex justify-between items-end mb-2">
-                                <span class="text-xs font-bold text-slate-500">Logradas</span>
-                                <span class="font-black text-base text-slate-900 dark:text-white">${prod.soldQty}</span>
-                            </div>
-                            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden shadow-inner mb-3">
-                                <div class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: ${Math.min(pct, 100)}%"></div>
-                            </div>
-                            <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800/60">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Ritmo Obj:</span>
-                                <span class="text-[10px] font-black ${prod.soldQty >= prod.targetQty ? 'text-emerald-500' : 'text-slate-500 dark:text-slate-400'}">${prod.soldQty >= prod.targetQty ? 'Cumplida' : `${prodReqDaily.toFixed(1)} u/día`}</span>
-                            </div>
-                        </div>`;
-                    }).join('');
-                }
-                if(window.lucide) lucide.createIcons();
-            }
-        }
-
-        // ANALÍTICA FLASH Y DASHBOARD
-        function getFilteredData(arr, dateF) {
-            const f = document.getElementById('month-filter').value; if(f === 'ALL') return arr;
-            return arr.filter(i => { if(!i[dateF]) return false; const d = i[dateF].split('T')[0].split(',')[0].includes('/') ? i[dateF].split(',')[0].split('/').reverse().join('-') : i[dateF].split('T')[0]; const p = d.split('-'); return (p[0].length===4 ? `${p[0]}-${p[1]}` : `${p[2]}-${p[1]}`) === f; });
-        }
-        function updateMonthFilterOptions() {
-            const select = document.getElementById('month-filter'), ms = new Set();
-            [...state.compras, ...state.ventas, ...state.egresos].forEach(i => { if(!i.fecha) return; const d = i.fecha.split('T')[0].split(',')[0].includes('/') ? i.fecha.split(',')[0].split('/').reverse().join('-') : i.fecha.split('T')[0]; const p = d.split('-'); if(p.length >= 2) ms.add(p[0].length===4 ? `${p[0]}-${p[1]}` : `${p[2]}-${p[1]}`); });
-            const curr = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}`; ms.add(curr);
-            const sorted = Array.from(ms).sort().reverse();
-            select.innerHTML = '<option value="ALL">Histórico Global</option>' + sorted.map(ym => `<option value="${ym}">${new Date(ym.split('-')[0], parseInt(ym.split('-')[1])-1).toLocaleString('es-ES', {month: 'long'}).toUpperCase()} ${ym.split('-')[0]}</option>`).join('');
-            select.value = sorted.includes(select.value) ? select.value : curr;
-        }
-        function handleMonthChange() { renderVentas(); renderEgresos(); if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard(); if(document.getElementById('view-metas').classList.contains('active')) renderMetas(); }
-
-        function renderDashboard() {
-            const todayStr = new Date().toISOString().split('T')[0];
-            const ayer = new Date(); ayer.setDate(ayer.getDate() - 1); const ayerStr = ayer.toISOString().split('T')[0];
-            const sem = new Date(); sem.setDate(sem.getDate() - 7); const semStr = sem.toISOString().split('T')[0];
-            const mes = new Date(); mes.setMonth(mes.getMonth() - 1); const mesStr = mes.toISOString().split('T')[0];
-
-            const getVentasDia = (dateStr) => state.ventas.filter(v => v.fecha.startsWith(dateStr)).reduce((s, v) => s + (v.cantidad * v.precio), 0);
-            const vHoy = getVentasDia(todayStr), vAyer = getVentasDia(ayerStr), vSem = getVentasDia(semStr), vMes = getVentasDia(mesStr);
-
-            if (document.getElementById('flash-hoy')) document.getElementById('flash-hoy').innerText = formatMoney(vHoy);
-            if (document.getElementById('flash-ayer')) document.getElementById('flash-ayer').innerText = formatMoney(vAyer);
-            if (document.getElementById('flash-semana')) document.getElementById('flash-semana').innerText = formatMoney(vSem);
-            if (document.getElementById('flash-mes')) document.getElementById('flash-mes').innerText = formatMoney(vMes);
-
-            const renderDiff = (elId, val, base) => {
-                const el = document.getElementById(elId);
-                if (!el) return;
-                if(base === 0) { el.innerText = val > 0 ? '+100%' : '-'; el.className = val > 0 ? 'text-[10px] font-black mt-2 text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md border border-emerald-100 dark:border-emerald-800 inline-block' : 'text-[10px] font-black mt-2 text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700 inline-block'; return; }
-                const diff = ((val - base) / base) * 100;
-                el.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
-                el.className = diff > 0 ? 'text-[10px] font-black mt-2 text-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-md border border-emerald-100 dark:border-emerald-800 inline-block' : (diff < 0 ? 'text-[10px] font-black mt-2 text-rose-500 bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded-md border border-rose-100 dark:border-rose-800 inline-block' : 'text-[10px] font-black mt-2 text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700 inline-block');
-            };
-            renderDiff('flash-diff-ayer', vHoy, vAyer); 
-            renderDiff('flash-diff-semana', vHoy, vSem); 
-            renderDiff('flash-diff-mes', vHoy, vMes);
-
-            const v = getFilteredData(state.ventas, 'fecha'), e = getFilteredData(state.egresos, 'fecha');
-            const ing = v.reduce((s, x) => s + (x.cantidad * x.precio), 0), cos = v.reduce((s, x) => s + x.costo_fifo, 0), egr = e.reduce((s, x) => s + x.monto, 0);
-            const net = ing - cos - egr;
-            
-            const roi = cos+egr > 0 ? (net / (cos+egr)) * 100 : 0; const grossMargin = ing > 0 ? ((ing - cos) / ing) * 100 : 0; 
-            const avgTicket = v.length > 0 ? ing / v.length : 0; const absRatio = ing > 0 ? (egr / ing) * 100 : 0;
-
-            if (document.getElementById('kpi-ingresos')) document.getElementById('kpi-ingresos').innerText = formatMoney(ing); 
-            if (document.getElementById('kpi-costos')) document.getElementById('kpi-costos').innerText = formatMoney(cos); 
-            if (document.getElementById('kpi-egresos')) document.getElementById('kpi-egresos').innerText = formatMoney(egr); 
-            if (document.getElementById('kpi-neto')) document.getElementById('kpi-neto').innerText = formatMoney(net);
-            
-            if (document.getElementById('kpi-ticket-prom')) document.getElementById('kpi-ticket-prom').innerText = formatMoney(avgTicket) + ' prom.'; 
-            if (document.getElementById('kpi-roi')) document.getElementById('kpi-roi').innerText = roi.toFixed(1) + '%'; 
-            if (document.getElementById('kpi-margen-bruto')) document.getElementById('kpi-margen-bruto').innerText = grossMargin.toFixed(1) + '%'; 
-            if (document.getElementById('kpi-absorcion')) document.getElementById('kpi-absorcion').innerText = absRatio.toFixed(1) + '%';
-
-            const cardNeto = document.getElementById('kpi-neto-card');
-            const kpiIngEgr = document.getElementById('kpi-ing-egr');
-            if (cardNeto) {
-                if(net < 0) { 
-                    cardNeto.className = 'bg-rose-600 p-6 rounded-3xl border border-rose-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white'; 
-                    if (kpiIngEgr) kpiIngEgr.className = 'text-[9px] font-bold text-rose-200 mt-3 bg-rose-900/30 px-3 py-1.5 rounded-lg inline-block border border-rose-400/20'; 
-                } 
-                else { 
-                    cardNeto.className = 'bg-slate-900 dark:bg-indigo-600 p-6 rounded-3xl border border-slate-800 dark:border-indigo-500 shadow-xl flex flex-col justify-between hover-lift relative overflow-hidden text-white'; 
-                    if (kpiIngEgr) kpiIngEgr.className = 'text-[9px] font-bold text-indigo-200 mt-3 bg-white/20 dark:bg-indigo-900/40 px-3 py-1.5 rounded-lg inline-block border border-white/10 dark:border-indigo-400/20'; 
-                }
-            }
-
-            const prodStats = {};
-            v.forEach(tx => {
-                if(!prodStats[tx.productoId]) prodStats[tx.productoId] = { id: tx.productoId, vol: 0, rev: 0, profit: 0 };
-                prodStats[tx.productoId].vol += tx.cantidad; prodStats[tx.productoId].rev += (tx.cantidad * tx.precio); prodStats[tx.productoId].profit += tx.ganancia;
-            });
-            
-            const renderRank = (arr, valKey, isMoney) => {
-                if(arr.length === 0) return '<p class="text-xs text-slate-400 italic">Sin datos</p>';
-                return arr.map((p, i) => {
-                    const prod = state.catalogo.find(c => c.id === p.id) || {nombre: 'Desconocido'};
-                    return `
-                    <div class="flex items-center justify-between group p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl transition-colors">
-                        <div class="flex items-center gap-3 overflow-hidden">
-                            <span class="text-[10px] font-black text-slate-400">0${i+1}</span>
-                            <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[120px] group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">${prod.nombre}</span>
-                        </div>
-                        <span class="text-xs font-black ${isMoney?'text-emerald-600 dark:text-emerald-400':'text-blue-600 dark:text-blue-400'}">${isMoney ? formatMoney(p[valKey]) : p[valKey] + ' uds'}</span>
-                    </div>`;
-                }).join('');
-            };
-
-            const rankVol = document.getElementById('rank-vol');
-            const rankRev = document.getElementById('rank-rev');
-            const rankProfit = document.getElementById('rank-profit');
-            
-            if (rankVol) rankVol.innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.vol - a.vol).slice(0,5), 'vol', false);
-            if (rankRev) rankRev.innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.rev - a.rev).slice(0,5), 'rev', true);
-            if (rankProfit) rankProfit.innerHTML = renderRank(Object.values(prodStats).sort((a,b)=>b.profit - a.profit).slice(0,5), 'profit', true);
-
-            const isDark = document.documentElement.classList.contains('dark');
-            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'; const textColor = isDark ? '#94a3b8' : '#64748b';
-            const cOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: window.innerWidth < 640 ? 'top' : 'bottom', labels: {font:{family:'Outfit', size:11}, usePointStyle:true, color: textColor, padding: 20} } } };
-            
-            const chartTendenciasEl = document.getElementById('chart-tendencias');
-            if (chartTendenciasEl) {
-                if(charts.tend) charts.tend.destroy();
-                charts.tend = new Chart(chartTendenciasEl, {
-                    type: 'bar', data: { labels: ['Estado de Resultados'], datasets: [ { label: 'Ingresos', data: [ing], backgroundColor: '#6366f1', borderRadius: 4 }, { label: 'Costo', data: [cos], backgroundColor: '#f43f5e', borderRadius: 4 }, { label: 'Gastos Op.', data: [egr], backgroundColor: '#f59e0b', borderRadius: 4 }, { label: 'Ganancia Neta', data: [net], backgroundColor: net>=0?'#10b981':'#9f1239', borderRadius: 4 } ] },
-                    options: { ...cOpts, scales: { y: { grid: {color: gridColor}, border:{display:false}, ticks:{color: textColor} }, x: { grid:{display:false}, border:{display:false}, ticks:{display:false} } } }
-                });
-            }
-
-            const catEgr = {}; e.forEach(x => { const cg = x.categoria_gasto || 'General'; catEgr[cg] = (catEgr[cg] || 0) + x.monto; });
-            const chartGastosEl = document.getElementById('chart-gastos');
-            if (chartGastosEl) {
-                if(charts.gas) charts.gas.destroy();
-                charts.gas = new Chart(chartGastosEl, {
-                    type: 'doughnut', data: { labels: Object.keys(catEgr), datasets: [{ data: Object.values(catEgr), backgroundColor: ['#f59e0b', '#6366f1', '#10b981', '#f43f5e', '#8b5cf6'], borderWidth: 2, borderColor: isDark ? '#0b0f19' : '#fff' }] },
-                    options: { ...cOpts, cutout: '75%' }
-                });
-            }
-
-            if(window.lucide) lucide.createIcons();
         }
     </script>
 </body>
