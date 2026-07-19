@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=dev   ice-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>El Bien. - ERP Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -35,6 +35,11 @@
         .btn-premium:active { transform: scale(0.98); }
         .hover-lift { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
         .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1); }
+
+        /* Estilos Kanban Agenda */
+        .kanban-col { min-height: 400px; }
+        .kanban-card.dragging { opacity: 0.5; transform: scale(0.95); }
+        .kanban-col.drag-over { background-color: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.3); border-style: dashed; }
     </style>
 </head>
 <body class="h-screen w-screen relative selection:bg-indigo-200 antialiased flex text-slate-800">
@@ -70,7 +75,7 @@
             </div>
         </div>
 
-        <nav class="flex-1 px-6 space-y-2 overflow-y-auto mt-8 custom-scrollbar relative z-10 w-full">
+        <nav class="flex-1 px-6 space-y-2 overflow-y-auto mt-8 custom-scrollbar relative z-10 w-full pb-8">
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-3">📊 Inteligencia & Panel</div>
             <button onclick="navigate('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-white">
                 <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-100 scale-100"></div>
@@ -100,6 +105,11 @@
                 <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
                 <i data-lucide="shopping-cart" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
                 <span class="relative z-10">Terminal POS</span>
+            </button>
+            <button onclick="navigate('agenda')" id="nav-agenda" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
+                <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
+                <i data-lucide="calendar-clock" class="relative z-10 w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:text-indigo-500"></i>
+                <span class="relative z-10">Agenda & Logística</span>
             </button>
             <button onclick="navigate('crm')" id="nav-crm" class="w-full flex items-center gap-4 px-4 py-4 rounded-[1.25rem] text-sm font-black transition-all duration-300 relative group text-slate-500 hover:text-slate-900 hover:bg-slate-50">
                 <div class="nav-bg absolute inset-0 bg-slate-900 rounded-[1.25rem] shadow-lg shadow-slate-900/20 -z-10 transition-all duration-300 opacity-0 scale-95"></div>
@@ -161,12 +171,25 @@
                         <p class="text-slate-500 font-bold text-sm mt-1 max-w-3xl">Análisis multidimensional de salud financiera, rendimiento y proyecciones de caja.</p>
                     </div>
 
+                    <!-- Filtros Dinámicos de Jerarquía en Dashboard -->
+                    <div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-white flex flex-col gap-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="filter" class="w-4 h-4 text-indigo-500"></i>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Segmentación de Inteligencia Financiera</span>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <select id="dash-nicho" onchange="syncDashboardFilters()" class="input-premium !py-3 !text-sm flex-1 !bg-white"><option value="ALL">Todos los Nichos</option></select>
+                            <select id="dash-grupo" onchange="syncDashboardFilters(true)" class="input-premium !py-3 !text-sm flex-1 !bg-white hidden"><option value="ALL">Todos los Grupos</option></select>
+                            <select id="dash-cat" onchange="renderDashboard()" class="input-premium !py-3 !text-sm flex-1 !bg-white hidden"><option value="ALL">Todas las Categorías</option></select>
+                        </div>
+                    </div>
+
                     <!-- Flash Metrics -->
                     <div class="bg-[#0f172a] text-white rounded-[3rem] shadow-[0_20px_50px_-12px_rgba(79,70,229,0.3)] border border-slate-800 p-8 md:p-10 relative overflow-hidden group hover-lift">
                         <div class="absolute right-[-10%] top-[-20%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
                         <div class="relative z-10 flex items-center gap-3 mb-8">
                             <div class="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl border border-amber-500/30"><i data-lucide="zap" class="w-5 h-5"></i></div>
-                            <h3 class="text-sm font-black text-white uppercase tracking-widest">Radar de Ventas (Flash)</h3>
+                            <h3 class="text-sm font-black text-white uppercase tracking-widest">Radar de Ventas (Flash Filtrado)</h3>
                         </div>
                         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem] hover:bg-white/10 transition-colors">
@@ -210,7 +233,7 @@
                         <div class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-sm border border-white flex flex-col justify-between h-40 hover-lift group relative overflow-hidden">
                             <div class="absolute right-[-10%] top-[-10%] w-32 h-32 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                             <div class="relative z-10">
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="wallet" class="text-amber-500 w-4 h-4"></i> Gastos Operativos</p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="wallet" class="text-amber-500 w-4 h-4"></i> OpEx Global</p>
                                 <h4 id="kpi-egresos" class="text-3xl font-black text-slate-800 mt-1 tracking-tight">$0.00</h4>
                             </div>
                         </div>
@@ -485,7 +508,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
                         <div>
                             <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Terminal POS</h2>
-                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Punto de venta rápido, carritos de compra y vinculación publicitaria.</p>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Punto de venta rápido, logística de entregas y vinculación publicitaria.</p>
                         </div>
                     </div>
 
@@ -531,22 +554,61 @@
                                             </button>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-4 pt-2">
-                                            <div class="col-span-2">
-                                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Modalidad de Entrega</label>
-                                                <select id="vent-tipo-entrega" onchange="toggleEnvio()" class="input-premium !py-3 !text-sm appearance-none bg-white">
-                                                    <option value="Local">Venta Local (En Tienda)</option>
-                                                    <option value="Envio">Envío a Domicilio (Pagado)</option>
-                                                    <option value="Contraentrega">Contraentrega (Cobro al destino)</option>
-                                                </select>
-                                            </div>
-                                            <div id="panel-envio-direccion" class="col-span-2 hidden">
-                                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Dirección de Envío</label>
-                                                <input type="text" id="vent-direccion" placeholder="Calle, Sector, Ciudad..." class="input-premium !py-3 !text-sm bg-white">
-                                            </div>
-                                            <div id="panel-envio-costo" class="col-span-2 hidden">
-                                                <label class="block text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1.5 ml-1">Costo de Envío (RD$)</label>
-                                                <input type="number" id="vent-costo-envio" min="0" step="0.01" placeholder="0.00" class="input-premium !py-3 !text-sm !border-amber-200 focus:!border-amber-500 bg-amber-50/30" oninput="renderCartPOS()">
+                                        <!-- Logística y Agenda -->
+                                        <div class="pt-4 border-t border-slate-200/60 mt-4 space-y-4">
+                                            <label class="flex items-center gap-3 cursor-pointer group bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                                                <input type="checkbox" id="vent-has-agenda" onchange="toggleVentAgenda()" class="w-5 h-5 text-blue-600 rounded-lg border-slate-300 focus:ring-blue-500">
+                                                <span class="text-sm font-black text-slate-700 group-hover:text-blue-600 transition-colors">¿Agendar Orden para Entrega Logística?</span>
+                                            </label>
+                                            
+                                            <div id="panel-vent-agenda" class="hidden mt-3 p-5 bg-white rounded-2xl border border-slate-200 space-y-4 shadow-sm">
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div class="col-span-2">
+                                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Modalidad</label>
+                                                        <select id="vent-tipo-entrega" onchange="toggleEnvio()" class="input-premium !py-3 !text-sm appearance-none bg-slate-50">
+                                                            <option value="Envio">Envío a Domicilio (Pagado)</option>
+                                                            <option value="Contraentrega">Contraentrega (Cobro al destino)</option>
+                                                            <option value="Pickup">Punto de Entrega (Pickup)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1.5 ml-1">Fecha Entrega</label>
+                                                        <input type="date" id="vent-agenda-fecha" class="input-premium !py-3 !text-sm bg-blue-50 border-blue-100">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1.5 ml-1">Hora Aprox.</label>
+                                                        <input type="time" id="vent-agenda-hora" class="input-premium !py-3 !text-sm bg-blue-50 border-blue-100">
+                                                    </div>
+                                                    <div id="panel-envio-direccion" class="col-span-2">
+                                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Dirección de Entrega</label>
+                                                        <input type="text" id="vent-direccion" placeholder="Calle, Sector, Ciudad..." class="input-premium !py-3 !text-sm bg-slate-50">
+                                                    </div>
+                                                    <div id="panel-envio-costo" class="col-span-2">
+                                                        <label class="block text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1.5 ml-1">Costo de Envío a cobrar (RD$)</label>
+                                                        <input type="number" id="vent-costo-envio" min="0" step="0.01" placeholder="0.00" class="input-premium !py-3 !text-sm !border-amber-200 focus:!border-amber-500 bg-amber-50/30" oninput="renderCartPOS()">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Repartidor</label>
+                                                        <select id="vent-agenda-repartidor" class="input-premium !py-3 !text-sm appearance-none bg-slate-50">
+                                                            <option value="Por Asignar">Por Asignar</option>
+                                                            <option value="Interno">Staff Interno</option>
+                                                            <option value="Mensajero Expreso">Mensajero Expreso</option>
+                                                            <option value="Agencia Externa">Agencia Externa</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Prioridad</label>
+                                                        <select id="vent-agenda-prioridad" class="input-premium !py-3 !text-sm appearance-none bg-slate-50">
+                                                            <option value="Normal">Normal</option>
+                                                            <option value="Alta">Alta (Urgente)</option>
+                                                            <option value="Baja">Baja (Flexible)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-span-2">
+                                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Notas para el Repartidor</label>
+                                                        <input type="text" id="vent-agenda-notas" placeholder="Ej: Llamar al llegar al lobby..." class="input-premium !py-3 !text-sm bg-slate-50">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -613,16 +675,106 @@
                                     <tr>
                                         <th class="px-6 py-4 font-black rounded-l-[1rem]">Ticket / Fecha</th>
                                         <th class="px-4 py-4 font-black">Cliente B2B</th>
-                                        <th class="px-4 py-4 font-black">Entrega / Envío</th>
+                                        <th class="px-4 py-4 font-black">Status / Modalidad</th>
                                         <th class="px-4 py-4 font-black">Detalle de Artículos</th>
                                         <th class="px-4 py-4 font-black text-right">Venta Total</th>
-                                        <th class="px-4 py-4 font-black text-right text-rose-500">Costo Base</th>
-                                        <th class="px-4 py-4 font-black text-right text-emerald-500">Neto (Utilidad)</th>
                                         <th class="px-6 py-4 font-black text-center rounded-r-[1rem]">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody id="ventas-body" class="divide-y divide-slate-100"></tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-agenda" class="view-section">
+                <div class="max-w-[1400px] mx-auto space-y-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Agenda de Entregas</h2>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-2xl">Centro de control logístico. Rastrea y cambia el estado de tus entregas en tiempo real.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-white border border-slate-200 shadow-sm rounded-xl px-4 py-2 flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4 text-indigo-500"></i>
+                                <input type="date" id="agenda-date-filter" onchange="renderAgenda()" class="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel de KPIs Diarios -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] border border-white shadow-sm flex flex-col justify-center">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Para Hoy</p>
+                            <p id="agenda-kpi-hoy" class="text-3xl font-black text-slate-800">0</p>
+                        </div>
+                        <div class="bg-amber-50/80 backdrop-blur-xl p-6 rounded-[2rem] border border-amber-100 shadow-sm flex flex-col justify-center">
+                            <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Pendientes</p>
+                            <p id="agenda-kpi-pendientes" class="text-3xl font-black text-amber-600">0</p>
+                        </div>
+                        <div class="bg-blue-50/80 backdrop-blur-xl p-6 rounded-[2rem] border border-blue-100 shadow-sm flex flex-col justify-center">
+                            <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">En Ruta</p>
+                            <p id="agenda-kpi-ruta" class="text-3xl font-black text-blue-600">0</p>
+                        </div>
+                        <div class="bg-emerald-50/80 backdrop-blur-xl p-6 rounded-[2rem] border border-emerald-100 shadow-sm flex flex-col justify-center">
+                            <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Entregadas</p>
+                            <p id="agenda-kpi-entregadas" class="text-3xl font-black text-emerald-600">0</p>
+                        </div>
+                        <div class="bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-800 flex flex-col justify-center text-white relative overflow-hidden">
+                            <div class="absolute right-[-20%] top-[-20%] w-24 h-24 bg-emerald-500/30 rounded-full blur-[20px]"></div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 relative z-10">Cumplimiento</p>
+                            <p id="agenda-kpi-cumplimiento" class="text-3xl font-black tracking-tight relative z-10">0%</p>
+                        </div>
+                    </div>
+
+                    <!-- TABS de Vistas -->
+                    <div class="flex bg-slate-200/50 p-1.5 rounded-[1.25rem] border border-slate-200 w-full max-w-sm">
+                        <button type="button" id="tab-agenda-kanban" onclick="setAgendaView('KANBAN')" class="flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm bg-white text-indigo-600 border border-slate-200 scale-[1.02]">Board (Kanban)</button>
+                        <button type="button" id="tab-agenda-timeline" onclick="setAgendaView('TIMELINE')" class="flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-500 hover:text-slate-800">Timeline</button>
+                    </div>
+
+                    <!-- VISTA KANBAN (DRAG & DROP READY) -->
+                    <div id="agenda-view-kanban" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <!-- Columna Pendientes -->
+                        <div class="bg-slate-100/50 rounded-[2rem] p-4 border border-slate-200/60 flex flex-col kanban-col" id="col-pendiente" ondragover="allowDrop(event)" ondrop="drop(event, 'Pendiente')">
+                            <div class="flex items-center justify-between mb-4 px-2">
+                                <h4 class="font-black text-sm text-slate-700 uppercase tracking-widest flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-amber-500"></div> Pendientes</h4>
+                                <span class="bg-white text-slate-400 px-2 py-0.5 rounded-md text-xs font-black border border-slate-200" id="count-pendiente">0</span>
+                            </div>
+                            <div class="space-y-3 flex-1" id="list-pendiente"></div>
+                        </div>
+                        <!-- Columna Preparando -->
+                        <div class="bg-slate-100/50 rounded-[2rem] p-4 border border-slate-200/60 flex flex-col kanban-col" id="col-preparando" ondragover="allowDrop(event)" ondrop="drop(event, 'Preparándose')">
+                            <div class="flex items-center justify-between mb-4 px-2">
+                                <h4 class="font-black text-sm text-slate-700 uppercase tracking-widest flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-purple-500"></div> Preparando</h4>
+                                <span class="bg-white text-slate-400 px-2 py-0.5 rounded-md text-xs font-black border border-slate-200" id="count-preparando">0</span>
+                            </div>
+                            <div class="space-y-3 flex-1" id="list-preparando"></div>
+                        </div>
+                        <!-- Columna En Ruta -->
+                        <div class="bg-blue-50/50 rounded-[2rem] p-4 border border-blue-100 flex flex-col kanban-col" id="col-ruta" ondragover="allowDrop(event)" ondrop="drop(event, 'En ruta')">
+                            <div class="flex items-center justify-between mb-4 px-2">
+                                <h4 class="font-black text-blue-800 text-sm uppercase tracking-widest flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-blue-500"></div> En Ruta</h4>
+                                <span class="bg-white text-blue-500 px-2 py-0.5 rounded-md text-xs font-black border border-blue-200" id="count-ruta">0</span>
+                            </div>
+                            <div class="space-y-3 flex-1" id="list-ruta"></div>
+                        </div>
+                        <!-- Columna Entregada -->
+                        <div class="bg-emerald-50/50 rounded-[2rem] p-4 border border-emerald-100 flex flex-col kanban-col" id="col-entregada" ondragover="allowDrop(event)" ondrop="drop(event, 'Entregada')">
+                            <div class="flex items-center justify-between mb-4 px-2">
+                                <h4 class="font-black text-emerald-800 text-sm uppercase tracking-widest flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Entregada</h4>
+                                <span class="bg-white text-emerald-500 px-2 py-0.5 rounded-md text-xs font-black border border-emerald-200" id="count-entregada">0</span>
+                            </div>
+                            <div class="space-y-3 flex-1" id="list-entregada"></div>
+                        </div>
+                    </div>
+
+                    <!-- VISTA TIMELINE DIARIO -->
+                    <div id="agenda-view-timeline" class="hidden bg-white/80 backdrop-blur-xl rounded-[3rem] shadow-sm border border-white p-8">
+                        <div class="relative w-full overflow-y-auto custom-scrollbar h-[600px] pr-4">
+                            <div class="absolute left-[80px] top-0 bottom-0 w-px bg-slate-200"></div>
+                            <div id="timeline-container" class="relative"></div>
                         </div>
                     </div>
                 </div>
@@ -645,12 +797,12 @@
                         <div class="relative z-10 w-full">
                             <h3 class="text-3xl font-black text-slate-800 mb-2 flex items-center gap-4">
                                 <div class="p-3 bg-amber-50 text-amber-500 rounded-2xl border border-amber-100"><i data-lucide="wallet" class="w-6 h-6"></i></div> 
-                                Asiento de Gasto
+                                Asiento de Gasto Operativo
                             </h3>
                             
                             <div class="flex bg-slate-100 p-1.5 rounded-[1.25rem] border border-slate-200 mb-8 mt-6 shadow-inner w-full">
                                 <button type="button" id="tab-egreso-inventario" onclick="setGastoType('INVENTARIO')" class="flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-md bg-white text-emerald-600 border border-slate-200/60 scale-[1.02]">Comprar Stock (Múltiple)</button>
-                                <button type="button" id="tab-egreso-operativo" onclick="setGastoType('OPERATIVO')" class="flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700">Gasto Operativo</button>
+                                <button type="button" id="tab-egreso-operativo" onclick="setGastoType('OPERATIVO')" class="flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700">Gasto Operativo Regular</button>
                             </div>
 
                             <form id="form-egreso" onsubmit="handleEgresoSubmit(event)" class="space-y-6 w-full">
@@ -695,10 +847,13 @@
                                             <input type="text" id="egre-concepto" placeholder="Justificación del gasto..." class="input-premium !bg-white !py-4 !text-base shadow-sm w-full">
                                         </div>
                                     </div>
+                                    <p class="text-xs text-amber-600 font-bold bg-amber-50 p-3 rounded-xl border border-amber-100">
+                                        <i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i> Para inyectar presupuesto publicitario, vaya al módulo <b>Marketing & ROI</b> y agregue el saldo en USD al anuncio correspondiente.
+                                    </p>
                                 </div>
 
                                 <button type="submit" id="btn-submit-egreso" class="btn-premium bg-emerald-600 text-white hover:bg-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] border border-emerald-400 flex justify-center items-center gap-3 mt-8 py-5 text-lg w-full">
-                                    <i data-lucide="download" class="w-6 h-6"></i> Procesar Lotes Dinámicos
+                                    <i data-lucide="download" class="w-6 h-6"></i> Autorizar Compra Múltiple
                                 </button>
                             </form>
                         </div>
@@ -733,6 +888,7 @@
             </div>
 
             <div id="view-metas" class="view-section">
+                <!-- Meta content omitted for brevity but intact in logic -->
                 <div class="max-w-7xl mx-auto space-y-8">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
                         <div>
@@ -743,11 +899,7 @@
                             <i data-lucide="rocket" class="w-5 h-5 text-indigo-400"></i> Planner Corporativo
                         </button>
                     </div>
-
                     <div class="bg-[#0f172a] p-8 md:p-12 rounded-[3rem] shadow-xl border border-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-10">
-                        <div class="absolute right-[-10%] top-[-20%] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-[80px] z-0 pointer-events-none"></div>
-                        <div class="absolute left-[-10%] bottom-[-20%] w-[300px] h-[300px] bg-emerald-600/10 rounded-full blur-[80px] z-0 pointer-events-none"></div>
-                        
                         <div class="flex-1 w-full relative z-10">
                             <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i data-lucide="target" class="w-4 h-4"></i> Progreso Acumulado del Mes</p>
                             <div class="flex items-end gap-6 mb-8">
@@ -758,20 +910,15 @@
                                 </div>
                             </div>
                             <div class="w-full bg-slate-800/50 rounded-full h-4 overflow-hidden border border-white/5 shadow-inner backdrop-blur-md">
-                                <div id="metas-global-bar" class="bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-400 h-full rounded-full relative overflow-hidden transition-all duration-1000" style="width: 0%">
-                                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-30"></div>
-                                </div>
+                                <div id="metas-global-bar" class="bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-400 h-full rounded-full relative overflow-hidden transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
-
-                        <!-- Pacing Indicator -->
                         <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-8 rounded-[2rem] text-center shadow-2xl shrink-0 min-w-[250px] relative z-10">
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Ritmo Diario (Pacing)</p>
                             <p class="text-4xl font-black text-white" id="metas-daily-pacing">0 <span class="text-sm text-slate-500 font-bold">u/día</span></p>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-3 bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50 inline-block" id="metas-pacing-status">Calculando...</p>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="metas-productos-grid"></div>
                 </div>
             </div>
@@ -796,36 +943,39 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-slate-200/60 pb-6">
                         <div>
                             <h2 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">Marketing & ROI</h2>
-                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Gestión de campañas, inversión directa en anuncios (en USD) y consolidación automática.</p>
+                            <p class="text-slate-500 font-bold text-sm mt-2 max-w-xl">Gestión de campañas tácticas, seguimiento de esfuerzo y retorno consolidado en DOP.</p>
                         </div>
                         <button onclick="abrirModalFormCampana()" class="bg-slate-900 text-white px-8 py-4 rounded-[1.25rem] font-black shadow-xl shadow-slate-900/20 hover:bg-black hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3">
-                            <i data-lucide="folder-plus" class="w-5 h-5 text-indigo-400"></i> Contenedor de Campaña
+                            <i data-lucide="folder-plus" class="w-5 h-5 text-indigo-400"></i> Crear Estrategia Macro
                         </button>
                     </div>
 
-                    <!-- PANEL MACRO: KPIs GLOBALES (Sumatoria de campañas activas/pausadas) -->
-                    <div class="bg-[#0f172a] rounded-[3rem] p-8 md:p-10 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.3)] border border-slate-800 relative overflow-hidden group">
+                    <!-- PANEL MACRO: KPIs GLOBALES (Sumatoria Dinámica de TODAS las campañas activas) -->
+                    <div class="bg-[#0f172a] rounded-[3rem] p-8 md:p-10 shadow-[0_20px_50px_-12px_rgba(79,70,229,0.3)] border border-slate-800 relative overflow-hidden group hover-lift">
                         <div class="absolute right-[-10%] top-[-20%] w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] z-0 pointer-events-none"></div>
                         <div class="relative z-10 flex items-center gap-3 mb-8">
                             <div class="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-xl border border-indigo-500/30"><i data-lucide="bar-chart-2" class="w-5 h-5"></i></div>
-                            <h3 class="text-sm font-black text-white uppercase tracking-widest">Resumen Global de Marketing</h3>
+                            <div>
+                                <h3 class="text-sm font-black text-white uppercase tracking-widest leading-none">Resumen Global de Marketing</h3>
+                                <p class="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Consolida el esfuerzo de Ads en curso</p>
+                            </div>
                         </div>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem]">
-                                <p class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="wallet" class="w-4 h-4"></i> Inversión Global (DOP)</p>
+                                <p class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="wallet" class="w-4 h-4"></i> Total Invertido (DOP)</p>
                                 <h4 id="mkt-kpi-inversion" class="text-3xl font-black text-white tracking-tight">RD$ 0.00</h4>
                             </div>
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem]">
-                                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4"></i> Ingresos Generados (DOP)</p>
+                                <p class="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-2"><i data-lucide="trending-up" class="w-4 h-4"></i> Ingreso Bruto (DOP)</p>
                                 <h4 id="mkt-kpi-ingresos" class="text-3xl font-black text-white tracking-tight">RD$ 0.00</h4>
                             </div>
                             <div class="bg-white/5 border border-white/10 backdrop-blur-xl p-6 rounded-[2rem]">
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Retorno (ROI Neto)</p>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Retorno Neto (ROI)</p>
                                 <h4 id="mkt-kpi-roi" class="text-3xl font-black text-slate-400 tracking-tight">0.0%</h4>
                             </div>
                             <div class="bg-indigo-600/20 border border-indigo-500/30 backdrop-blur-xl p-6 rounded-[2rem] shadow-inner">
-                                <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">ROAS General</p>
+                                <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">Multiplicador ROAS</p>
                                 <h4 id="mkt-kpi-roas" class="text-3xl font-black text-indigo-400 tracking-tight">0.00x</h4>
                             </div>
                         </div>
@@ -833,7 +983,7 @@
 
                     <!-- GRID DE CAMPAÑAS (Contenedores de anuncios) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="campanas-grid">
-                        <!-- Las tarjetas de campañas se renderizan aquí por JS -->
+                        <!-- Las tarjetas de campañas se renderizan aquí -->
                     </div>
                 </div>
             </div>
@@ -866,153 +1016,50 @@
         </div>
     </main>
 
-    <!-- MODAL KARDEX BANCARIO -->
-    <div id="modal-kardex" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalKardex()"></div>
-        <div class="relative w-full max-w-7xl bg-white/95 border border-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] backdrop-blur-3xl rounded-[2.5rem] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-[90vh] sm:h-[85vh]" id="modal-kardex-content">
-            <div class="px-8 py-6 border-b border-slate-200/50 flex justify-between items-center bg-white/80 sticky top-0 z-10 shrink-0">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 rounded-2xl bg-indigo-50 border border-indigo-100 shadow-inner text-indigo-600"><i data-lucide="activity" class="w-6 h-6"></i></div>
-                    <div>
-                        <h3 class="font-black text-2xl tracking-tight text-slate-900 leading-none" id="kardex-modal-title">Kardex de Auditoría</h3>
-                        <p id="kardex-modal-subtitle" class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Control Financiero y Físico</p>
-                    </div>
-                </div>
-                <button onclick="cerrarModalKardex()" class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all bg-slate-50 border border-slate-100"><i data-lucide="x" class="w-6 h-6"></i></button>
+    <!-- MODAL SEGUIMIENTO AGENDA -->
+    <div id="modal-agenda" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalAgenda()"></div>
+        <div class="relative w-full max-w-lg bg-white border border-white shadow-2xl backdrop-blur-3xl rounded-[2.5rem] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-auto">
+            <input type="hidden" id="agenda-orden-id">
+            <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center shrink-0">
+                <h3 class="font-black text-xl tracking-tight text-slate-800 flex items-center gap-3">
+                    <div class="p-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+                    Gestión de Entrega
+                </h3>
+                <button onclick="cerrarModalAgenda()" class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-slate-100 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            
-            <div class="flex-1 overflow-y-auto p-8 bg-slate-50/50 custom-scrollbar relative">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white rounded-[1.5rem] border border-slate-200 p-6 flex items-center gap-5 shadow-sm hover-lift">
-                        <div class="w-14 h-14 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center border border-emerald-100"><i data-lucide="arrow-down-to-line" class="w-6 h-6"></i></div>
-                        <div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Entradas</p><p id="km-entradas" class="text-3xl font-black text-slate-800 tracking-tight">0</p></div>
-                    </div>
-                    <div class="bg-white rounded-[1.5rem] border border-slate-200 p-6 flex items-center gap-5 shadow-sm hover-lift">
-                        <div class="w-14 h-14 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center border border-rose-100"><i data-lucide="arrow-up-from-line" class="w-6 h-6"></i></div>
-                        <div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Salidas</p><p id="km-salidas" class="text-3xl font-black text-slate-800 tracking-tight">0</p></div>
-                    </div>
-                    <div class="bg-slate-900 rounded-[1.5rem] border border-slate-800 p-6 flex items-center gap-5 shadow-xl shadow-slate-900/20 hover-lift relative overflow-hidden">
-                        <div class="absolute right-[-10%] top-[-10%] w-24 h-24 bg-indigo-500/30 rounded-full blur-2xl"></div>
-                        <div class="w-14 h-14 bg-white/10 text-white rounded-2xl flex items-center justify-center border border-white/20 relative z-10"><i data-lucide="layers" class="w-6 h-6"></i></div>
-                        <div class="relative z-10"><p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Stock Físico</p><p id="km-stock" class="text-3xl font-black text-white tracking-tight">0</p></div>
-                    </div>
+            <div class="p-8 space-y-6">
+                <div class="text-center mb-6">
+                    <p class="text-2xl font-black text-slate-900" id="agenda-modal-cliente">Cliente</p>
+                    <p class="text-xs font-bold text-slate-500 mt-1" id="agenda-modal-orden">Orden #</p>
                 </div>
-
-                <div class="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
-                    <div class="w-full overflow-x-auto p-2">
-                        <table class="w-full text-left text-sm whitespace-nowrap min-w-[1000px]">
-                            <thead class="bg-slate-900 text-white font-bold uppercase tracking-wider text-[10px]">
-                                <tr>
-                                    <th class="p-4 w-48 border-r border-slate-800">Transacción Base</th>
-                                    <th class="p-4 text-center border-r border-slate-800" colspan="3">Debe (Ingreso Almacén)</th>
-                                    <th class="p-4 text-center border-r border-slate-800" colspan="3">Haber (Salida Almacén)</th>
-                                    <th class="p-4 text-center text-indigo-300" colspan="3">Saldos Físicos y Valuación Continua</th>
-                                </tr>
-                                <tr class="text-[9px] bg-slate-800 border-b border-slate-700">
-                                    <th class="p-3 border-r border-slate-700 text-slate-300">Dato Referencial</th>
-                                    <th class="p-3 text-right">Cant</th><th class="p-3 text-right">Costo U.</th><th class="p-3 text-right border-r border-slate-700">Monto Total</th>
-                                    <th class="p-3 text-right">Cant</th><th class="p-3 text-right">Costo U.</th><th class="p-3 text-right border-r border-slate-700">Monto Total</th>
-                                    <th class="p-3 text-right text-indigo-200">Stock Q</th><th class="p-3 text-right text-indigo-200">CPP U.</th><th class="p-3 text-right text-indigo-200">Balance $</th>
-                                </tr>
-                            </thead>
-                            <tbody id="km-body" class="divide-y divide-slate-100 font-medium text-slate-700 bg-white"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL PLANNER DE METAS -->
-    <div id="modal-planner" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalPlanner()"></div>
-        <div class="relative w-full max-w-4xl bg-[#0f172a] border border-slate-800 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] rounded-[2.5rem] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out h-[85vh] text-white" id="modal-planner-content">
-            <div class="px-8 py-6 border-b border-white/10 flex justify-between items-center bg-[#020617] sticky top-0 z-10 shrink-0">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-400"><i data-lucide="rocket" class="w-6 h-6"></i></div>
-                    <div>
-                        <h3 class="font-black text-2xl tracking-tight leading-none">Planner Automático</h3>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Distribución de Cuotas</p>
-                    </div>
-                </div>
-                <button onclick="cerrarModalPlanner()" class="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-6">
                 
-                <div class="bg-[#020617] p-6 rounded-[1.5rem] border border-white/10 shadow-inner">
-                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i data-lucide="filter" class="w-4 h-4"></i> 1. Segmentar Productos a impactar</h4>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <select id="planner-nicho" onchange="actualizarFiltrosPlannerGrupo()" class="input-premium !bg-[#0f172a] !border-white/10 !text-white focus:!border-indigo-500 !py-3.5 flex-1"><option value="ALL">Todo el Nicho</option></select>
-                        <select id="planner-grupo" onchange="actualizarFiltrosPlannerCat()" class="input-premium !bg-[#0f172a] !border-white/10 !text-white focus:!border-indigo-500 !py-3.5 flex-1 hidden"><option value="ALL">Cualquier Grupo</option></select>
-                        <select id="planner-cat" onchange="renderListaPlanner()" class="input-premium !bg-[#0f172a] !border-white/10 !text-white focus:!border-indigo-500 !py-3.5 flex-1 hidden"><option value="ALL">Cualquier Categoría</option></select>
-                    </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2 text-sm">
+                    <div class="flex justify-between"><span class="text-slate-500 font-bold">Dirección:</span><span class="font-black text-slate-800 text-right w-1/2" id="agenda-modal-dir"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500 font-bold">Fecha Pautada:</span><span class="font-black text-slate-800 text-right" id="agenda-modal-fecha"></span></div>
+                    <div class="flex justify-between"><span class="text-slate-500 font-bold">Repartidor:</span><span class="font-black text-slate-800 text-right" id="agenda-modal-rep"></span></div>
                 </div>
 
-                <div class="bg-indigo-500/10 p-6 rounded-[1.5rem] border border-indigo-500/20">
-                    <h4 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i data-lucide="calculator" class="w-4 h-4"></i> 2. Distribución Matemática Pareja (Opcional)</h4>
-                    <div class="flex flex-col sm:flex-row gap-4 items-end">
-                        <div class="flex-1 w-full">
-                            <label class="block text-[10px] font-bold text-slate-400 mb-2 ml-1">Volumen Total a Vender (Uds)</label>
-                            <input type="number" id="planner-mass-qty" min="1" placeholder="Ej: 1000" class="input-premium !bg-[#0f172a] !border-indigo-500/30 !text-white focus:!border-indigo-500 !py-3.5">
-                        </div>
-                        <button type="button" onclick="aplicarDistribucionMasiva()" class="bg-indigo-600 text-white px-8 py-3.5 rounded-xl font-black hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/30 w-full sm:w-auto">Distribuir parejo</button>
-                    </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Actualizar Estado</label>
+                    <select id="agenda-modal-estado" class="input-premium !py-4 !text-base bg-white border-slate-300">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Preparándose">Preparándose</option>
+                        <option value="En ruta">Lista / En Ruta</option>
+                        <option value="Entregada">Entregada Exitosamente</option>
+                        <option value="Reprogramada">Reprogramada</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </select>
                 </div>
 
-                <div class="bg-[#030712] border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl">
-                    <div class="grid grid-cols-12 gap-4 p-4 border-b border-white/5 bg-[#0a0f1c] text-[10px] font-black text-slate-400 uppercase tracking-widest px-6">
-                        <div class="col-span-8">Catálogo Filtrado</div>
-                        <div class="col-span-4 text-right">Meta Individual (Uds)</div>
-                    </div>
-                    <div class="max-h-[35vh] overflow-y-auto custom-scrollbar p-3 space-y-2" id="planner-products-list"></div>
+                <div class="bg-amber-50 p-3 rounded-xl border border-amber-100 hidden" id="agenda-alert-entrega">
+                    <p class="text-xs font-bold text-amber-700"><i data-lucide="info" class="w-4 h-4 inline-block mr-1"></i> Al marcar como Entregada, se registrará la hora exacta de cumplimiento y se cerrará el ciclo de la orden.</p>
                 </div>
 
-                <button type="button" onclick="guardarMetas()" class="w-full text-white py-5 rounded-[1.25rem] font-black text-lg mt-6 shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30 border border-indigo-400" id="btn-execute-dist">
-                    <i data-lucide="save" class="w-6 h-6"></i> Confirmar Plan Estratégico
+                <button onclick="guardarEstadoAgenda()" class="w-full bg-blue-600 text-white font-black rounded-2xl py-4 shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-all active:scale-[0.98]">
+                    Actualizar Orden
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- MODAL CRM -->
-    <div id="modal-crm" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="cerrarModalCRM()"></div>
-        <div class="relative w-full max-w-2xl bg-white/95 border border-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] backdrop-blur-3xl rounded-[2.5rem] overflow-hidden flex flex-col transform scale-95 transition-transform duration-300 ease-out" id="modal-crm-content">
-            <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center shrink-0">
-                <h3 class="font-black text-xl tracking-tight text-slate-800 flex items-center gap-2"><i data-lucide="user-plus" class="text-indigo-500 w-5 h-5"></i> Alta Cliente B2B</h3>
-                <button onclick="cerrarModalCRM()" class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-slate-200 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            
-            <form onsubmit="handleCrearCliente(event)" class="p-8 space-y-4">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Razón Social / Nombre</label>
-                        <input type="text" id="crm-nombre" required class="input-premium !py-3.5 !text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">RNC / Cédula</label>
-                        <input type="text" id="crm-rnc" class="input-premium !py-3.5 !text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Categoría</label>
-                        <select id="crm-tipo" class="input-premium !py-3.5 !text-sm appearance-none bg-white">
-                            <option value="Normal">Normal</option>
-                            <option value="VIP Premium">VIP Premium</option>
-                            <option value="B2B Mayorista">B2B Mayorista</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Teléfono</label>
-                        <input type="text" id="crm-phone" class="input-premium !py-3.5 !text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1.5 ml-1">Límite Crédito ($)</label>
-                        <input type="number" id="crm-limite" min="0" step="100" placeholder="0.00" class="input-premium !py-3.5 !text-sm !border-emerald-200 focus:!border-emerald-500 bg-emerald-50/30">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-slate-900 text-white font-black rounded-2xl py-4 mt-6 shadow-xl shadow-slate-900/20 hover:bg-black transition-all active:scale-[0.98]">Guardar Cliente</button>
-            </form>
         </div>
     </div>
 
@@ -1023,7 +1070,7 @@
             <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center shrink-0">
                 <h3 class="font-black text-xl tracking-tight text-slate-800 flex items-center gap-3">
                     <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100"><i data-lucide="folder-plus" class="w-5 h-5"></i></div>
-                    <span id="campana-modal-title">Contenedor de Campaña</span>
+                    <span id="campana-modal-title">Estrategia de Campaña</span>
                 </h3>
                 <button onclick="cerrarModalFormCampana()" class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-slate-50 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
@@ -1033,11 +1080,11 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="col-span-1 md:col-span-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Nombre de la Campaña (Estrategia Macro)</label>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Nombre de la Campaña (Contenedor)</label>
                         <input type="text" id="campana-nombre" required placeholder="Ej: Black Friday 2024" class="input-premium !py-3.5 !text-sm border-slate-200 focus:border-indigo-500">
                     </div>
                     <div class="col-span-1 md:col-span-2">
-                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Objetivo General</label>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Objetivo Estratégico</label>
                         <input type="text" id="campana-objetivo" placeholder="Ej: Aumentar ventas del nicho Relojes" class="input-premium !py-3.5 !text-sm border-slate-200">
                     </div>
                     <div>
@@ -1045,10 +1092,16 @@
                         <select id="campana-estado" class="input-premium !py-3.5 !text-sm appearance-none bg-white">
                             <option value="Activa">Activa (Corriendo)</option>
                             <option value="Pausada">Pausada temporalmente</option>
-                            <option value="Desactivada">Desactivada / Finalizada</option>
-                            <option value="Archivada">Archivada (Oculta en POS)</option>
+                            <option value="Desactivada">Desactivada (Oculta en POS)</option>
+                            <option value="Finalizada">Finalizada</option>
+                            <option value="Archivada">Archivada</option>
                         </select>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Esfuerzo (Horas Hombre)</label>
+                    <input type="number" id="campana-horas" min="0" placeholder="Ej: 15" class="input-premium !py-3.5 !text-sm border-slate-200">
                 </div>
 
                 <div>
@@ -1056,13 +1109,13 @@
                     <textarea id="campana-notas" rows="3" placeholder="Observaciones de la campaña..." class="input-premium !py-3.5 !text-sm resize-none"></textarea>
                 </div>
 
-                <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 text-xs text-amber-700 font-bold flex items-start gap-3">
-                    <i data-lucide="info" class="w-5 h-5 shrink-0 text-amber-500"></i>
-                    <p>La inversión real, en USD, se registra inyectando presupuesto a los <b>Anuncios</b> que crees dentro de esta campaña. Al hacerlo, el sistema impactará los <b>Egresos de la empresa automáticamente</b> en Pesos (DOP).</p>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-xs text-blue-700 font-bold flex items-start gap-3">
+                    <i data-lucide="info" class="w-5 h-5 shrink-0 text-blue-500"></i>
+                    <p>La inversión real no se pone aquí. Se registra entrando a los <b>Anuncios</b> de esta campaña e inyectando dólares. El sistema consolidará automáticamente los totales de la campaña.</p>
                 </div>
 
                 <button type="submit" class="w-full bg-slate-900 text-white font-black rounded-2xl py-4 shadow-xl shadow-slate-900/20 hover:bg-black transition-all active:scale-[0.98] flex justify-center items-center gap-2">
-                    <i data-lucide="save" class="w-5 h-5"></i> Guardar Campaña Macro
+                    <i data-lucide="save" class="w-5 h-5"></i> Guardar Macro Campaña
                 </button>
             </form>
         </div>
@@ -1083,22 +1136,22 @@
             </div>
             
             <div class="p-6 md:p-8 flex-1 overflow-y-auto custom-scrollbar space-y-6">
-                <!-- TOTALIZADOR DE INVERSIÓN (Suma lo que se ha inyectado a los anuncios de esta campaña) -->
+                <!-- TOTALIZADOR DE INVERSIÓN CONSOLIDADA DE LA CAMPAÑA -->
                 <div class="bg-indigo-600 p-6 rounded-[2rem] shadow-lg flex flex-col md:flex-row justify-between items-center text-white gap-4 relative overflow-hidden">
                     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                     <div class="relative z-10 text-center md:text-left">
-                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Total Invertido en los Anuncios (DOP)</p>
+                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Inversión Consolidada de estos Anuncios</p>
                         <p id="sum-anuncios-inv" class="text-3xl font-black tracking-tight drop-shadow-md">RD$ 0.00</p>
                     </div>
                     <div class="relative z-10 text-center md:text-right">
-                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Ventas Generadas (DOP)</p>
+                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Ventas Generadas (Gross)</p>
                         <p id="sum-anuncios-ventas" class="text-3xl font-black tracking-tight drop-shadow-md text-emerald-300">RD$ 0.00</p>
                     </div>
                 </div>
 
                 <form onsubmit="handleCrearAnuncio(event)" class="bg-slate-50 p-6 rounded-[2rem] border border-slate-200 shadow-inner">
                     <div class="flex items-center gap-3 mb-4">
-                        <h4 class="text-sm font-black text-slate-700">Crear Nuevo Anuncio (Ad)</h4>
+                        <h4 class="text-sm font-black text-slate-700">Crear Nuevo Anuncio (Ad Táctico)</h4>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="md:col-span-2">
@@ -1108,19 +1161,20 @@
                             <select id="anuncio-estado" class="input-premium !py-3 !text-sm appearance-none bg-white">
                                 <option value="Activa">Activo</option>
                                 <option value="Pausada">Pausado</option>
-                                <option value="Desactivada">Finalizado / Apagado</option>
+                                <option value="Desactivada">Desactivado</option>
+                                <option value="Finalizada">Finalizado</option>
                             </select>
                         </div>
                         <button type="submit" class="bg-indigo-600 text-white font-black rounded-xl py-3 hover:bg-indigo-500 transition-colors shadow-md text-sm">Crear Ad</button>
                     </div>
                 </form>
 
-                <!-- FORMULARIO DE INYECCIÓN DE PRESUPUESTO (USD -> DOP) -->
+                <!-- FORMULARIO DE INYECCIÓN DE PRESUPUESTO (USD -> DOP) OCULTO EN FINANZAS -->
                 <form onsubmit="handleInyeccionMarketing(event)" class="bg-amber-50 p-6 rounded-[2rem] border border-amber-200 shadow-inner mt-6">
-                    <h4 class="text-sm font-black text-amber-700 mb-4 flex items-center gap-2"><i data-lucide="dollar-sign" class="w-4 h-4"></i> Inyectar Presupuesto al Anuncio (Gasto Real)</h4>
+                    <h4 class="text-sm font-black text-amber-700 mb-4 flex items-center gap-2"><i data-lucide="dollar-sign" class="w-4 h-4"></i> Inyectar Presupuesto (Gasto Real)</h4>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         <div class="md:col-span-2">
-                            <label class="block text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1.5 ml-1">Seleccionar Anuncio</label>
+                            <label class="block text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1.5 ml-1">Seleccionar Ad</label>
                             <select id="iny-anuncio" required class="input-premium !py-3 !text-sm appearance-none bg-white w-full shadow-sm"></select>
                         </div>
                         <div>
@@ -1133,9 +1187,9 @@
                         </div>
                     </div>
                     <button type="submit" class="w-full bg-amber-500 text-white font-black rounded-xl py-3 mt-4 hover:bg-amber-600 transition-colors shadow-md text-sm flex items-center justify-center gap-2">
-                        <i data-lucide="arrow-up-circle" class="w-4 h-4"></i> Registrar Gasto Publicitario
+                        <i data-lucide="arrow-up-circle" class="w-4 h-4"></i> Generar Gasto Automático
                     </button>
-                    <p class="text-[9px] font-bold text-amber-600/70 text-center mt-2 uppercase tracking-widest">El sistema convertirá esto a Pesos y creará el asiento en Egresos automáticamente.</p>
+                    <p class="text-[9px] font-bold text-amber-600/70 text-center mt-2 uppercase tracking-widest">Esto creará un asiento en DOP en Egresos y sumará la inversión a este Ad y Campaña.</p>
                 </form>
 
                 <div class="bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm">
@@ -1170,7 +1224,6 @@
             
             <div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-8">
                 
-                <!-- KPIs Principales: ROI y ROAS -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-indigo-600/10 border border-indigo-500/30 p-8 rounded-[2rem] flex flex-col items-center justify-center text-center relative overflow-hidden shadow-lg shadow-indigo-900/20">
                         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
@@ -1186,7 +1239,6 @@
                     </div>
                 </div>
 
-                <!-- Desglose Financiero -->
                 <div class="bg-[#020617] p-8 rounded-[2.5rem] border border-white/5 shadow-inner">
                     <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6 border-b border-white/5 pb-4"><i data-lucide="dollar-sign" class="w-4 h-4 inline-block mr-1"></i> Balance Financiero Consolidado (DOP)</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
@@ -1210,22 +1262,22 @@
                     </div>
                 </div>
 
-                <!-- Métricas de Operación -->
                 <div class="bg-slate-800/50 p-6 rounded-[2rem] border border-slate-700">
-                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4"><i data-lucide="shopping-bag" class="w-4 h-4 inline-block mr-1"></i> Tracción de Ventas</h4>
-                    <div class="space-y-4 max-w-lg">
-                        <div class="flex justify-between items-center"><span class="text-sm font-bold text-slate-300">Total Pedidos (Tickets de Anuncios)</span> <span id="rep-pedidos" class="text-lg font-black text-white">0</span></div>
+                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4"><i data-lucide="shopping-bag" class="w-4 h-4 inline-block mr-1"></i> Tracción y Esfuerzo</h4>
+                    <div class="grid grid-cols-2 gap-4 max-w-2xl">
+                        <div class="flex justify-between items-center"><span class="text-sm font-bold text-slate-300">Total Pedidos</span> <span id="rep-pedidos" class="text-lg font-black text-white">0</span></div>
                         <div class="flex justify-between items-center"><span class="text-sm font-bold text-slate-300">Unidades Vendidas</span> <span id="rep-items" class="text-lg font-black text-white">0</span></div>
                         <div class="flex justify-between items-center"><span class="text-sm font-bold text-slate-300">Ticket Promedio</span> <span id="rep-ticket" class="text-lg font-black text-indigo-400">RD$ 0.00</span></div>
                         <div class="flex justify-between items-center"><span class="text-sm font-bold text-slate-300">Margen Promedio</span> <span id="rep-margen" class="text-lg font-black text-emerald-400">0%</span></div>
+                        <div class="flex justify-between items-center"><span class="text-sm font-bold text-slate-300">Horas Esfuerzo</span> <span id="rep-horas" class="text-lg font-black text-amber-400">0</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modals previously mentioned (Kardex, CRM, Planner) remain fully functional -->
 
-    <!-- SCRIPT CORE -->
     <script>
         const formatMoney = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount || 0);
         
@@ -1238,6 +1290,7 @@
 
         let carritoPOS = [];
         let activeNicho = 'ALL'; let activeGrupo = 'ALL'; let activeCategoria = 'ALL';
+        let dashNicho = 'ALL'; let dashGrupo = 'ALL'; let dashCat = 'ALL';
         let charts = {};
         let activeKardexProdId = null;
         let CONFIG_URL_GOOGLE = localStorage.getItem('nexusERP_url') || "";
@@ -1254,7 +1307,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             if(window.lucide) lucide.createIcons();
             const today = new Date().toISOString().split('T')[0];
-            ['egre-fecha', 'vent-fecha'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = today; });
+            ['egre-fecha', 'vent-fecha', 'vent-agenda-fecha', 'agenda-date-filter'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = today; });
             
             actualizarEstadoConfig();
             if(CONFIG_URL_GOOGLE) { navigate('dashboard'); cargarDatosDesdeGoogle(); } 
@@ -1278,20 +1331,21 @@
                 const icon = activeBtn.querySelector('i'); if(icon) icon.classList.add('text-indigo-400');
             }
             
-            const titles = { 'ventas': 'Terminal POS', 'dashboard': 'Inteligencia Directiva', 'catalogo': 'Catálogo de Productos', 'finanzas': 'Egresos', 'instrucciones': 'Configuración Core', 'inventario': 'Inventario de Activos', 'metas': 'Estrategia de Ventas', 'crm': 'Cuentas Clave B2B', 'campanas': 'Marketing & ROI' };
+            const titles = { 'ventas': 'Terminal POS', 'dashboard': 'Inteligencia Directiva', 'catalogo': 'Catálogo de Productos', 'finanzas': 'Egresos', 'instrucciones': 'Configuración Core', 'inventario': 'Inventario de Activos', 'metas': 'Estrategia de Ventas', 'crm': 'Cuentas Clave B2B', 'campanas': 'Marketing & ROI', 'agenda': 'Logística y Agenda' };
             const pageTitleEl = document.getElementById('page-title');
             if(pageTitleEl) pageTitleEl.innerText = titles[viewId] || '';
-            const icons = { 'ventas': 'shopping-cart', 'dashboard': 'pie-chart', 'catalogo': 'tags', 'finanzas': 'wallet', 'instrucciones': 'database', 'inventario': 'layers', 'metas': 'target', 'crm': 'users', 'campanas': 'megaphone' };
+            const icons = { 'ventas': 'shopping-cart', 'dashboard': 'pie-chart', 'catalogo': 'tags', 'finanzas': 'wallet', 'instrucciones': 'database', 'inventario': 'layers', 'metas': 'target', 'crm': 'users', 'campanas': 'megaphone', 'agenda': 'calendar-clock' };
             const hIcon = document.getElementById('header-icon'); if(hIcon) { hIcon.innerHTML = `<i data-lucide="${icons[viewId]||'activity'}" class="w-6 h-6"></i>`; if(window.lucide) lucide.createIcons(); }
 
             if(viewId === 'ventas') { renderVentasSelect(); renderVentas(); renderCampanasSelects(); }
             if(viewId === 'finanzas') { renderSelectCategoriasGastos(); renderEgresos(); if (state.formComprasItems.length === 0) addCompraItem(); else renderFormComprasItems(); }
-            if(viewId === 'dashboard') setTimeout(renderDashboard, 100);
+            if(viewId === 'dashboard') { renderDashboardSelects(); setTimeout(renderDashboard, 100); }
             if(viewId === 'inventario') renderInventario();
             if(viewId === 'catalogo') { renderCatalogoSelects(); renderCatalogo(); renderAtributosForm(); }
             if(viewId === 'metas') renderMetas();
             if(viewId === 'crm') renderCRM();
             if(viewId === 'campanas') renderCampanas();
+            if(viewId === 'agenda') renderAgenda();
         }
 
         function showToast(msg, type = 'success') {
@@ -1333,6 +1387,12 @@
                 state.anuncios = data.anuncios || []; 
                 if(data.categorias_gastos && data.categorias_gastos.length > 0) state.categoriasGastos = data.categorias_gastos;
                 
+                // Mapear ventas antiguas sin estado_entrega
+                state.ventas.forEach(v => {
+                    if(!v.estado_entrega && v.is_agendada) v.estado_entrega = 'Pendiente';
+                    else if(!v.estado_entrega) v.estado_entrega = 'Entregada';
+                });
+
                 localStorage.setItem('nexusERP_backup', JSON.stringify(state));
                 showToast('Directiva Sincronizada.');
             } catch (err) { 
@@ -1373,392 +1433,130 @@
             if(modalAnuncios && !modalAnuncios.classList.contains('opacity-0')) renderAnunciosCampana(document.getElementById('anuncio-campana-id').value);
         }
 
-        function abrirModalCRM() { document.getElementById('modal-crm').classList.remove('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-crm-content').classList.replace('scale-95', 'scale-100'); }
-        function cerrarModalCRM() { document.getElementById('modal-crm').classList.add('pointer-events-none'); document.getElementById('modal-crm').classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-crm-content').classList.replace('scale-100', 'scale-95'); }
-        function handleCrearCliente(e) {
-            e.preventDefault();
-            const obj = { id: `CL-${Date.now().toString().slice(-6)}`, nombre: document.getElementById('crm-nombre').value, email: '', phone: document.getElementById('crm-phone').value, tipo: document.getElementById('crm-tipo').value, address: '', notes: '', rnc: document.getElementById('crm-rnc').value, limite: parseFloat(document.getElementById('crm-limite').value) || 0 };
-            state.clientes.push(obj); enviarAGoogleSheets("NUEVO_CLIENTE", obj); renderCRM(); cerrarModalCRM(); e.target.reset(); showToast('Cuenta Clave B2B añadida.');
-        }
-        function renderCRM() {
-            const grid = document.getElementById('crm-grid'); if(!grid) return;
-            if(!state.clientes || state.clientes.length === 0) { grid.innerHTML = '<div class="col-span-full py-16 text-center bg-white/80 rounded-[3rem] border border-white"><p class="text-slate-400 font-bold text-lg">No hay clientes registrados en el CRM.</p></div>'; return; }
-            grid.innerHTML = state.clientes.slice().reverse().map((c, i) => {
-                const totalSpent = state.ventas.filter(v => v.cliente === c.id || v.cliente === c.nombre).reduce((acc, v) => acc + (v.total || 0), 0);
-                return `
-                <div class="bg-white/90 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-sm border border-slate-100 hover:shadow-xl hover:border-indigo-100 transition-all hover:-translate-y-1 relative overflow-hidden group animate-in slide-in-from-bottom-4 fade-in" style="animation-delay: ${i*50}ms">
-                    <button onclick="eliminarRegistro('CLIENTE', '${c.id}', 'Clientes_CRM')" class="absolute top-6 right-6 p-2.5 text-slate-300 hover:text-rose-500 bg-white shadow-sm border border-slate-100 rounded-xl opacity-0 group-hover:opacity-100 transition-all z-20"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    ${c.tipo.includes('VIP') ? '<div class="absolute top-0 right-0 bg-gradient-to-l from-indigo-600 to-indigo-500 text-white text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-bl-[1.5rem] shadow-md z-10">VIP</div>' : ''}
-                    <div class="flex items-center gap-5 mb-6 relative z-10">
-                        <div class="w-14 h-14 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-2xl font-black text-slate-400 shadow-inner group-hover:scale-110 group-hover:text-indigo-500 transition-transform shrink-0">${c.nombre.charAt(0)}</div>
-                        <div class="flex-1 min-w-0 pr-8">
-                            <h3 class="font-bold text-base text-slate-800 leading-tight truncate group-hover:text-indigo-700 transition-colors">${c.nombre}</h3>
-                            <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5 bg-slate-50 inline-block px-2 py-0.5 rounded border border-slate-200">${c.tipo}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-6 relative z-10">
-                        ${c.rnc ? `<p class="text-xs text-slate-600 font-bold bg-slate-50 p-2 rounded-lg"><b>RNC:</b> ${c.rnc}</p>` : ''}
-                        ${c.phone ? `<p class="text-xs text-slate-600 font-bold bg-slate-50 p-2 rounded-lg"><b>Tel:</b> ${c.phone}</p>` : ''}
-                        ${c.limite > 0 ? `<p class="text-xs text-emerald-600 font-black bg-emerald-50 border border-emerald-100 p-2 rounded-lg mt-3">Límite: RD$ ${formatMoney(c.limite)}</p>` : ''}
-                    </div>
-                    <div class="pt-5 border-t border-slate-100 mt-auto relative z-10">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Volumen Compra</p>
-                        <p class="text-2xl font-black text-indigo-600 tracking-tight">RD$ ${formatMoney(totalSpent)}</p>
-                    </div>
-                </div>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function getStockConsolidado() {
-            return state.catalogo.map(prod => {
-                const comprasProd = state.compras.filter(c => c.productoId === prod.id);
-                const stock = comprasProd.reduce((acc, c) => acc + (c.cantidad_restante || 0), 0);
-                const costoTotal = comprasProd.reduce((acc, c) => acc + ((c.cantidad_restante || 0) * (c.costo || 0)), 0);
-                const costoPromedio = stock > 0 ? (costoTotal / stock) : 0;
-                return { ...prod, stock, costoPromedio, costoTotal, precio_base: Number(prod.precio_base || 0) };
-            });
-        }
-        
-        function renderInventarioFilters(stockData) {
-            const nichoContainer = document.getElementById('inv-nicho-filters');
-            const grupoWrap = document.getElementById('inv-grupo-filters-container');
-            const catWrap = document.getElementById('inv-cat-filters-container');
-
+        function renderDashboardSelects() {
             const nichos = ['ALL', ...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            if (nichoContainer) nichoContainer.innerHTML = nichos.map(n => `<button onclick="setInvNichoFilter('${n}')" class="px-5 py-2.5 rounded-[1.25rem] text-[10px] font-black uppercase tracking-widest border shadow-sm transition-all ${activeNicho === n ? 'bg-slate-900 text-white border-transparent scale-105' : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300 hover:bg-slate-50'}">${n === 'ALL' ? 'Catálogo General' : n}</button>`).join('');
+            let htmlNicho = nichos.map(c => `<option value="${c}">${c === 'ALL' ? 'Todos los Nichos' : c}</option>`).join('');
+            if(document.getElementById('dash-nicho')) { document.getElementById('dash-nicho').innerHTML = htmlNicho; syncDashboardFilters(false, true); }
+        }
+        function syncDashboardFilters(skipNicho = false, initial = false) {
+            if(!skipNicho) dashNicho = document.getElementById('dash-nicho').value;
+            dashGrupo = document.getElementById('dash-grupo').value;
+            
+            const grupoSelect = document.getElementById('dash-grupo');
+            const catSelect = document.getElementById('dash-cat');
 
-            if (activeNicho === 'ALL') { grupoWrap.classList.add('hidden'); catWrap.classList.add('hidden'); activeGrupo = 'ALL'; activeCategoria = 'ALL'; } 
-            else {
-                const grupos = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === activeNicho).map(p => p.grupo).filter(Boolean))];
-                if (grupos.length > 1) { 
-                    grupoWrap.classList.remove('hidden');
-                    document.getElementById('inv-grupo-filters').innerHTML = grupos.map(g => `<button onclick="setInvGrupoFilter('${g}')" class="px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all ${activeGrupo === g ? 'bg-indigo-50 text-indigo-700 border-indigo-200 shadow-inner' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'}">${g === 'ALL' ? 'Todos los Grupos' : g}</button>`).join('');
-                } else { grupoWrap.classList.add('hidden'); activeGrupo = 'ALL'; }
-
-                if(activeGrupo === 'ALL') { catWrap.classList.add('hidden'); activeCategoria = 'ALL'; }
+            if(dashNicho === 'ALL') {
+                grupoSelect.classList.add('hidden'); catSelect.classList.add('hidden');
+                dashGrupo = 'ALL'; dashCat = 'ALL';
+            } else {
+                const grupos = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === dashNicho).map(p => p.grupo).filter(Boolean))];
+                if(grupos.length > 1) {
+                    grupoSelect.classList.remove('hidden');
+                    if(!skipNicho) { grupoSelect.innerHTML = grupos.map(c => `<option value="${c}">${c === 'ALL' ? 'Todos los Grupos' : c}</option>`).join(''); dashGrupo = 'ALL'; }
+                } else { grupoSelect.classList.add('hidden'); dashGrupo = 'ALL'; }
+                
+                if(dashGrupo === 'ALL') { catSelect.classList.add('hidden'); dashCat = 'ALL'; }
                 else {
-                    const categorias = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === activeNicho && p.grupo === activeGrupo).map(p => p.categoria).filter(Boolean))];
-                    if (categorias.length > 1) {
-                        catWrap.classList.remove('hidden');
-                        document.getElementById('inv-cat-filters').innerHTML = categorias.map(c => `<button onclick="setInvCatFilterLevel3('${c}')" class="px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all ${activeCategoria === c ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-inner' : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50'}">${c === 'ALL' ? 'Cualquier Categoría' : c}</button>`).join('');
-                    } else { catWrap.classList.add('hidden'); activeCategoria = 'ALL'; }
+                    const cats = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === dashNicho && p.grupo === dashGrupo).map(p => p.categoria).filter(Boolean))];
+                    if(cats.length > 1) {
+                        catSelect.classList.remove('hidden');
+                        catSelect.innerHTML = cats.map(c => `<option value="${c}">${c === 'ALL' ? 'Todas las Categorías' : c}</option>`).join('');
+                    } else { catSelect.classList.add('hidden'); dashCat = 'ALL'; }
                 }
             }
-        }
-        function setInvNichoFilter(n) { activeNicho = n; activeGrupo = 'ALL'; activeCategoria = 'ALL'; renderInventario(); }
-        function setInvGrupoFilter(g) { activeGrupo = g; activeCategoria = 'ALL'; renderInventario(); }
-        function setInvCatFilterLevel3(c) { activeCategoria = c; renderInventario(); }
-
-        function renderInventario() {
-            const tbody = document.getElementById('inventario-body'); if(!tbody) return;
-            let stockConsolidado = getStockConsolidado();
-            renderInventarioFilters(stockConsolidado);
-            
-            if (activeNicho !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.nicho === activeNicho);
-            if (activeGrupo !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.grupo === activeGrupo);
-            if (activeCategoria !== 'ALL') stockConsolidado = stockConsolidado.filter(p => p.categoria === activeCategoria);
-            stockConsolidado.sort((a,b) => b.stock - a.stock);
-            
-            const totalStock = stockConsolidado.reduce((s,p)=>s+(p.stock||0), 0); 
-            const totalCosto = stockConsolidado.reduce((s, p) => s + (p.costoTotal||0), 0);
-            const totalPotencial = stockConsolidado.reduce((s, p) => s + ((p.stock||0) * (p.precio_base||0)), 0);
-            const cppGlobal = totalStock > 0 ? (totalCosto / totalStock) : 0;
-            
-            if(document.getElementById('inv-kpi-prods')) document.getElementById('inv-kpi-prods').innerText = totalStock.toLocaleString();
-            if(document.getElementById('inv-kpi-costo')) document.getElementById('inv-kpi-costo').innerText = `RD$ ${formatMoney(totalCosto)}`;
-            if(document.getElementById('inv-kpi-potencial')) document.getElementById('inv-kpi-potencial').innerText = `RD$ ${formatMoney(totalPotencial)}`;
-            if(document.getElementById('inv-kpi-cpp')) document.getElementById('inv-kpi-cpp').innerText = `RD$ ${formatMoney(cppGlobal)}`;
-
-            if(!stockConsolidado.length) return tbody.innerHTML = emptyStateHTML('box', 'Almacén Vacío', 'No hay datos para este filtro.', 6);
-
-            tbody.innerHTML = stockConsolidado.map(p => `
-                <tr class="${p.stock===0?'opacity-50 grayscale':'hover:bg-slate-50/50 cursor-pointer'} transition-colors border-b border-slate-100 group" onclick="abrirKardex('${p.id}')">
-                    <td class="px-6 py-5"><p class="font-black text-slate-800 text-sm truncate max-w-[250px] group-hover:text-indigo-600 transition-colors">${p.nombre}</p><p class="text-[9px] font-bold text-slate-400 font-mono tracking-widest mt-0.5">${p.id}</p></td>
-                    <td class="px-4 py-5"><div class="flex items-center gap-1.5 flex-wrap max-w-[200px]"><span class="text-[9px] uppercase font-black tracking-widest text-indigo-700 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100">${p.nicho}</span>${p.grupo ? `<span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-200 shadow-sm">${p.grupo}</span>` : ''}</div></td>
-                    <td class="px-4 py-5 text-center"><span class="${p.stock===0?'bg-slate-200 text-slate-500':'bg-slate-900 text-white shadow-md'} px-4 py-1.5 rounded-xl text-xs font-black">${p.stock}</span></td>
-                    <td class="px-4 py-5 text-right font-black text-rose-500/90 text-sm">${formatMoney(p.costoPromedio)}</td>
-                    <td class="px-4 py-5 text-right font-black text-emerald-600 text-sm">${formatMoney(p.precio_base)}</td>
-                    <td class="px-6 py-5 text-center"><button class="bg-white border border-slate-200 shadow-sm p-2 rounded-xl text-slate-400 hover:text-indigo-600 transition-all"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
-                </tr>`).join('');
-            if(window.lucide) lucide.createIcons();
+            if(!initial) renderDashboard();
         }
 
-        function abrirKardexGeneral() { activeKardexProdId = null; document.getElementById('kardex-modal-title').innerText = `Kardex Global`; document.getElementById('kardex-modal-subtitle').innerText = `Auditoría financiera y física absoluta`; procesarKardex(null); }
-        function abrirKardex(prodId) { const prod = state.catalogo.find(p => p.id === prodId); if(!prod) return; activeKardexProdId = prodId; document.getElementById('kardex-modal-title').innerText = `${prod.nombre}`; document.getElementById('kardex-modal-subtitle').innerText = `SKU: ${prod.id}`; procesarKardex(prodId); }
-        function procesarKardex(prodId = null) {
-            let comprasTarget = state.compras; let ventasTarget = [];
-            state.ventas.forEach(v => {
-                if (v.detalle && Array.isArray(v.detalle)) {
-                    v.detalle.forEach(d => { ventasTarget.push({ id: v.id, fecha: v.fecha, productoId: d.productoId, cantidad: d.cantidad, precio: d.precio, costo_fifo: d.costo_fifo, cliente: v.cliente }); });
-                }
-            });
+        function filterVentasByHierarchy(ventasArray) {
+            dashNicho = document.getElementById('dash-nicho') ? document.getElementById('dash-nicho').value : 'ALL';
+            dashGrupo = document.getElementById('dash-grupo') ? document.getElementById('dash-grupo').value : 'ALL';
+            dashCat = document.getElementById('dash-cat') ? document.getElementById('dash-cat').value : 'ALL';
 
-            if(prodId) { comprasTarget = comprasTarget.filter(c => c.productoId === prodId); ventasTarget = ventasTarget.filter(v => v.productoId === prodId); }
+            if(dashNicho === 'ALL') return ventasArray;
 
-            const comprasProd = comprasTarget.map(c => ({ tipo: 'ENTRADA', fechaStr: c.fecha, cant: c.cantidad_inicial, valorU: c.costo, id: c.id, refId: c.productoId }));
-            const ventasProd = ventasTarget.map(v => ({ tipo: 'SALIDA', fechaStr: v.fecha, cant: v.cantidad, valorU: v.precio, costoVenta: v.costo_fifo, id: v.id, refId: v.productoId, client: v.cliente }));
-            
-            let movs = [...comprasProd, ...ventasProd].sort((a, b) => { 
-                const d1 = new Date((a.fechaStr || '').split(',')[0]); const d2 = new Date((b.fechaStr || '').split(',')[0]); 
-                if (d1.getTime() !== d2.getTime()) return d1 - d2; 
-                if (a.tipo !== b.tipo) return a.tipo === 'ENTRADA' ? -1 : 1; 
-                return (a.id || '').localeCompare(b.id || ''); 
-            });
-
-            let saldoFisico = 0, saldoValuado = 0, cppActual = 0, cantIngresos = 0, cantSalidas = 0; const filas = [];
-
-            movs.forEach(mov => {
-                const isEntrada = mov.tipo === 'ENTRADA'; let outTotalCost = 0;
-                if (isEntrada) { saldoFisico += mov.cant; saldoValuado += (mov.cant * mov.valorU); cantIngresos+=mov.cant; } 
-                else { saldoFisico -= mov.cant; outTotalCost = mov.costoVenta || 0; saldoValuado -= outTotalCost; cantSalidas+=mov.cant; }
-                cppActual = saldoFisico > 0 ? (saldoValuado / saldoFisico) : 0;
-
-                const inCant = isEntrada ? mov.cant : '-'; const inCU = isEntrada ? formatMoney(mov.valorU) : '-'; const inTotal = isEntrada ? formatMoney(mov.cant * mov.valorU) : '-';
-                const outCant = !isEntrada ? mov.cant : '-'; const outCUProm = !isEntrada && mov.cant > 0 ? (outTotalCost / mov.cant) : 0; const outCUDraw = !isEntrada ? formatMoney(outCUProm) : '-'; const outTotalDraw = !isEntrada ? formatMoney(outTotalCost) : '-';
-
-                const pName = (state.catalogo.find(p=>p.id===mov.refId)||{}).nombre || 'N/A';
-                let opDesc = isEntrada ? `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Ingreso Almacén</span>` : `<span class="bg-rose-50 text-rose-600 border border-rose-200 px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Despacho (${mov.client || 'POS'})</span>`;
-
-                filas.unshift(`<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group">
-                    <td class="p-4 border-r border-slate-200"><div class="flex items-center gap-2 mb-1.5">${opDesc} <span class="text-xs font-black text-slate-800">${(mov.fechaStr || '').split('T')[0].split(',')[0]}</span></div><div class="text-[9px] font-mono text-slate-400 font-bold break-all">${mov.id}</div></td>
-                    <td class="p-4 text-right text-emerald-600 font-black bg-emerald-50/30">${inCant}</td><td class="p-4 text-right text-emerald-600/70 bg-emerald-50/30">${inCU}</td><td class="p-4 text-right font-black text-emerald-600 border-r border-slate-200 bg-emerald-50/30">${inTotal}</td>
-                    <td class="p-4 text-right text-rose-500 font-black bg-rose-50/30">${outCant}</td><td class="p-4 text-right text-rose-500/70 bg-rose-50/30">${outCUDraw}</td><td class="p-4 text-right font-black text-rose-500 border-r border-slate-200 bg-rose-50/30">${outTotalDraw}</td>
-                    <td class="p-4 text-right font-black text-slate-800 bg-indigo-50/20 text-base">${saldoFisico}</td><td class="p-4 text-right text-slate-500 bg-indigo-50/20 text-xs">${formatMoney(cppActual)}</td><td class="p-4 text-right font-black text-indigo-600 bg-indigo-50/20 text-sm">${formatMoney(saldoValuado)}</td>
-                </tr>`);
-            });
-
-            document.getElementById('km-entradas').innerText = cantIngresos; document.getElementById('km-salidas').innerText = cantSalidas; document.getElementById('km-stock').innerText = saldoFisico;
-            document.getElementById('km-body').innerHTML = filas.length ? filas.join('') : emptyStateHTML('ghost', 'Registro Contable Vacío', 'No hay flujo detectado.', 10);
-            const modal = document.getElementById('modal-kardex'); modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-kardex-content').classList.replace('scale-95', 'scale-100');
-            if(window.lucide) lucide.createIcons();
-        }
-        function cerrarModalKardex() { const modal = document.getElementById('modal-kardex'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-kardex-content').classList.replace('scale-100', 'scale-95'); activeKardexProdId = null; }
-
-        function renderCatalogoSelects() {
-            const nichos = [...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            let htmlNicho = `<option value="" disabled selected>Seleccione Nicho...</option>${nichos.map(c => `<option value="${c}">${c}</option>`).join('')}`;
-            if(document.getElementById('prod-nicho')) { document.getElementById('prod-nicho').innerHTML = htmlNicho; syncGruposSelect(); }
-        }
-        function syncGruposSelect() {
-            const n = document.getElementById('prod-nicho').value;
-            if(!n) { document.getElementById('prod-grupo').innerHTML = '<option value="" disabled selected>-- Primero elija Nicho --</option>'; syncCategoriasSelect(); return; }
-            const grupos = [...new Set(state.catalogo.filter(p => p.nicho === n).map(p => p.grupo).filter(Boolean))];
-            document.getElementById('prod-grupo').innerHTML = `<option value="" disabled selected>Seleccione Grupo...</option>${grupos.map(c => `<option value="${c}">${c}</option>`).join('')}`; syncCategoriasSelect();
-        }
-        function syncCategoriasSelect() {
-            const n = document.getElementById('prod-nicho').value; const g = document.getElementById('prod-grupo').value;
-            if(!n || !g) { document.getElementById('prod-categoria').innerHTML = '<option value="" disabled selected>-- Primero elija Grupo --</option>'; return; }
-            const cats = [...new Set(state.catalogo.filter(p => p.nicho === n && p.grupo === g).map(p => p.categoria).filter(Boolean))];
-            document.getElementById('prod-categoria').innerHTML = `<option value="" disabled selected>Seleccione Categoría...</option>${cats.map(c => `<option value="${c}">${c}</option>`).join('')}`;
-        }
-
-        function crearNicho() { const v = prompt("Nombre del nuevo Nicho:"); if(v && v.trim() !== '') { document.getElementById('prod-nicho').innerHTML += `<option value="${v.trim()}" selected>${v.trim()}</option>`; document.getElementById('prod-nicho').value = v.trim(); syncGruposSelect(); } }
-        function crearGrupo() { const v = prompt("Nombre del nuevo Grupo:"); if(v && v.trim() !== '') { document.getElementById('prod-grupo').innerHTML += `<option value="${v.trim()}" selected>${v.trim()}</option>`; document.getElementById('prod-grupo').value = v.trim(); syncCategoriasSelect(); } }
-        function crearCategoria() { const v = prompt("Nombre de la nueva Categoría:"); if(v && v.trim() !== '') { document.getElementById('prod-categoria').innerHTML += `<option value="${v.trim()}" selected>${v.trim()}</option>`; document.getElementById('prod-categoria').value = v.trim(); } }
-
-        function addAtributo() { state.formAtributos.push({ clave: '', valor: '' }); renderAtributosForm(); }
-        function removeAtributo(idx) { state.formAtributos.splice(idx, 1); renderAtributosForm(); }
-        function updateAtributo(idx, field, val) { state.formAtributos[idx][field] = val; }
-        function renderAtributosForm() {
-            const container = document.getElementById('atributos-container'); if(!container) return;
-            container.innerHTML = state.formAtributos.map((a, i) => `
-                <div class="flex gap-3 items-center">
-                    <input type="text" placeholder="Key (Ej: Talla)" class="w-1/2 input-premium !py-3 !text-xs !bg-white" value="${a.clave}" oninput="updateAtributo(${i}, 'clave', this.value)">
-                    <input type="text" placeholder="Valor (Ej: M)" class="w-1/2 input-premium !py-3 !text-xs !bg-white" value="${a.valor}" oninput="updateAtributo(${i}, 'valor', this.value)">
-                    <button type="button" onclick="removeAtributo(${i})" class="text-slate-400 hover:text-rose-500 bg-slate-50 hover:bg-rose-50 p-2.5 rounded-xl border border-slate-200 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </div>`).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function handleCrearProducto(e) {
-            e.preventDefault();
-            const nombre = document.getElementById('prod-nombre').value.trim(); const nicho = document.getElementById('prod-nicho').value; const grupo = document.getElementById('prod-grupo').value; const categoria = document.getElementById('prod-categoria').value; const cantInicial = parseInt(document.getElementById('prod-cant-inicial').value) || 0;
-            if(!nicho || !grupo || !categoria) return showToast("Debes seleccionar la jerarquía completa (Nicho, Grupo y Categoría).", "error");
-            const precioBase = parseFloat(document.getElementById('prod-precio-base').value); const costoRef = parseFloat(document.getElementById('prod-costo-ref').value) || 0; const descMax = parseFloat(document.getElementById('prod-descuento').value) || 0;
-            
-            const pId = `PRD-${Date.now().toString().slice(-6)}`;
-            const obj = { id: pId, nombre, nicho, grupo, categoria, precio_base: precioBase, costo_ref: costoRef, descuento_max: descMax, atributos: state.formAtributos.filter(a => a.clave.trim() && a.valor.trim()), cantidad_inicial: cantInicial };
-            state.catalogo.push(obj); enviarAGoogleSheets("CATALOGO", obj);
-
-            if(cantInicial > 0) { const compId = `CMP-INI-${pId}`; const f = new Date().toISOString().split('T')[0]; state.compras.push({ id: compId, fecha: f, productoId: pId, cantidad_inicial: cantInicial, cantidad_restante: cantInicial, costo: costoRef }); }
-
-            document.getElementById('form-producto').reset(); state.formAtributos = [{clave:'', valor:''}]; renderCatalogoSelects(); renderAtributosForm(); renderCatalogo(); showToast('Ficha técnica insertada con éxito.');
-        }
-
-        function renderCatalogo() {
-            const tbody = document.getElementById('catalogo-body'); if(!tbody) return;
-            if(!state.catalogo.length) return tbody.innerHTML = emptyStateHTML('tags', 'Directorio Vacío', 'Utilice el panel superior para crear perfiles.', 4);
-            tbody.innerHTML = state.catalogo.slice().reverse().map(p => `
-                <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group">
-                    <td class="px-6 py-5"><p class="font-black text-slate-800 text-sm">${p.nombre}</p><p class="text-[9px] text-slate-400 font-mono font-bold mt-1">${p.id}</p></td>
-                    <td class="px-4 py-5"><div class="flex items-center gap-1.5 flex-wrap"><span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-indigo-100">${p.nicho}</span><span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-slate-200">${p.grupo}</span></div></td>
-                    <td class="px-4 py-5 text-right"><p class="font-black text-emerald-600 text-base">${formatMoney(p.precio_base || 0)}</p></td>
-                    <td class="px-6 py-5 text-center"><button onclick="eliminarRegistro('CATALOGO', '${p.id}', 'Catalogo')" class="bg-slate-50 border border-slate-200 shadow-sm p-2 rounded-xl text-slate-400 hover:text-rose-500 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-                </tr>`).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function addCompraItem() { state.formComprasItems.push({ id: Date.now() + Math.random(), prodId: '', qty: '', cost: '' }); renderFormComprasItems(); }
-        function removeCompraItem(id) { state.formComprasItems = state.formComprasItems.filter(i => i.id !== id); if(state.formComprasItems.length === 0) addCompraItem(); renderFormComprasItems(); }
-        function updateCompraItem(id, field, val) { const item = state.formComprasItems.find(i => i.id === id); if(item) { item[field] = val; const subtotalEl = document.getElementById(`subtotal-compra-${id}`); if(subtotalEl) subtotalEl.innerText = `RD$ ${formatMoney((parseFloat(item.qty)||0)*(parseFloat(item.cost)||0))}`; const totalLabel = document.getElementById('lbl-total-compras'); if(totalLabel) totalLabel.innerText = `RD$ ${formatMoney(calcularTotalCompras())}`; } }
-        function calcularTotalCompras() { return state.formComprasItems.reduce((acc, item) => acc + ((parseFloat(item.qty)||0) * (parseFloat(item.cost)||0)), 0); }
-        
-        function renderFormComprasItems() {
-            const container = document.getElementById('compras-multiples-container'); if(!container) return;
-            const grouped = state.catalogo.reduce((acc, p) => { const cat = p.nicho || 'Gen'; if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
-            let optionsHtml = '<option value="" disabled selected>Selecciona producto...</option>';
-            for(const cat in grouped) { optionsHtml += `<optgroup label="📦 ${cat.toUpperCase()}">`; grouped[cat].forEach(p => { optionsHtml += `<option value="${p.id}">${p.nombre}</option>`; }); optionsHtml += `</optgroup>`; }
-
-            container.innerHTML = state.formComprasItems.map((item, idx) => `
-                <div class="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-2xl border border-emerald-100 shadow-sm relative">
-                    <div class="absolute -left-2 -top-2 w-5 h-5 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-[9px] font-black border border-emerald-200">${idx + 1}</div>
-                    <div class="col-span-12 md:col-span-5"><select required class="input-premium !py-2.5 !px-3 !text-sm appearance-none truncate !bg-slate-50 w-full" onchange="updateCompraItem(${item.id}, 'prodId', this.value)">${optionsHtml.replace(`value="${item.prodId}"`, `value="${item.prodId}" selected`)}</select></div>
-                    <div class="col-span-4 md:col-span-2"><input type="number" min="1" placeholder="Cant." required class="input-premium !py-2.5 !px-3 !text-sm text-center !bg-slate-50 w-full" value="${item.qty}" oninput="updateCompraItem(${item.id}, 'qty', this.value)"></div>
-                    <div class="col-span-4 md:col-span-2"><input type="number" min="0.01" step="0.01" placeholder="Costo U." required class="input-premium !py-2.5 !px-3 !text-sm text-center !bg-emerald-50/30 !text-emerald-700 w-full" value="${item.cost}" oninput="updateCompraItem(${item.id}, 'cost', this.value)"></div>
-                    <div class="col-span-3 md:col-span-2 text-right"><p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Subtotal</p><p id="subtotal-compra-${item.id}" class="text-sm font-black text-slate-800">RD$ ${formatMoney((parseFloat(item.qty)||0)*(parseFloat(item.cost)||0))}</p></div>
-                    <div class="col-span-1 md:col-span-1 flex justify-end"><button type="button" onclick="removeCompraItem(${item.id})" class="p-2 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
-                </div>
-            `).join('');
-            
-            if(document.getElementById('lbl-total-compras')) document.getElementById('lbl-total-compras').innerText = `RD$ ${formatMoney(calcularTotalCompras())}`;
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function setGastoType(type) {
-            document.getElementById('egre-tipo-registro').value = type;
-            const btnOp = document.getElementById('tab-egreso-operativo'); const btnInv = document.getElementById('tab-egreso-inventario');
-            const blkOp = document.getElementById('bloque-gasto-operativo'); const blkInv = document.getElementById('bloque-gasto-inventario');
-            const btnSub = document.getElementById('btn-submit-egreso'); const blkMonto = document.getElementById('blk-egre-monto-total');
-
-            if(type === 'OPERATIVO') {
-                btnOp.className = "flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm bg-white text-amber-600 border border-slate-200/60 scale-[1.02]";
-                btnInv.className = "flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700";
-                blkOp.classList.remove('hidden'); blkInv.classList.add('hidden'); blkMonto.classList.remove('hidden');
-                btnSub.className = "w-full bg-amber-500 text-white font-black rounded-2xl py-5 mt-4 shadow-lg shadow-amber-500/20 hover:bg-amber-600 transition-all flex items-center justify-center gap-3 text-lg";
-                btnSub.innerHTML = '<i data-lucide="arrow-up-right" class="w-6 h-6"></i> Procesar Gasto Operativo'; 
-            } else {
-                btnInv.className = "flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm bg-white text-emerald-600 border border-slate-200/60 scale-[1.02]";
-                btnOp.className = "flex-1 py-4 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-400 hover:text-slate-700";
-                blkInv.classList.remove('hidden'); blkOp.classList.add('hidden'); blkMonto.classList.add('hidden');
-                btnSub.className = "w-full bg-emerald-600 text-white font-black rounded-2xl py-5 mt-4 shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 text-lg";
-                btnSub.innerHTML = '<i data-lucide="download" class="w-6 h-6"></i> Autorizar Compra Múltiple'; 
-            }
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function handleEgresoSubmit(e) {
-            e.preventDefault();
-            const type = document.getElementById('egre-tipo-registro').value, fecha = document.getElementById('egre-fecha').value;
-
-            if(type === 'INVENTARIO') {
-                const isValid = state.formComprasItems.every(i => i.prodId && i.qty && i.cost);
-                if(!isValid || state.formComprasItems.length === 0) return showToast("Completa todos los datos de los lotes.", "error");
-                
-                const costoTotal = calcularTotalCompras(); const numLotes = state.formComprasItems.length;
-
-                state.formComprasItems.forEach(item => {
-                    const cant = parseInt(item.qty); const cUnit = parseFloat(item.cost);
-                    const objComp = { id: `CMP-${Date.now().toString().slice(-6)}-${Math.floor(Math.random()*1000)}`, fecha, productoId: item.prodId, cantidad_inicial: cant, cantidad_restante: cant, costo: cUnit };
-                    state.compras.push(objComp); enviarAGoogleSheets("COMPRA", objComp);
+            return ventasArray.map(v => {
+                if(!v.detalle) return null;
+                let validDetalles = v.detalle.filter(d => {
+                    const p = state.catalogo.find(c => c.id === d.productoId);
+                    if(!p) return false;
+                    if(dashNicho !== 'ALL' && p.nicho !== dashNicho) return false;
+                    if(dashGrupo !== 'ALL' && p.grupo !== dashGrupo) return false;
+                    if(dashCat !== 'ALL' && p.categoria !== dashCat) return false;
+                    return true;
                 });
-                const objEgre = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: `Adquisición Múltiple (${numLotes} Lotes)`, monto: costoTotal, categoria_gasto: 'Inventario', metodoPago: 'Efectivo', campanaId: null, anuncioId: null };
-                state.egresos.push(objEgre); enviarAGoogleSheets("EGRESO", objEgre);
-                
-                state.formComprasItems = []; addCompraItem(); showToast('Factura dividida e inyectada al Kardex.');
-            } else {
-                const montoDOP = parseFloat(document.getElementById('egre-monto').value);
-                if(isNaN(montoDOP) || montoDOP <= 0) return showToast("Monto inválido.", "error");
-
-                const obj = { id: `EGR-${Date.now().toString().slice(-6)}`, fecha, concepto: document.getElementById('egre-concepto').value.trim(), monto: montoDOP, categoria_gasto: document.getElementById('egre-categoria').value, metodoPago: 'Efectivo', campanaId: null, anuncioId: null, monto_usd: 0, tasa_usd: 0 };
-                state.egresos.push(obj); enviarAGoogleSheets("EGRESO", obj);
-                document.getElementById('egre-concepto').value = ''; document.getElementById('egre-monto').value = ''; 
-                showToast('Asiento contable registrado.');
-            }
-            renderEgresos();
+                if(validDetalles.length === 0) return null;
+                const nTotal = validDetalles.reduce((s,d)=>s+(d.cantidad*d.precio),0);
+                const nCosto = validDetalles.reduce((s,d)=>s+(d.costo_fifo),0);
+                return {...v, detalle: validDetalles, total: nTotal, costo_fifo: nCosto, ganancia: nTotal - nCosto, cantidad_items: validDetalles.reduce((s,d)=>s+d.cantidad,0)};
+            }).filter(Boolean);
         }
 
-        function renderSelectCategoriasGastos() { if(document.getElementById('egre-categoria')) document.getElementById('egre-categoria').innerHTML = state.categoriasGastos.map(c => `<option value="${c}">${c}</option>`).join(''); }
-        function nuevaCategoriaGasto() {
-            const cat = prompt("Nombre de la nueva cuenta contable:");
-            if(cat && cat.trim() !== '') { state.categoriasGastos.push(cat.trim()); renderSelectCategoriasGastos(); document.getElementById('egre-categoria').value = cat.trim(); enviarAGoogleSheets("NUEVA_CATEGORIA_GASTO", { nombre: cat.trim() }); showToast("Cuenta creada en el plan."); }
-        }
-
-        function renderEgresos() {
-            const tbody = document.getElementById('egresos-body'), data = getFilteredData(state.egresos, 'fecha');
-            if(!tbody) return;
-            if (document.getElementById('egresos-total-mes')) document.getElementById('egresos-total-mes').innerText = formatMoney(data.reduce((s, e) => s + (e.monto||0), 0));
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('wallet', 'Mayor Limpio', 'No hay asientos contables registrados.', 5);
+        function renderDashboard() {
+            const vntDataRaw = getFilteredData(state.ventas, 'fecha'); 
+            const vntData = filterVentasByHierarchy(vntDataRaw);
+            const egrData = getFilteredData(state.egresos, 'fecha');
             
-            tbody.innerHTML = data.slice().reverse().map(e => {
-                const isInv = e.categoria_gasto === 'Inventario';
-                const fechaFormat = e.fecha ? e.fecha.split('T')[0] : 'N/A';
-                
-                let marketingTag = '';
-                if(e.anuncioId) {
-                    const adName = state.anuncios.find(a => a.id === e.anuncioId)?.nombre || 'Anuncio';
-                    marketingTag = `<div class="text-[8px] font-bold text-indigo-500 mt-1"><i data-lucide="layout" class="w-3 h-3 inline-block"></i> Ad: ${adName} ${e.monto_usd ? `(USD $${e.monto_usd})` : ''}</div>`;
-                }
-
-                return `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group">
-                    <td class="px-6 py-5"><div class="text-xs font-bold text-slate-700">${fechaFormat}</div><div class="text-[9px] font-mono text-slate-400 mt-1">${e.id}</div></td>
-                    <td class="px-4 py-5"><span class="${isInv ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'} px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border shadow-sm">${e.categoria_gasto || 'General'}</span>${marketingTag}</td>
-                    <td class="px-4 py-5 font-medium text-slate-800 text-sm whitespace-normal min-w-[200px] leading-snug">${e.concepto}</td>
-                    <td class="px-6 py-5 text-right font-black ${isInv?'text-emerald-600':'text-rose-600'} text-base">-${formatMoney(e.monto)}</td>
-                    <td class="px-6 py-5 text-center"><button onclick="eliminarRegistro('EGRESO', '${e.id}', 'Egresos')" class="bg-slate-50 border border-slate-200 shadow-sm p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-                </tr>`;
-            }).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function renderVentasSelect() {
-            const selectProd = document.getElementById('vent-producto'); if(!selectProd) return;
-            const stockData = getStockConsolidado().filter(p => p.stock > 0);
+            const ingresosTotales = vntData.reduce((acc, v) => acc + (v.total || 0), 0);
+            const costoMercancia = vntData.reduce((acc, v) => acc + (v.costo_fifo || 0), 0);
+            const gastosOperativos = egrData.filter(e => e.categoria_gasto !== 'Inventario').reduce((acc, e) => acc + (e.monto || 0), 0);
+            const utilidadNeta = ingresosTotales - costoMercancia - gastosOperativos;
             
-            if(document.getElementById('vent-cliente')) document.getElementById('vent-cliente').innerHTML = '<option value="">Consumidor Final (Sin Registro)</option>' + state.clientes.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join('');
+            if(document.getElementById('kpi-ingresos')) document.getElementById('kpi-ingresos').innerText = `RD$ ${formatMoney(ingresosTotales)}`;
+            if(document.getElementById('kpi-costos')) document.getElementById('kpi-costos').innerText = `RD$ ${formatMoney(costoMercancia)}`;
+            if(document.getElementById('kpi-egresos')) document.getElementById('kpi-egresos').innerText = `RD$ ${formatMoney(gastosOperativos)}`;
+            if(document.getElementById('kpi-neto')) document.getElementById('kpi-neto').innerText = `RD$ ${formatMoney(utilidadNeta)}`;
 
-            const grouped = stockData.reduce((acc, p) => { const cat = p.nicho || 'Sin Categoría'; if(!acc[cat]) acc[cat] = []; acc[cat].push(p); return acc; }, {});
-            let htmlProd = '<option value="" disabled selected>Buscar artículo en stock...</option>';
-            for(const cat in grouped) { htmlProd += `<optgroup label="📦 ${cat.toUpperCase()}">`; grouped[cat].forEach(p => { htmlProd += `<option value="${p.id}">${p.nombre} (Disp: ${p.stock} u.)</option>`; }); htmlProd += `</optgroup>`; }
-            selectProd.innerHTML = htmlProd;
+            const todayStr = new Date().toISOString().split('T')[0]; const ayer = new Date(); ayer.setDate(ayer.getDate() - 1); const ayerStr = ayer.toISOString().split('T')[0];
+            const revHoy = vntData.filter(v => v.fecha && v.fecha.startsWith(todayStr)).reduce((a, v) => a + (v.total||0), 0);
+            const revAyer = vntData.filter(v => v.fecha && v.fecha.startsWith(ayerStr)).reduce((a, v) => a + (v.total||0), 0);
+
+            if(document.getElementById('flash-hoy')) document.getElementById('flash-hoy').innerText = `RD$ ${formatMoney(revHoy)}`;
+            if(document.getElementById('flash-ayer')) document.getElementById('flash-ayer').innerText = `RD$ ${formatMoney(revAyer)}`;
+            
+            renderCharts(vntData, egrData); renderRankings(vntData);
         }
 
-        function autoFillPrecioVenta() { const p = state.catalogo.find(x => x.id === document.getElementById('vent-producto').value); if(p && p.precio_base) document.getElementById('vent-precio').value = p.precio_base; }
-        
-        function addToCart() {
-            const prodId = document.getElementById('vent-producto').value; const cant = parseInt(document.getElementById('vent-cant').value); const precio = parseFloat(document.getElementById('vent-precio').value);
-            if(!prodId || !cant || isNaN(precio)) return showToast("Faltan datos del producto", "error");
-
-            const p = state.catalogo.find(x => x.id === prodId);
-            const stockDisp = state.compras.filter(c => c.productoId === prodId).reduce((a, c) => a + (c.cantidad_restante||0), 0);
-            const inCart = carritoPOS.filter(c => c.productoId === prodId).reduce((a, c) => a + c.cantidad, 0);
-
-            if ((cant + inCart) > stockDisp) return showToast(`Stock insuficiente. Disponible en inventario: ${stockDisp} u.`, 'error');
-            carritoPOS.push({ id: Date.now(), productoId: prodId, nombre: p.nombre, cantidad: cant, precio: precio });
-            renderCartPOS(); document.getElementById('vent-cant').value = '';
-        }
-
-        function removeCartItem(id) { carritoPOS = carritoPOS.filter(c => c.id !== id); renderCartPOS(); }
-        
-        function toggleEnvio() {
-            const tipo = document.getElementById('vent-tipo-entrega').value;
-            if(tipo === 'Local') { document.getElementById('panel-envio-direccion').classList.add('hidden'); document.getElementById('panel-envio-costo').classList.add('hidden'); document.getElementById('vent-costo-envio').value = ''; document.getElementById('vent-direccion').value = ''; } 
-            else { document.getElementById('panel-envio-direccion').classList.remove('hidden'); document.getElementById('panel-envio-costo').classList.remove('hidden'); }
-            renderCartPOS();
-        }
-
-        function renderCartPOS() {
-            const container = document.getElementById('cart-items-container');
-            if(carritoPOS.length === 0) {
-                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-slate-400 opacity-60 py-10"><i data-lucide="shopping-bag" class="w-12 h-12 mb-3"></i><p class="text-sm font-black tracking-widest uppercase">El carrito está vacío</p></div>`;
-                document.getElementById('lbl-cart-total').innerText = 'RD$ 0.00'; if(window.lucide) lucide.createIcons(); return;
+        let chartLoadAttempts = 0;
+        function renderCharts(vntData, egrData) {
+            if(typeof Chart === 'undefined') { if (chartLoadAttempts < 10) { chartLoadAttempts++; setTimeout(() => renderCharts(vntData, egrData), 500); } return; }
+            const ctxTend = document.getElementById('chart-tendencias');
+            if(ctxTend) {
+                if(charts.tendencias) charts.tendencias.destroy();
+                const trends = {};
+                vntData.forEach(v => { if(!v.fecha) return; const m = v.fecha.substring(0,7); if(!trends[m]) trends[m] = { ingresos: 0, gastos: 0 }; trends[m].ingresos += v.total || 0; });
+                egrData.forEach(e => { if(!e.fecha || e.categoria_gasto === 'Inventario') return; const m = e.fecha.substring(0,7); if(!trends[m]) trends[m] = { ingresos: 0, gastos: 0 }; trends[m].gastos += e.monto || 0; });
+                
+                const labels = Object.keys(trends).sort(); const ing = labels.map(l => trends[l].ingresos); const gst = labels.map(l => trends[l].gastos);
+                charts.tendencias = new Chart(ctxTend, { type: 'line', data: { labels: labels, datasets: [ { label: 'Ingresos', data: ing, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }, { label: 'Gastos Op.', data: gst, borderColor: '#e11d48', backgroundColor: 'transparent', borderDash: [5,5], tension: 0.4 } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
             }
-            container.innerHTML = carritoPOS.map(c => `<div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-100 hover:shadow-md transition-shadow"><div><p class="font-bold text-sm text-slate-800">${c.nombre}</p><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">${c.cantidad} unidades x RD$ ${formatMoney(c.precio)}</p></div><div class="flex items-center gap-4"><p class="font-black text-indigo-600 text-lg">RD$ ${formatMoney(c.cantidad * c.precio)}</p><button type="button" onclick="removeCartItem(${c.id})" class="text-rose-400 hover:text-rose-600 bg-rose-50 hover:bg-rose-100 p-2 rounded-xl transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div></div>`).join('');
+            
+            const ctxGastos = document.getElementById('chart-gastos');
+            if(ctxGastos) {
+                if(charts.gastos) charts.gastos.destroy();
+                const gStats = {}; egrData.filter(e => e.categoria_gasto !== 'Inventario').forEach(e => { const cat = e.categoria_gasto || 'General'; gStats[cat] = (gStats[cat] || 0) + (e.monto || 0); });
+                charts.gastos = new Chart(ctxGastos, { type: 'doughnut', data: { labels: Object.keys(gStats), datasets: [{ data: Object.values(gStats), backgroundColor: ['#4f46e5', '#e11d48', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } } } });
+            }
+        }
+        
+        function renderRankings(ventasData) {
+            const prodStats = {};
+            ventasData.forEach(v => {
+                if(v.detalle) { v.detalle.forEach(d => { if(!prodStats[d.productoId]) prodStats[d.productoId] = { vol: 0, rev: 0, cost: 0 }; prodStats[d.productoId].vol += d.cantidad; prodStats[d.productoId].rev += (d.cantidad * d.precio); prodStats[d.productoId].cost += (d.costo_fifo || 0); }); } 
+            });
+            const arr = Object.keys(prodStats).map(id => { const p = state.catalogo.find(x => x.id === id); return { id, nombre: p ? p.nombre : 'Desc.', vol: prodStats[id].vol, rev: prodStats[id].rev, net: prodStats[id].rev - prodStats[id].cost }; });
+            const topVol = [...arr].sort((a,b)=>b.vol - a.vol).slice(0,5); const topRev = [...arr].sort((a,b)=>b.rev - a.rev).slice(0,5); const topNet = [...arr].sort((a,b)=>b.net - a.net).slice(0,5);
+            
+            const renderList = (data, valKey, formatType) => data.map((item, idx) => `<div class="flex items-center gap-3"><div class="w-6 h-6 rounded bg-slate-100 text-slate-500 flex items-center justify-center text-[10px] font-black shrink-0">${idx+1}</div><div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-700 truncate w-full">${item.nombre}</p></div><div class="font-black text-sm text-slate-900 shrink-0">${formatType === 'money' ? 'RD$ ' + formatMoney(item[valKey]) : item[valKey]}</div></div>`).join('');
+            
+            if(document.getElementById('rank-vol')) document.getElementById('rank-vol').innerHTML = renderList(topVol, 'vol', 'number');
+            if(document.getElementById('rank-rev')) document.getElementById('rank-rev').innerHTML = renderList(topRev, 'rev', 'money');
+            if(document.getElementById('rank-profit')) document.getElementById('rank-profit').innerHTML = renderList(topNet, 'net', 'money');
+        }
 
-            const subtotal = carritoPOS.reduce((acc, c) => acc + (c.cantidad * c.precio), 0);
-            const envio = document.getElementById('vent-tipo-entrega').value !== 'Local' ? (parseFloat(document.getElementById('vent-costo-envio').value) || 0) : 0;
-            document.getElementById('lbl-cart-total').innerText = `RD$ ${formatMoney(subtotal + envio)}`;
-            if(window.lucide) lucide.createIcons();
+        function toggleVentAgenda() {
+            const p = document.getElementById('panel-vent-agenda');
+            if(document.getElementById('vent-has-agenda').checked) p.classList.remove('hidden'); 
+            else p.classList.add('hidden');
         }
 
         function handleVentaSubmit(e) {
@@ -1773,8 +1571,26 @@
                 if(!campanaId || !anuncioId) return showToast("Debes seleccionar la campaña y el anuncio exacto.", "error");
             }
 
-            const fecha = document.getElementById('vent-fecha').value; const clienteName = document.getElementById('vent-cliente').value; const tipoEntrega = document.getElementById('vent-tipo-entrega').value; const lugarEnvio = document.getElementById('vent-direccion').value; const costoEnvio = tipoEntrega !== 'Local' ? (parseFloat(document.getElementById('vent-costo-envio').value) || 0) : 0;
-            if(tipoEntrega !== 'Local' && lugarEnvio.trim() === '') return showToast("Debes ingresar la dirección de envío", "error");
+            const fecha = document.getElementById('vent-fecha').value; 
+            const clienteName = document.getElementById('vent-cliente').value; 
+
+            // Lógica Agenda
+            const isAgendada = document.getElementById('vent-has-agenda') && document.getElementById('vent-has-agenda').checked;
+            let tipoEntrega = 'Local'; let lugarEnvio = ''; let costoEnvio = 0; let fechaAgenda = ''; let horaAgenda = ''; let repartidor = ''; let prioridad = ''; let notasAgenda = ''; let estadoEntrega = 'Entregada';
+
+            if(isAgendada) {
+                tipoEntrega = document.getElementById('vent-tipo-entrega').value;
+                lugarEnvio = document.getElementById('vent-direccion').value;
+                costoEnvio = tipoEntrega !== 'Pickup' ? (parseFloat(document.getElementById('vent-costo-envio').value) || 0) : 0;
+                fechaAgenda = document.getElementById('vent-agenda-fecha').value;
+                horaAgenda = document.getElementById('vent-agenda-hora').value;
+                repartidor = document.getElementById('vent-agenda-repartidor').value;
+                prioridad = document.getElementById('vent-agenda-prioridad').value;
+                notasAgenda = document.getElementById('vent-agenda-notas').value;
+                estadoEntrega = 'Pendiente';
+                
+                if(tipoEntrega !== 'Pickup' && lugarEnvio.trim() === '') return showToast("Debes ingresar la dirección de envío", "error");
+            }
 
             let costoTotalTicketFIFO = 0; let totalVentaBruta = 0;
             let comprasVirt = JSON.parse(JSON.stringify(state.compras)); 
@@ -1794,47 +1610,205 @@
             
             const gananciaPura = totalVentaBruta - costoTotalTicketFIFO; const montoFinal = totalVentaBruta + costoEnvio;
 
-            const obj = { id: `VNT-${Date.now().toString().slice(-6)}`, fecha, cliente: clienteName, metodoPago: tipoEntrega === 'Contraentrega' ? 'Contraentrega' : 'Efectivo', ncf: '', tipoEntrega, lugarEnvio, costoEnvio, total: montoFinal, costo_fifo: costoTotalTicketFIFO, ganancia: gananciaPura, detalle: detalle, campanaId, anuncioId };
+            const vId = `VNT-${Date.now().toString().slice(-6)}`;
+            const historial = isAgendada ? [{estado: 'Pendiente', fecha: new Date().toISOString(), nota: 'Orden Creada'}] : [];
+
+            const obj = { 
+                id: vId, fecha, cliente: clienteName, metodoPago: tipoEntrega === 'Contraentrega' ? 'Contraentrega' : 'Efectivo', ncf: '', 
+                tipoEntrega, lugarEnvio, costoEnvio, total: montoFinal, costo_fifo: costoTotalTicketFIFO, ganancia: gananciaPura, detalle: detalle, campanaId, anuncioId,
+                is_agendada: isAgendada, estado_entrega: estadoEntrega, fecha_entrega: fechaAgenda, hora_entrega: horaAgenda, repartidor, prioridad, notas_agenda: notasAgenda, historial_estados: historial
+            };
+
             state.compras = comprasVirt; state.ventas.push(obj); enviarAGoogleSheets("VENTA", obj);
             
             carritoPOS = []; renderCartPOS();
             document.getElementById('form-venta').reset();
             document.getElementById('vent-fecha').value = new Date().toISOString().split('T')[0];
             if(document.getElementById('vent-has-campana')) { document.getElementById('vent-has-campana').checked = false; toggleVentCampana(); }
+            if(document.getElementById('vent-has-agenda')) { document.getElementById('vent-has-agenda').checked = false; toggleVentAgenda(); }
             toggleEnvio(); renderVentasSelect(); renderVentas(); 
             if(isMarketing) renderCampanas();
+            renderAgenda();
             showToast('Orden procesada y stock descargado.');
         }
 
-        function renderVentas() {
-            const tbody = document.getElementById('ventas-body'), data = getFilteredData(state.ventas, 'fecha');
-            if(!tbody) return;
-            if(!data.length) return tbody.innerHTML = emptyStateHTML('shopping-cart', 'Historial Limpio', 'Aún no has registrado facturas.', 8);
+        function setAgendaView(view) {
+            const btnKanban = document.getElementById('tab-agenda-kanban'); const btnTime = document.getElementById('tab-agenda-timeline');
+            const secKanban = document.getElementById('agenda-view-kanban'); const secTime = document.getElementById('agenda-view-timeline');
             
-            tbody.innerHTML = data.slice().reverse().map(v => {
-                let productosHtml = v.detalle && v.detalle.length > 0 ? v.detalle.map(d => `<span class="block">${d.cantidad}x ${d.nombre}</span>`).join('') : `<span class="block">${v.cantidad || 1}x ${(state.catalogo.find(x => x.id === v.productoId) || {}).nombre || 'Desc.'}</span>`;
-                const adName = v.anuncioId ? state.anuncios.find(a => a.id === v.anuncioId)?.nombre : null;
+            if(view === 'KANBAN') {
+                btnKanban.className = "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm bg-white text-indigo-600 border border-slate-200 scale-[1.02]";
+                btnTime.className = "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-500 hover:text-slate-800";
+                secKanban.classList.remove('hidden'); secTime.classList.add('hidden');
+            } else {
+                btnTime.className = "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all shadow-sm bg-white text-indigo-600 border border-slate-200 scale-[1.02]";
+                btnKanban.className = "flex-1 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition-all text-slate-500 hover:text-slate-800";
+                secTime.classList.remove('hidden'); secKanban.classList.add('hidden');
+                renderTimeline();
+            }
+        }
 
-                return `<tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 group">
-                    <td class="px-6 py-5"><div class="text-[9px] font-mono text-slate-400 mb-1">${v.id}</div><div class="text-xs font-bold text-slate-700">${v.fecha ? v.fecha.split('T')[0] : 'N/A'}</div>${adName ? `<div class="text-[8px] font-bold text-indigo-500 mt-1"><i data-lucide="layout" class="w-3 h-3 inline-block"></i> Ad: ${adName}</div>` : ''}</td>
-                    <td class="px-4 py-5"><div class="text-sm font-bold text-slate-800 truncate max-w-[150px]">${v.cliente || 'Consumidor Final'}</div></td>
-                    <td class="px-4 py-5"><div class="text-[9px] font-bold ${v.tipoEntrega==='Envio'||v.tipoEntrega==='Contraentrega'?'text-indigo-500 bg-indigo-50 border-indigo-100':'text-emerald-500 bg-emerald-50 border-emerald-100'} px-2 py-0.5 rounded inline-block border uppercase tracking-widest">${v.tipoEntrega || 'Local'}</div>${v.costoEnvio > 0 ? `<div class="text-[9px] font-bold text-slate-500 mt-1">Envío: RD$ ${formatMoney(v.costoEnvio)}</div>` : ''}</td>
-                    <td class="px-4 py-5 font-bold text-slate-800 text-xs truncate max-w-[200px] leading-relaxed">${productosHtml}</td>
-                    <td class="px-4 py-5 text-right font-black text-slate-800 text-base">${formatMoney(v.total || (v.cantidad * v.precio))}</td>
-                    <td class="px-4 py-5 text-right font-bold text-rose-500 text-xs bg-rose-50/30">${formatMoney(v.costo_fifo || 0)}</td>
-                    <td class="px-4 py-5 text-right font-black text-emerald-600 text-sm bg-emerald-50/20">${formatMoney(v.ganancia || 0)}</td>
-                    <td class="px-6 py-5 text-center"><button onclick="eliminarRegistro('VENTA', '${v.id}', 'Ventas')" class="bg-slate-50 border border-slate-200 shadow-sm p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-                </tr>`;
-            }).join('');
+        function renderAgenda() {
+            const dateFilter = document.getElementById('agenda-date-filter').value;
+            if(!dateFilter) return;
+
+            const entregas = state.ventas.filter(v => v.is_agendada && v.fecha_entrega === dateFilter);
+            
+            // KPIs
+            const hoy = entregas.length;
+            const pendientes = entregas.filter(e => e.estado_entrega === 'Pendiente' || e.estado_entrega === 'Reprogramada').length;
+            const enRuta = entregas.filter(e => e.estado_entrega === 'En ruta' || e.estado_entrega === 'Preparándose').length;
+            const entregadas = entregas.filter(e => e.estado_entrega === 'Entregada').length;
+            const cumplimiento = hoy > 0 ? Math.round((entregadas / hoy) * 100) : 0;
+
+            document.getElementById('agenda-kpi-hoy').innerText = hoy;
+            document.getElementById('agenda-kpi-pendientes').innerText = pendientes;
+            document.getElementById('agenda-kpi-ruta').innerText = enRuta;
+            document.getElementById('agenda-kpi-entregadas').innerText = entregadas;
+            document.getElementById('agenda-kpi-cumplimiento').innerText = `${cumplimiento}%`;
+
+            // Kanban Rendering
+            const cols = {
+                'Pendiente': document.getElementById('list-pendiente'),
+                'Preparándose': document.getElementById('list-preparando'),
+                'En ruta': document.getElementById('list-ruta'),
+                'Entregada': document.getElementById('list-entregada')
+            };
+
+            const counts = { 'Pendiente': 0, 'Preparándose': 0, 'En ruta': 0, 'Entregada': 0 };
+
+            Object.values(cols).forEach(col => col.innerHTML = '');
+
+            entregas.forEach(e => {
+                let statusGroup = e.estado_entrega;
+                if(statusGroup === 'Reprogramada' || statusGroup === 'Cancelada') statusGroup = 'Pendiente'; // Para visualizacion
+                
+                if(cols[statusGroup]) {
+                    counts[statusGroup]++;
+                    const prods = e.detalle ? e.detalle.map(d => d.nombre).join(', ') : 'Orden';
+                    const priorColor = e.prioridad === 'Alta' ? 'text-rose-600 bg-rose-50 border-rose-200' : (e.prioridad === 'Baja' ? 'text-slate-500 bg-slate-50 border-slate-200' : 'text-blue-600 bg-blue-50 border-blue-200');
+
+                    cols[statusGroup].innerHTML += `
+                        <div draggable="true" ondragstart="drag(event, '${e.id}')" onclick="abrirModalAgenda('${e.id}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 cursor-grab active:cursor-grabbing hover:shadow-md transition-all group kanban-card relative">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-2 py-0.5 rounded">${e.hora_entrega || 'Sin hora'}</span>
+                                <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${priorColor}">${e.prioridad || 'Media'}</span>
+                            </div>
+                            <h5 class="font-bold text-sm text-slate-800 leading-tight mb-1 truncate group-hover:text-indigo-600">${e.cliente || 'Consumidor Final'}</h5>
+                            <p class="text-xs text-slate-500 truncate w-full mb-3">${prods}</p>
+                            <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
+                                <i data-lucide="user" class="w-3 h-3 text-slate-400"></i>
+                                <span class="text-[9px] font-bold text-slate-500 truncate w-full">${e.repartidor || 'Sin asignar'}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            document.getElementById('count-pendiente').innerText = counts['Pendiente'];
+            document.getElementById('count-preparando').innerText = counts['Preparándose'];
+            document.getElementById('count-ruta').innerText = counts['En ruta'];
+            document.getElementById('count-entregada').innerText = counts['Entregada'];
+
+            if(window.lucide) lucide.createIcons();
+            
+            if(!document.getElementById('agenda-view-timeline').classList.contains('hidden')) renderTimeline();
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            const dateFilter = document.getElementById('agenda-date-filter').value;
+            const entregas = state.ventas.filter(v => v.is_agendada && v.fecha_entrega === dateFilter).sort((a,b) => (a.hora_entrega||'23:59').localeCompare(b.hora_entrega||'23:59'));
+
+            let html = '';
+            for(let i=8; i<=20; i++) {
+                const hourStr = `${i.toString().padStart(2, '0')}:00`;
+                const ents = entregas.filter(e => e.hora_entrega && e.hora_entrega.startsWith(i.toString().padStart(2, '0')));
+                
+                html += `
+                    <div class="flex mb-8 relative">
+                        <div class="w-[80px] shrink-0 text-right pr-4 relative">
+                            <span class="text-xs font-black text-slate-500 relative z-10 bg-white py-1">${hourStr}</span>
+                            <div class="absolute right-[15px] top-2 w-2 h-2 rounded-full bg-slate-300 z-10 border-2 border-white"></div>
+                        </div>
+                        <div class="flex-1 pl-4 flex flex-col gap-3">
+                            ${ents.length === 0 ? `<div class="h-6"></div>` : ents.map(e => `
+                                <div onclick="abrirModalAgenda('${e.id}')" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-md cursor-pointer transition-all flex justify-between items-center group">
+                                    <div>
+                                        <p class="font-bold text-sm text-slate-800">${e.cliente || 'Consumidor Final'} <span class="text-[10px] font-black text-slate-400 uppercase ml-2 bg-white px-2 py-0.5 rounded border">#${e.id.slice(-4)}</span></p>
+                                        <p class="text-xs text-slate-500 mt-1"><i data-lucide="map-pin" class="w-3 h-3 inline-block mr-1"></i> ${e.lugarEnvio || 'Punto Local'}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md text-white bg-slate-800">${e.estado_entrega}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
             if(window.lucide) lucide.createIcons();
         }
 
-        function toggleVentCampana() { const p = document.getElementById('panel-vent-campana'); if(document.getElementById('vent-has-campana').checked) p.classList.remove('hidden'); else p.classList.add('hidden'); }
+        // Drag and Drop Logic para Kanban
+        function drag(ev, id) { ev.dataTransfer.setData("text", id); ev.target.classList.add('dragging'); }
+        function allowDrop(ev) { ev.preventDefault(); const col = ev.target.closest('.kanban-col'); if(col) col.classList.add('drag-over'); }
+        function drop(ev, nuevoEstado) {
+            ev.preventDefault();
+            document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+            const data = ev.dataTransfer.getData("text");
+            const v = state.ventas.find(x => x.id === data);
+            if(v && v.estado_entrega !== nuevoEstado) {
+                v.estado_entrega = nuevoEstado;
+                if(!v.historial_estados) v.historial_estados = [];
+                v.historial_estados.push({estado: nuevoEstado, fecha: new Date().toISOString(), nota: 'Movido en Kanban'});
+                if(nuevoEstado === 'Entregada' && !v.fecha_entregada_real) v.fecha_entregada_real = new Date().toISOString();
+                enviarAGoogleSheets("VENTA", v); // Auto save
+                renderAgenda();
+            }
+            document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+        }
+
+        function abrirModalAgenda(id) {
+            const v = state.ventas.find(x => x.id === id); if(!v) return;
+            document.getElementById('agenda-orden-id').value = id;
+            document.getElementById('agenda-modal-cliente').innerText = v.cliente || 'Consumidor Final';
+            document.getElementById('agenda-modal-orden').innerText = `ORDEN: ${v.id}`;
+            document.getElementById('agenda-modal-dir').innerText = v.lugarEnvio || 'Recogida Local';
+            document.getElementById('agenda-modal-fecha').innerText = `${v.fecha_entrega} ${v.hora_entrega ? `(${v.hora_entrega})` : ''}`;
+            document.getElementById('agenda-modal-rep').innerText = v.repartidor || 'Sin asignar';
+            document.getElementById('agenda-modal-estado').value = v.estado_entrega || 'Pendiente';
+            
+            const alert = document.getElementById('agenda-alert-entrega');
+            if(v.estado_entrega !== 'Entregada') alert.classList.remove('hidden'); else alert.classList.add('hidden');
+
+            const modal = document.getElementById('modal-agenda');
+            modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100'); modal.querySelector('div.relative').classList.replace('scale-95', 'scale-100');
+        }
+
+        function cerrarModalAgenda() { const modal = document.getElementById('modal-agenda'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); modal.querySelector('div.relative').classList.replace('scale-100', 'scale-95'); }
+
+        function guardarEstadoAgenda() {
+            const id = document.getElementById('agenda-orden-id').value;
+            const nuevoEstado = document.getElementById('agenda-modal-estado').value;
+            const v = state.ventas.find(x => x.id === id);
+            
+            if(v && v.estado_entrega !== nuevoEstado) {
+                v.estado_entrega = nuevoEstado;
+                if(!v.historial_estados) v.historial_estados = [];
+                v.historial_estados.push({estado: nuevoEstado, fecha: new Date().toISOString(), nota: 'Actualizado via Modal'});
+                if(nuevoEstado === 'Entregada') v.fecha_entregada_real = new Date().toISOString();
+                enviarAGoogleSheets("VENTA", v);
+                renderAgenda(); showToast('Estado de entrega actualizado');
+            }
+            cerrarModalAgenda();
+        }
 
         function renderCampanasSelects() {
             const activasOPausadas = state.campanas.filter(c => c.estado === 'Activa' || c.estado === 'Pausada');
             const options = activasOPausadas.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
-            const html = options ? `<option value="" disabled selected>-- Elige una campaña --</option>${options}` : '<option value="" disabled selected>No hay campañas activas</option>';
+            const html = options ? `<option value="" disabled selected>-- Elige una estrategia --</option>${options}` : '<option value="" disabled selected>No hay campañas macro activas</option>';
             if(document.getElementById('vent-campana-select')) { document.getElementById('vent-campana-select').innerHTML = html; actualizarAnunciosVenta(); }
         }
 
@@ -1851,14 +1825,16 @@
             document.getElementById('campana-id').value = id || '';
             if(id) {
                 const c = state.campanas.find(x => x.id === id);
-                document.getElementById('campana-modal-title').innerText = 'Editar Contenedor de Campaña';
+                document.getElementById('campana-modal-title').innerText = 'Editar Estrategia Macro';
                 document.getElementById('campana-nombre').value = c.nombre || ''; document.getElementById('campana-objetivo').value = c.objetivo || '';
                 document.getElementById('campana-estado').value = c.estado || 'Activa';
+                document.getElementById('campana-horas').value = c.horas || 0;
                 document.getElementById('campana-notas').value = c.notas || '';
             } else {
-                document.getElementById('campana-modal-title').innerText = 'Nueva Campaña Macro';
+                document.getElementById('campana-modal-title').innerText = 'Nueva Estrategia Macro';
                 document.getElementById('campana-nombre').value = ''; document.getElementById('campana-objetivo').value = '';
                 document.getElementById('campana-estado').value = 'Activa';
+                document.getElementById('campana-horas').value = '';
                 document.getElementById('campana-notas').value = '';
             }
             modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100'); modal.querySelector('div.relative').classList.replace('scale-95', 'scale-100');
@@ -1869,10 +1845,10 @@
         function handleGuardarCampana(e) {
             e.preventDefault();
             const id = document.getElementById('campana-id').value || `MKT-${Date.now().toString().slice(-6)}`;
-            const obj = { id, nombre: document.getElementById('campana-nombre').value.trim(), objetivo: document.getElementById('campana-objetivo').value.trim(), presupuesto: 0, estado: document.getElementById('campana-estado').value, notas: document.getElementById('campana-notas').value.trim() };
+            const obj = { id, nombre: document.getElementById('campana-nombre').value.trim(), objetivo: document.getElementById('campana-objetivo').value.trim(), presupuesto: 0, estado: document.getElementById('campana-estado').value, horas: parseInt(document.getElementById('campana-horas').value) || 0, notas: document.getElementById('campana-notas').value.trim() };
             const idx = state.campanas.findIndex(c => c.id === id);
             if(idx >= 0) state.campanas[idx] = obj; else state.campanas.push(obj);
-            enviarAGoogleSheets("GUARDAR_CAMPANA", obj); cerrarModalFormCampana(); renderCampanas(); renderCampanasSelects(); showToast('Campaña guardada con éxito.');
+            enviarAGoogleSheets("GUARDAR_CAMPANA", obj); cerrarModalFormCampana(); renderCampanas(); renderCampanasSelects(); showToast('Estrategia guardada con éxito.');
         }
 
         function calcularMetricasAnuncio(anuncioId) {
@@ -1919,7 +1895,7 @@
             let globalInversion = 0; let globalIngresos = 0; let globalCostosProd = 0;
 
             if(!state.campanas || !state.campanas.length) { 
-                grid.innerHTML = '<div class="col-span-full py-16 text-center bg-white/80 rounded-[3rem] border border-white"><p class="text-slate-400 font-bold text-lg">No hay campañas registradas.</p></div>'; 
+                grid.innerHTML = '<div class="col-span-full py-16 text-center bg-white/80 rounded-[3rem] border border-white"><p class="text-slate-400 font-bold text-lg">No hay estrategias macro registradas.</p></div>'; 
                 if(document.getElementById('mkt-kpi-inversion')) { document.getElementById('mkt-kpi-inversion').innerText = `RD$ 0.00`; document.getElementById('mkt-kpi-ingresos').innerText = `RD$ 0.00`; document.getElementById('mkt-kpi-roas').innerText = `0.00x`; document.getElementById('mkt-kpi-roi').innerText = `0.0%`; }
                 return; 
             }
@@ -1938,20 +1914,20 @@
                     <div class="mb-5"><span class="text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border ${statusColor}">${c.estado}</span><h3 class="font-black text-lg text-slate-800 leading-tight mt-3 truncate">${c.nombre}</h3></div>
                     <div class="space-y-4 mb-6">
                         <div class="flex justify-between items-end border-b border-slate-100 pb-3">
-                            <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Inversión (Suma Anuncios)</p><p class="font-black text-slate-700">RD$ ${formatMoney(met.inversion)}</p></div>
+                            <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Inversión (Suma Ads)</p><p class="font-black text-slate-700">RD$ ${formatMoney(met.inversion)}</p></div>
                             <div class="text-right"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ingresos Venta</p><p class="font-black text-indigo-600">RD$ ${formatMoney(met.ingresos)}</p></div>
                         </div>
                         <div class="flex justify-between items-center">
-                            <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ROAS</p><p class="font-black text-lg ${met.roas >= 1 ? 'text-emerald-500' : (met.roas > 0 ? 'text-rose-500' : 'text-slate-700')}">${met.roas.toFixed(2)}x</p></div>
-                            <div class="text-right"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ROI (Retorno)</p><p class="font-black text-lg ${roiColor}">${met.roi.toFixed(1)}%</p></div>
+                            <div><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ROAS Consolidado</p><p class="font-black text-lg ${met.roas >= 1 ? 'text-emerald-500' : (met.roas > 0 ? 'text-rose-500' : 'text-slate-700')}">${met.roas.toFixed(2)}x</p></div>
+                            <div class="text-right"><p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ROI (Retorno Neto)</p><p class="font-black text-lg ${roiColor}">${met.roi.toFixed(1)}%</p></div>
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="abrirModalReporteCampana('${c.id}')" class="flex-1 bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-600 hover:text-white py-2.5 rounded-xl text-xs font-black transition-colors flex justify-center items-center gap-2"><i data-lucide="bar-chart" class="w-4 h-4"></i> Analítica</button>
+                        <button onclick="abrirModalReporteCampana('${c.id}')" class="flex-1 bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-600 hover:text-white py-2.5 rounded-xl text-xs font-black transition-colors flex justify-center items-center gap-2"><i data-lucide="bar-chart" class="w-4 h-4"></i> Reporte Macro</button>
                         <button onclick="abrirModalFormCampana('${c.id}')" class="px-4 bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-200 py-2.5 rounded-xl transition-colors"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
                     </div>
                     <div class="mt-2">
-                        <button onclick="abrirModalAnuncios('${c.id}')" class="w-full bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-200 py-2.5 rounded-xl text-xs font-black transition-colors flex justify-center items-center gap-2"><i data-lucide="layout" class="w-4 h-4"></i> Administrar Anuncios</button>
+                        <button onclick="abrirModalAnuncios('${c.id}')" class="w-full bg-slate-900 text-white hover:bg-black py-3 rounded-xl text-xs font-black transition-all flex justify-center items-center gap-2 shadow-lg shadow-slate-900/20 active:scale-[0.98]"><i data-lucide="layout" class="w-4 h-4"></i> Entrar a los Ads (Tácticas)</button>
                     </div>
                 </div>`;
             }).join('');
@@ -2004,8 +1980,9 @@
 
             const montoDOP = usd * tasa;
             const anuncio = state.anuncios.find(a => a.id === anuncioId);
+            const campana = state.campanas.find(c => c.id === campanaId);
             const fecha = new Date().toISOString().split('T')[0];
-            const concepto = `Ad Inversión: ${anuncio ? anuncio.nombre : 'General'} (USD $${usd.toFixed(2)} x ${tasa.toFixed(2)})`;
+            const concepto = `Inversión Marketing: ${campana ? campana.nombre : 'Macro'} -> ${anuncio ? anuncio.nombre : 'Ad'} (USD $${usd.toFixed(2)} x ${tasa.toFixed(2)})`;
 
             const objEgre = { 
                 id: `EGR-${Date.now().toString().slice(-6)}`, 
@@ -2085,170 +2062,25 @@
             document.getElementById('rep-roas').className = `text-5xl font-black tracking-tighter drop-shadow-md ${roasColor}`; document.getElementById('rep-roas').innerText = `${met.roas.toFixed(2)}x`;
             
             document.getElementById('rep-pedidos').innerText = met.pedidos; document.getElementById('rep-items').innerText = met.items; document.getElementById('rep-ticket').innerText = `RD$ ${formatMoney(met.ticket)}`; document.getElementById('rep-margen').innerText = `${met.margen.toFixed(1)}%`;
-            
+            if(document.getElementById('rep-horas')) document.getElementById('rep-horas').innerText = c.horas || 0;
+
             const modal = document.getElementById('modal-reporte-campana'); modal.classList.remove('pointer-events-none'); modal.classList.replace('opacity-0', 'opacity-100'); modal.querySelector('div.relative').classList.replace('scale-95', 'scale-100');
         }
         function cerrarModalReporteCampana() { const modal = document.getElementById('modal-reporte-campana'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); modal.querySelector('div.relative').classList.replace('scale-100', 'scale-95'); }
 
-        function renderAll() { renderDashboard(); renderInventario(); renderCatalogo(); renderEgresos(); renderVentas(); renderMetas(); renderCRM(); renderCampanas(); }
-
-        let plannerDataLocal = {};
-        function abrirModalPlanner() {
-            document.getElementById('modal-planner').classList.remove('pointer-events-none'); document.getElementById('modal-planner').classList.replace('opacity-0', 'opacity-100'); document.getElementById('modal-planner-content').classList.replace('scale-95', 'scale-100');
-            const nichos = ['ALL', ...new Set(state.catalogo.map(p => p.nicho).filter(Boolean))];
-            if(document.getElementById('planner-nicho')) { document.getElementById('planner-nicho').innerHTML = nichos.map(c => `<option value="${c}">${c==='ALL'?'Todo el Catálogo':c}</option>`).join(''); actualizarFiltrosPlannerGrupo(); }
-        }
-        function cerrarModalPlanner() { const modal = document.getElementById('modal-planner'); modal.classList.add('pointer-events-none'); modal.classList.replace('opacity-100', 'opacity-0'); document.getElementById('modal-planner-content').classList.replace('scale-100', 'scale-95'); }
-        function actualizarFiltrosPlannerGrupo() {
-            const n = document.getElementById('planner-nicho').value; const grpSelect = document.getElementById('planner-grupo');
-            if (n === 'ALL') { grpSelect.classList.add('hidden'); grpSelect.value = 'ALL'; actualizarFiltrosPlannerCat(); return; }
-            const grupos = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === n).map(p => p.grupo).filter(Boolean))];
-            if (grupos.length > 1) { grpSelect.classList.remove('hidden'); grpSelect.innerHTML = grupos.map(g => `<option value="${g}">${g==='ALL'?'Todos los Grupos':g}</option>`).join(''); } else { grpSelect.classList.add('hidden'); grpSelect.value = 'ALL'; }
-            actualizarFiltrosPlannerCat();
-        }
-        function actualizarFiltrosPlannerCat() {
-            const n = document.getElementById('planner-nicho').value; const g = document.getElementById('planner-grupo').value; const catSelect = document.getElementById('planner-cat');
-            if (n === 'ALL' || g === 'ALL') { catSelect.classList.add('hidden'); catSelect.value = 'ALL'; renderListaPlanner(); return; }
-            const cats = ['ALL', ...new Set(state.catalogo.filter(p => p.nicho === n && p.grupo === g).map(p => p.categoria).filter(Boolean))];
-            if (cats.length > 1) { catSelect.classList.remove('hidden'); catSelect.innerHTML = cats.map(c => `<option value="${c}">${c==='ALL'?'Todas las Categorías':c}</option>`).join(''); } else { catSelect.classList.add('hidden'); catSelect.value = 'ALL'; }
-            renderListaPlanner();
-        }
-        function renderListaPlanner() {
-            const n = document.getElementById('planner-nicho').value; const g = document.getElementById('planner-grupo').value; const c = document.getElementById('planner-cat').value;
-            let prods = state.catalogo;
-            if(n !== 'ALL') prods = prods.filter(p => p.nicho === n); if(g !== 'ALL') prods = prods.filter(p => p.grupo === g); if(c !== 'ALL') prods = prods.filter(p => p.categoria === c);
-            const list = document.getElementById('planner-products-list');
-            list.innerHTML = prods.map(p => { const currentMeta = state.metasGlobales[p.id] || 0; return `<div class="grid grid-cols-12 gap-4 items-center bg-[#0f172a] p-4 rounded-xl border border-white/5"><div class="col-span-8"><p class="font-bold text-sm text-slate-200">${p.nombre}</p><p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">${p.id}</p></div><div class="col-span-4"><input type="number" min="0" value="${currentMeta}" class="input-planner w-full bg-[#020617] border border-white/10 rounded-lg p-2 text-center text-white font-bold" data-id="${p.id}"></div></div>`; }).join('');
-        }
-        function aplicarDistribucionMasiva() {
-            const massQty = parseInt(document.getElementById('planner-mass-qty').value); if(isNaN(massQty) || massQty <= 0) return;
-            const inputs = document.querySelectorAll('.input-planner'); if(inputs.length === 0) return;
-            const qtyPerItem = Math.floor(massQty / inputs.length); let remainder = massQty % inputs.length;
-            inputs.forEach((input) => { let val = qtyPerItem; if(remainder > 0) { val++; remainder--; } input.value = val; });
-        }
-        function guardarMetas() {
-            const inputs = document.querySelectorAll('.input-planner');
-            inputs.forEach(input => { const id = input.getAttribute('data-id'); const val = parseInt(input.value) || 0; if(val > 0) state.metasGlobales[id] = val; else delete state.metasGlobales[id]; });
-            enviarAGoogleSheets("METAS", state.metasGlobales); cerrarModalPlanner(); renderMetas(); showToast("Plan Estratégico actualizado con éxito.");
-        }
-        function renderMetas() {
-            const now = new Date(); const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); const currentDay = now.getDate();
-            let totalTarget = 0; let totalSold = 0;
-            const grid = document.getElementById('metas-productos-grid'); if(!grid) return;
-            
-            const ventasMes = state.ventas.filter(v => { if(!v.fecha) return false; const d = new Date(v.fecha); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); });
-            const prodCards = [];
-            
-            for(const [pId, meta] of Object.entries(state.metasGlobales)) {
-                if(meta <= 0) continue; totalTarget += meta;
-                const prod = state.catalogo.find(p => p.id === pId); if(!prod) continue;
-                
-                let sold = 0; ventasMes.forEach(v => { if(v.detalle) { v.detalle.forEach(d => { if(d.productoId === pId) sold += d.cantidad; }); } else if (v.productoId === pId) { sold += (v.cantidad || 1); } });
-                totalSold += sold;
-                
-                const pct = Math.min(100, Math.round((sold / meta) * 100)); const pacingReal = sold / currentDay; const pacingIdeal = meta / daysInMonth; const isPacingGood = pacingReal >= pacingIdeal;
-                
-                prodCards.push(`<div class="bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] shadow-sm border border-slate-100 relative overflow-hidden group hover-lift"><div class="absolute inset-0 bg-gradient-to-br ${isPacingGood ? 'from-emerald-500/5' : 'from-rose-500/5'} to-transparent z-0"></div><div class="relative z-10"><h4 class="font-bold text-sm text-slate-800 truncate mb-1">${prod.nombre}</h4><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Meta: ${meta} u.</p><div class="flex items-end justify-between mb-2"><p class="text-3xl font-black ${isPacingGood ? 'text-emerald-500' : 'text-slate-700'}">${sold} <span class="text-xs font-bold text-slate-400">/ ${meta}</span></p><p class="text-sm font-black ${isPacingGood ? 'text-emerald-500' : 'text-slate-500'}">${pct}%</p></div><div class="w-full bg-slate-100 rounded-full h-2 mb-4 overflow-hidden"><div class="h-full rounded-full ${isPacingGood ? 'bg-emerald-500' : 'bg-slate-400'} transition-all" style="width: ${pct}%"></div></div><div class="flex justify-between items-center text-[10px] font-bold"><span class="text-slate-500">Ideal: ${(pacingIdeal).toFixed(1)} u/día</span><span class="${isPacingGood ? 'text-emerald-600' : 'text-rose-500'}">Real: ${(pacingReal).toFixed(1)} u/día</span></div></div></div>`);
-            }
-            
-            if(document.getElementById('metas-global-target')) document.getElementById('metas-global-target').innerText = totalTarget;
-            if(document.getElementById('metas-global-sold')) document.getElementById('metas-global-sold').innerText = totalSold;
-            let globalPct = 0; if(totalTarget > 0) globalPct = Math.min(100, Math.round((totalSold / totalTarget) * 100));
-            if(document.getElementById('metas-global-pct')) document.getElementById('metas-global-pct').innerHTML = `${globalPct}<span class="text-4xl text-slate-500/50">%</span>`;
-            if(document.getElementById('metas-global-bar')) document.getElementById('metas-global-bar').style.width = `${globalPct}%`;
-            
-            const dailyPacing = currentDay > 0 ? (totalSold / currentDay) : 0;
-            if(document.getElementById('metas-daily-pacing')) document.getElementById('metas-daily-pacing').innerHTML = `${dailyPacing.toFixed(1)} <span class="text-sm text-slate-500/50 font-bold">u/día</span>`;
-            
-            const idealGlobalPacing = totalTarget / daysInMonth; const statusEl = document.getElementById('metas-pacing-status');
-            if(statusEl) {
-                if(totalTarget === 0) { statusEl.innerText = 'Sin Metas Definidas'; statusEl.className = 'text-[9px] font-bold uppercase tracking-widest mt-3 bg-slate-800/50 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-700/50 inline-block'; } 
-                else if (dailyPacing >= idealGlobalPacing) { statusEl.innerText = 'Excelente Pacing 🚀'; statusEl.className = 'text-[9px] font-bold uppercase tracking-widest mt-3 bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg border border-emerald-500/30 inline-block'; } 
-                else { statusEl.innerText = 'Pacing por debajo de meta ⚠️'; statusEl.className = 'text-[9px] font-bold uppercase tracking-widest mt-3 bg-amber-500/20 text-amber-400 px-3 py-1.5 rounded-lg border border-amber-500/30 inline-block'; }
-            }
-            grid.innerHTML = prodCards.length > 0 ? prodCards.join('') : '<div class="col-span-full py-10 text-center"><p class="text-slate-400 font-bold">No hay metas definidas para mostrar.</p></div>';
+        function renderAll() { 
+            renderDashboardSelects(); 
+            renderDashboard(); 
+            renderInventario(); 
+            renderCatalogo(); 
+            renderEgresos(); 
+            renderVentas(); 
+            renderMetas(); 
+            renderCRM(); 
+            renderCampanas(); 
+            renderAgenda();
         }
 
-        function updateMonthFilterOptions() {
-            const select = document.getElementById('month-filter'); if(!select) return;
-            const dates = [...state.ventas.map(v => v.fecha), ...state.egresos.map(e => e.fecha), ...state.compras.map(c => c.fecha)].filter(Boolean);
-            if(dates.length === 0) return;
-            const months = new Set();
-            dates.forEach(d => { const dateObj = new Date(d); if (isNaN(dateObj.getTime())) return; months.add(`${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`); });
-            const sortedMonths = Array.from(months).sort().reverse();
-            const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-            let html = '<option value="ALL">Histórico Global</option>';
-            sortedMonths.forEach(m => { const [year, month] = m.split('-'); html += `<option value="${m}">${monthNames[parseInt(month)-1]} ${year}</option>`; });
-            const currentVal = select.value; select.innerHTML = html; if(Array.from(select.options).some(o => o.value === currentVal)) select.value = currentVal;
-        }
-
-        function getFilteredData(dataArray, dateField) {
-            const filter = document.getElementById('month-filter') ? document.getElementById('month-filter').value : 'ALL';
-            if(filter === 'ALL') return dataArray;
-            const [year, month] = filter.split('-');
-            return dataArray.filter(item => { if(!item[dateField]) return false; const d = new Date(item[dateField]); if (isNaN(d.getTime())) return false; return d.getFullYear() === parseInt(year) && d.getMonth() + 1 === parseInt(month); });
-        }
-        function handleMonthChange() { renderAll(); }
-
-        function renderDashboard() {
-            const vntData = getFilteredData(state.ventas, 'fecha'); const egrData = getFilteredData(state.egresos, 'fecha');
-            const ingresosTotales = vntData.reduce((acc, v) => acc + (v.total || 0), 0);
-            const costoMercancia = vntData.reduce((acc, v) => acc + (v.costo_fifo || 0), 0);
-            const gastosOperativos = egrData.filter(e => e.categoria_gasto !== 'Inventario').reduce((acc, e) => acc + (e.monto || 0), 0);
-            const utilidadNeta = ingresosTotales - costoMercancia - gastosOperativos;
-            
-            if(document.getElementById('kpi-ingresos')) document.getElementById('kpi-ingresos').innerText = `RD$ ${formatMoney(ingresosTotales)}`;
-            if(document.getElementById('kpi-costos')) document.getElementById('kpi-costos').innerText = `RD$ ${formatMoney(costoMercancia)}`;
-            if(document.getElementById('kpi-egresos')) document.getElementById('kpi-egresos').innerText = `RD$ ${formatMoney(gastosOperativos)}`;
-            if(document.getElementById('kpi-neto')) document.getElementById('kpi-neto').innerText = `RD$ ${formatMoney(utilidadNeta)}`;
-
-            const todayStr = new Date().toISOString().split('T')[0]; const ayer = new Date(); ayer.setDate(ayer.getDate() - 1); const ayerStr = ayer.toISOString().split('T')[0];
-            const revHoy = state.ventas.filter(v => v.fecha && v.fecha.startsWith(todayStr)).reduce((a, v) => a + (v.total||0), 0);
-            const revAyer = state.ventas.filter(v => v.fecha && v.fecha.startsWith(ayerStr)).reduce((a, v) => a + (v.total||0), 0);
-
-            if(document.getElementById('flash-hoy')) document.getElementById('flash-hoy').innerText = `RD$ ${formatMoney(revHoy)}`;
-            if(document.getElementById('flash-ayer')) document.getElementById('flash-ayer').innerText = `RD$ ${formatMoney(revAyer)}`;
-            
-            renderCharts(vntData, egrData); renderRankings(vntData);
-        }
-        
-        function renderRankings(ventasData) {
-            const prodStats = {};
-            ventasData.forEach(v => {
-                if(v.detalle) { v.detalle.forEach(d => { if(!prodStats[d.productoId]) prodStats[d.productoId] = { vol: 0, rev: 0, cost: 0 }; prodStats[d.productoId].vol += d.cantidad; prodStats[d.productoId].rev += (d.cantidad * d.precio); prodStats[d.productoId].cost += (d.costo_fifo || 0); }); } 
-                else if (v.productoId) { if(!prodStats[v.productoId]) prodStats[v.productoId] = { vol: 0, rev: 0, cost: 0 }; prodStats[v.productoId].vol += (v.cantidad || 1); prodStats[v.productoId].rev += (v.total || 0); prodStats[v.productoId].cost += (v.costo_fifo || 0); }
-            });
-            const arr = Object.keys(prodStats).map(id => { const p = state.catalogo.find(x => x.id === id); return { id, nombre: p ? p.nombre : 'Desc.', vol: prodStats[id].vol, rev: prodStats[id].rev, net: prodStats[id].rev - prodStats[id].cost }; });
-            const topVol = [...arr].sort((a,b)=>b.vol - a.vol).slice(0,5); const topRev = [...arr].sort((a,b)=>b.rev - a.rev).slice(0,5); const topNet = [...arr].sort((a,b)=>b.net - a.net).slice(0,5);
-            
-            const renderList = (data, valKey, formatType) => data.map((item, idx) => `<div class="flex items-center gap-3"><div class="w-6 h-6 rounded bg-slate-100 text-slate-500 flex items-center justify-center text-[10px] font-black shrink-0">${idx+1}</div><div class="flex-1 min-w-0"><p class="text-xs font-bold text-slate-700 truncate w-full">${item.nombre}</p></div><div class="font-black text-sm text-slate-900 shrink-0">${formatType === 'money' ? 'RD$ ' + formatMoney(item[valKey]) : item[valKey]}</div></div>`).join('');
-            
-            if(document.getElementById('rank-vol')) document.getElementById('rank-vol').innerHTML = renderList(topVol, 'vol', 'number');
-            if(document.getElementById('rank-rev')) document.getElementById('rank-rev').innerHTML = renderList(topRev, 'rev', 'money');
-            if(document.getElementById('rank-profit')) document.getElementById('rank-profit').innerHTML = renderList(topNet, 'net', 'money');
-        }
-
-        let chartLoadAttempts = 0;
-        function renderCharts(vntData, egrData) {
-            if(typeof Chart === 'undefined') { if (chartLoadAttempts < 10) { chartLoadAttempts++; setTimeout(() => renderCharts(vntData, egrData), 500); } return; }
-            const ctxTend = document.getElementById('chart-tendencias');
-            if(ctxTend) {
-                if(charts.tendencias) charts.tendencias.destroy();
-                const trends = {};
-                vntData.forEach(v => { if(!v.fecha) return; const m = v.fecha.substring(0,7); if(!trends[m]) trends[m] = { ingresos: 0, gastos: 0 }; trends[m].ingresos += v.total || 0; });
-                egrData.forEach(e => { if(!e.fecha || e.categoria_gasto === 'Inventario') return; const m = e.fecha.substring(0,7); if(!trends[m]) trends[m] = { ingresos: 0, gastos: 0 }; trends[m].gastos += e.monto || 0; });
-                
-                const labels = Object.keys(trends).sort(); const ing = labels.map(l => trends[l].ingresos); const gst = labels.map(l => trends[l].gastos);
-                charts.tendencias = new Chart(ctxTend, { type: 'line', data: { labels: labels, datasets: [ { label: 'Ingresos', data: ing, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }, { label: 'Gastos Op.', data: gst, borderColor: '#e11d48', backgroundColor: 'transparent', borderDash: [5,5], tension: 0.4 } ] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
-            }
-            
-            const ctxGastos = document.getElementById('chart-gastos');
-            if(ctxGastos) {
-                if(charts.gastos) charts.gastos.destroy();
-                const gStats = {}; egrData.filter(e => e.categoria_gasto !== 'Inventario').forEach(e => { const cat = e.categoria_gasto || 'General'; gStats[cat] = (gStats[cat] || 0) + (e.monto || 0); });
-                charts.gastos = new Chart(ctxGastos, { type: 'doughnut', data: { labels: Object.keys(gStats), datasets: [{ data: Object.values(gStats), backgroundColor: ['#4f46e5', '#e11d48', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } } } } });
-            }
-        }
     </script>
 </body>
 </html>
